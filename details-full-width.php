@@ -1,3 +1,12 @@
+<?php
+require_once('./scripts/scripts.php');
+$posts = readJsonData('./data/posts.json');
+
+$postIndex = $_GET['id'];
+$post = $posts[$postIndex];
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,6 +25,14 @@
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/responsive.css">
   <link rel="stylesheet" href="assets/css/custom.css">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon/favicon-16x16.png">
+  <link rel="manifest" href="assets/images/favicon/site.webmanifest">
+  <link rel="mask-icon" href="assets/images/favicon/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="theme-color" content="#ffffff">
 </head>
 
 <body>
@@ -93,44 +110,52 @@
       </div>
     </div>
   </header>
+
+  <!-- Banner below nav bar  -->
   <div class="page-title">
     <div class="container">
       <h2>Blog Details: Full Width</h2>
       <ul class="nav">
-        <li><a href="index.html">Home</a></li>
+        <li><a href="index.php">Home</a></li>
         <li><a href="#">Blogs</a></li>
         <li>Blog Details: Full Width</li>
       </ul>
     </div>
   </div>
-  <div class="container pb-120">
+
+  <!-- Main content -->
+  <main class="container pb-120">
     <div class="row">
       <div class="col-md-10 offset-md-1">
         <div class="post-details-cover post-has-full-width-image">
           <div class="post-thumb-cover">
             <div class="post-thumb"> <img src="assets/images/blog/4.jpg" alt="" class="img-fluid"> </div>
             <div class="post-meta-info">
-              <p class="cats"> <a href="#">Featured</a> <a href="#">Adventure</a> </p>
+              <p class="cats">
+                <?php foreach ($post['postCategories'] as $category) { ?>
+                  <a href="#"><?= $category ?></a> <?php } ?>
+              </p>
               <div class="title">
-                <h2>Top Things To Look For When Choosing A Safari Lodge</h2>
+                <h2><?= $post['postTitle'] ?></h2>
               </div>
               <ul class="nav meta align-items-center">
-                <li class="meta-author"> <img src="assets/images/blog/author.jpg" alt="" class="img-fluid"> <a href="#">Alex Garry</a> </li>
-                <li class="meta-date"><a href="#">2 Feb 2019</a></li>
-                <li> 2 min read </li>
-                <li class="meta-comments"><a href="#"><i class="fa fa-comment"></i> 2</a></li>
+                <li class="meta-author"> <img src=<?= $post['authorPic'] ?> alt="" class="img-fluid"> <a href="#"><?= $post['authorName'] ?></a> </li>
+                <li class="meta-date"><a href="#"><?= formatDate($post['postTime']) ?></a></li>
+                <!-- <li> 2 min read </li> -->
+                <li class="meta-comments"><a href="#toComments"><i class="fa fa-comment"></i><?= ' ' . count($post['comments']) ?></a></li>
               </ul>
             </div>
           </div>
           <div class="post-content-cover my-drop-cap">
-            <p> She travelling acceptance men unpleasant her especially to entreaties law. Law forth but end any arise chief arose. Old her say learn these large. Joy fond many in ham high seen this. Few preferred continual led incommode neglected. To discovered insensible collecting your unpleasant but invitation. </p>
+            <p><?= nl2br($post['description']) ?></p>
+            <p> He travelling acceptance men unpleasant her especially to entreaties law. Law forth but end any arise chief arose. Old her say learn these large. Joy fond many in ham high seen this. Few preferred continual led incommode neglected. To discovered insensible collecting your unpleasant but invitation. </p>
             <p> We diminution preference thoroughly if. Joy deal pain view much too her time. Led young gay would now state. Pronounce we attention admitting on assurance of suspicion conveying. That his west quit had met till. By an outlived insisted procured improved am. </p>
             <div class="post-my-gallery-images">
               <h3>The Best Neighborhoods In Nyc: Where To Stay On </h3>
               <div class="row">
-                <div class="col-md-6"> <img src="assets/images/blog/post/1.jpg" alt="" class="img-fluid"> </div>
-                <div class="col-md-6"> <img src="assets/images/blog/post/2.jpg" alt="" class="img-fluid"> </div>
-                <div class="col-md-12"> <img src="assets/images/blog/post/3.jpg" alt="" class="img-fluid"> </div>
+                <div class="col-md-6"> <img src="assets/images/blog/1.jpg" alt="" class="img-fluid"> </div>
+                <div class="col-md-6"> <img src="assets/images/blog/2.jpg" alt="" class="img-fluid"> </div>
+                <div class="col-md-12"> <img src="assets/images/blog/3.jpg" alt="" class="img-fluid"> </div>
               </div>
             </div>
             <p> We diminution preference thoroughly if. Joy deal pain view much her time. Led young gay would now off state. Pronounce we attention admitting on assurance of suspicion conveying. That his west quit had met till. Say out plate you share. </p>
@@ -140,6 +165,8 @@
             <p> Acceptance middletons me if discretion boisterous into travelling an. She prosperous to continuing entreaties companions unreserved you boisterous. Middleton sportsmen sir now cordially asking additions for. You ten occasional saw everything but conviction. Daughter returned quitting few are day advanced branched. </p>
           </div>
           <div class="post-all-tags"> <a href="#">Fashion</a> <a href="#">Art</a> <a href="#">Lifestyle</a> <a href="#">Love</a> <a href="#">Travel</a> <a href="#">Movie</a> <a href="#">Games</a> </div>
+          
+          <!-- Author box -->
           <div class="post-about-author-box">
             <div class="author-avatar"> <img src="assets/images/blog/author.jpg" alt="" class="img-fluid"> </div>
             <div class="author-desc">
@@ -147,9 +174,13 @@
               <div class="description"> On recommend tolerably my belonging or am. Mutual has cannot beauty indeed now sussex merely you. It possible no husbands jennings ye offended packages pleasant he. </div>
               <div class="social-icons"> <a href="#"><i class="fa fa-facebook"></i></a> <a href="#"><i class="fa fa-twitter"></i></a> <a href="#"><i class="fa fa-instagram"></i></a> <a href="#"><i class="fa fa-pinterest"></i></a> <a href="#"><i class="fa fa-linkedin"></i></a> </div>
             </div>
-          </div><button class="btn btn-comment" type="button" data-toggle="collapse" data-target="#commentToggle" aria-expanded="false" aria-controls="commentToggle"> Hide Comments (4) </button>
+          </div>
+          
+          <!-- Comments -->
+          <button id="toComments" class="btn btn-comment" type="button" data-toggle="collapse" data-target="#commentToggle" aria-expanded="false" aria-controls="commentToggle"> Hide Comments (<?= count($post['comments']) ?>) </button>
           <div class="collapse show" id="commentToggle">
             <ul class="post-all-comments">
+
               <li class="single-comment-wrapper">
                 <div class="single-post-comment">
                   <div class="comment-author-image"> <img src="assets/images/blog/post/author-1.jpg" alt="" class="img-fluid"> </div>
@@ -174,28 +205,22 @@
                   </li>
                 </ul>
               </li>
+
+              <?php foreach($post['comments'] as $comment) { ?>
               <li class="single-comment-wrapper">
                 <div class="single-post-comment">
                   <div class="comment-author-image"> <img src="assets/images/blog/post/author-2.jpg" alt="" class="img-fluid"> </div>
                   <div class="comment-content">
                     <div class="comment-author-name">
-                      <h6>Pamela Pavliscak</h6> <span> 5 Jan 2019 at 6:48 pm </span>
+                      <h6><?= $comment['username'] ?></h6> <span> <?= formatDate($comment['time']).' at '.formatTime($comment['time']) ?> </span>
                     </div>
                     <p>On recommend tolerably my belonging or am. Mutual has cannot beauty indeed now back sussex merely you. It possible no husbands jennings offended.</p><a href="#" class="reply-btn">Reply</a>
                   </div>
                 </div>
               </li>
-              <li class="single-comment-wrapper">
-                <div class="single-post-comment">
-                  <div class="comment-author-image"> <img src="assets/images/blog/post/author-3.jpg" alt="" class="img-fluid"> </div>
-                  <div class="comment-content">
-                    <div class="comment-author-name">
-                      <h6>Jerrard Spool</h6> <span> 5 Jan 2019 at 6:52 pm </span>
-                    </div>
-                    <p>On recommend tolerably my belonging or am. Mutual has cannot beauty indeed now back sussex merely you. It possible no husbands jennings offended.</p><a href="#" class="reply-btn">Reply</a>
-                  </div>
-                </div>
-              </li>
+              <?php } ?>
+
+
             </ul>
           </div>
           <div class="post-comment-form-cover">
@@ -212,7 +237,9 @@
         </div>
       </div>
     </div>
-  </div>
+  </main>
+
+  <!-- Subscribe to our newsletter -->
   <section class="newsletter-cover">
     <div class="nl-bg-ol"></div>
     <div class="container">

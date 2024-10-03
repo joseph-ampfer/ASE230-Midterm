@@ -4,6 +4,51 @@
 .join-project {
     position: absolute;
     bottom: 0;
-    left: 0;
+    right: 0; 
+}
+
+.shortDescription {
+    color: #f3f3f3;
+}
+
+
+.project-categories {
+    margin-bottom: 10px;
+}
+
+.badge {
+    margin-right: 5px;
+    font-size: 12px;
+    font-family: Spectral,serif;
+}
+
+.looking-for {
+    margin-top: 10px;
+    font-family: Spectral,serif;
+    position: absolute;
+    bottom: 0;
+    margin-left: 5px;
+}
+
+.looking-for strong {
+    margin-right: 5px;
+    color: #f3f3f3;
     
+}
+
+.post-thumb {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.join-project {
+    margin-top: 15px;
+}
+
+.mt-30 {
+    margin-top: 30px;
+}
+
+html {
+  scroll-behavior: smooth;
 }

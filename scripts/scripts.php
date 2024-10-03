@@ -40,3 +40,11 @@ function formatDate($time) {
   // Format it as "2 Feb 2019"
   return $date->format('j M Y');
 }
+
+function formatTime($time) {
+  // Create a Datetime object from the ISO 8601 string
+  $date = new DateTime($time);
+
+  // Format it as "2 Feb 2019"
+  return $date->format('g: i A');
+}

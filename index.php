@@ -62,7 +62,7 @@ $posts = readJsonData('data/posts.json');
 					<div class="col-lg-9 col-md-8 col-6 d-flex justify-content-end position-static">
 						<div class="nav-menu-cover">
 							<ul class="nav nav-menu">
-								<li><a href="index.html">Home</a></li>
+								<li><a href="index.php">Home</a></li>
 								<li><a href="about.html">About</a></li>
 								<li class="menu-item-has-children"><a href="#">Blog</a>
 									<ul class="sub-menu">
@@ -128,8 +128,102 @@ $posts = readJsonData('data/posts.json');
 	<main class="container pt-120 pb-90">
 		<div class="row">
 
-			<?php foreach ($posts as $key => $post) {
-			?>
+			<!-- v3 -->
+			<?php foreach ($posts as $key => $post) { ?>
+				<div class="col-md-6">
+					<div class="post-default post-has-bg-img">
+						<!-- Post Image -->
+						<div class="post-thumb">
+							<a href="details-full-width.php">
+								<div data-bg-img=<?= $post['postImage'] ?>></div>
+							</a>
+						</div>
+
+						<!-- Post Content -->
+						<div class="post-data">
+							<!-- Project Categories (Displayed as Tags) -->
+							<div class="project-categories">
+								<?php foreach ($post['postCategories'] as $category) { ?>
+									<span class="badge badge-primary"><?= $category ?></span>
+								<?php } ?>
+							</div>
+
+							<!-- Post Title -->
+							<div class="title">
+								<h2><a href="details-full-width.php?id=<?= $key ?>"><?= $post['postTitle'] ?></a></h2>
+							</div>
+
+							<!-- Short Description -->
+							<p class="shortDescription"><?= substr($post['description'], 0, 100) . '...' ?></p>
+
+							<!-- Meta Information -->
+							<ul class="nav meta align-items-center mt-30">
+								<li class="meta-author">
+									<img src="<?= !empty($post['authorPic']) ? $post['authorPic'] : 'default-avatar.png' ?>" alt="" class="img-fluid">
+									<a href="#"><?= $post['authorName'] ?></a>
+								</li>
+								<li class="meta-date"><a href="#"><?= formatDate($post['postTime']) ?></a></li>
+								<li class="meta-comments"><a href="#"><i class="fa fa-comment"></i> <?= count($post['comments']) ?></a></li>
+								<li class="meta-likes"><a href="#"><i class="fa fa-heart"></i> <?= $post['likes'] ?? 0 ?></a></li>
+							</ul>
+
+							<!-- "Looking for" Tags -->
+								<div class="post-footer">
+									<div class="looking-for">
+										<strong>Looking for:</strong>
+										<span class="badge badge-success">UI Designer</span>
+										<span class="badge badge-success">Backend Developer</span>
+									</div>
+								</div>
+
+							<!-- Join Project Button -->
+							<div class="join-project">
+								<a href="contact-owner.php?id=<?= $key ?>" class="btn btn-primary">Join Project</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			<?php } ?>
+
+
+			<!-- v2 -->
+			<?php foreach ($posts as $key => $post) { ?>
+				<div class="col-md-6">
+					<div class="post-default post-has-bg-img">
+						<div class="post-thumb">
+							<a href="details-full-width.php">
+								<div data-bg-img=<?= $post['postImage'] ?>></div>
+							</a>
+						</div>
+						<div class="post-data">
+							<div class="cats">
+								<?php foreach ($post['postCategories'] as $category) { ?>
+								<a href="category-result.html"><?= $category ?></a>
+								<?php } ?>
+							</div>
+							<div class="title">
+								<h2><a href="details-full-width.php?id=<?= $key ?>"><?= $post['postTitle'] ?></a></h2>
+							</div>
+							<p class="shortDescription"><?= !empty($post['description']) ? substr($post['description'], 0, 100) . '...' : '' ?></p> <!-- Shortened project description -->
+							<ul class="nav meta align-items-center">
+								<li class="meta-author">
+									<img src="<?= !empty($post['authorPic']) ? $post['authorPic'] : 'default-avatar.png' ?>" alt="" class="img-fluid">
+									<a href="#"><?= $post['authorName'] ?></a>
+								</li>
+								<li class="meta-date"><a href="#"><?= formatDate($post['postTime']) ?></a></li>
+								<li class="meta-comments"><a href="#"><i class="fa fa-comment"></i> <?= count($post['comments']) ?></a></li>
+								<li class="meta-likes"><a href="#"><i class="fa fa-heart"></i> <?= $post['likes'] ?? 0 ?></a></li> <!-- Optional likes feature -->
+							</ul>
+							<div class="join-project">
+								<a href="contact-owner.php?id=<?= $key ?>" class="btn btn-primary">Join Project</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			<?php } ?>
+
+			<!-- original -->
+			<?php foreach ($posts as $key => $post) { ?>
 				<div class="col-md-6">
 					<div class="post-default post-has-bg-img">
 						<div class="post-thumb">
