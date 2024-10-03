@@ -1,0 +1,140 @@
+[
+  {
+    "postID": 1,
+    "postTime": "2024-10-03T10:00:00Z",
+    "authorName": "Name of Author",
+    "postTitle": "",
+    "postTag": "",
+    "description": "Excited about my new project! ",
+    "postImage": "",
+    "likes": 25,
+    "comments": [
+      {
+        "commentID": 1,
+        "comment": "Congrats! Looking forward to it!",
+        "userID": 202,
+        "time": "2024-10-03T10:15:00Z"
+      },
+      {
+        "commentID": 2,
+        "comment": "This sounds amazing!",
+        "userID": 303,
+        "time": "2024-10-03T10:20:00Z"
+      }
+    ]
+  },
+  {
+    "postID": 2,
+    "postTime": "2024-10-02T09:30:00Z",
+    "authorName": "Name of Author",
+    "postTitle": "",
+    "postTag": "",
+    "description": "Had an insightful discussion on AI in education today!",
+    "postImage": "",
+    "likes": 42,
+    "comments": [
+      {
+        "commentID": 3,
+        "comment": "AI is the future!",
+        "userID": 404,
+        "time": "2024-10-02T09:45:00Z"
+      }
+    ]
+  },
+  {
+    "postID": 3,
+    "postTime": "2024-10-01T15:00:00Z",
+    "authorName": "Name of Author",
+    "postTitle": "",
+    "postTag": "",
+    "description": "Just finished reading an amazing book on machine learning!",
+    "postImage": "",
+    "likes": 18,
+    "comments": [
+      {
+        "commentID": 4,
+        "comment": "I love that book! So informative.",
+        "userID": 505,
+        "time": "2024-10-01T15:30:00Z"
+      },
+      {
+        "commentID": 5,
+        "comment": "Any recommendations for a beginner?",
+        "userID": 606,
+        "time": "2024-10-01T15:45:00Z"
+      }
+    ]
+  },
+  {
+    "postID": 4,
+    "postTime": "2024-09-30T11:00:00Z",
+    "authorName": "Name of Author",
+    "postTitle": "",
+    "postTag": "",
+    "description": "A beautiful day to go hiking in the mountains! ",
+    "postImage": "",
+    "likes": 64,
+    "comments": [
+      {
+        "commentID": 6,
+        "comment": "Jealous! Looks like a perfect day.",
+        "userID": 707,
+        "time": "2024-09-30T11:20:00Z"
+      },
+      {
+        "commentID": 7,
+        "comment": "Enjoy the view!",
+        "userID": 808,
+        "time": "2024-09-30T11:25:00Z"
+      }
+    ]
+  },
+  {
+    "postID": 5,
+    "postTime": "2024-09-29T13:00:00Z",
+    "authorName": "Name of Author",
+    "postTitle": "",
+    "postTag": "",
+    "description": "Completed my first marathon! Feeling accomplished.",
+    "postImage": "",
+    "likes": 75,
+    "comments": [
+      {
+        "commentID": 8,
+        "comment": "Congrats on the marathon!",
+        "userID": 909,
+        "time": "2024-09-29T13:10:00Z"
+      },
+      {
+        "commentID": 9,
+        "comment": "That's amazing, well done!",
+        "userID": 202,
+        "time": "2024-09-29T13:15:00Z"
+      }
+    ]
+  },
+  {
+    "postID": 6,
+    "postTime": "2024-09-28T08:00:00Z",
+    "authorName": "Name of Author",
+    "postTitle": "",
+    "postTag": "",
+    "description": "Attended an incredible conference on renewable energy. So much to learn!",
+    "postImage": "",
+    "likes": 32,
+    "comments": [
+      {
+        "commentID": 10,
+        "comment": "Renewable energy is such an important topic.",
+        "userID": 303,
+        "time": "2024-09-28T08:30:00Z"
+      },
+      {
+        "commentID": 11,
+        "comment": "Can't wait for the next one!",
+        "userID": 101,
+        "time": "2024-09-28T08:40:00Z"
+      }
+    ]
+  }
+]
