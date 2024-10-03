@@ -1,3 +1,3 @@
 # ASE230-Midterm
--Joseph Ampfer
--Bhuwan Bhandari
+- Joseph Ampfer
+- Bhuwan Bhandari
