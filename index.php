@@ -1,5 +1,11 @@
 <?php
 
+require_once('scripts/scripts.php');
+$posts = readJsonData('data/posts.json');
+
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -74,7 +80,7 @@
 										</li>
 										<li class="menu-item-has-children"><a href="#">Blog Details</a>
 											<ul class="sub-menu">
-												<li><a href="blog-details.html">Default Style</a></li>
+												<li><a href="details-full-width.php">Default Style</a></li>
 												<li><a href="blog-details-full-width.html">Full Width</a></li>
 												<li><a href="blog-details-video.html">Video Post</a></li>
 												<li><a href="blog-details-slide.html">Slide Post</a></li>
@@ -105,6 +111,8 @@
 			</div>
 		</div>
 	</header>
+
+	<!-- Banner below nav bar -->
 	<div class="page-title">
 		<div class="container">
 			<h2>Blog Overlay</h2>
@@ -115,17 +123,48 @@
 			</ul>
 		</div>
 	</div>
-	<div class="container pt-120 pb-90">
+
+	<!-- Main content -->
+	<main class="container pt-120 pb-90">
 		<div class="row">
+
+			<?php foreach ($posts as $key => $post) {
+			?>
+				<div class="col-md-6">
+					<div class="post-default post-has-bg-img">
+						<div class="post-thumb">
+							<a href="details-full-width.php">
+								<div data-bg-img=<?= $post['postImage'] ?>></div>
+							</a>
+						</div>
+						<div class="post-data">
+							<div class="cats"><a href="category-result.html"><?= $post['postTag'] ?></a></div>
+							<div class="title">
+								<h2><a href="details-full-width.php"><?= $post['postTitle'] ?></a></h2>
+							</div>
+							<ul class="nav meta align-items-center">
+								<li class="meta-author"> <img src=<?= $post['authorPic'] ?> alt="" class="img-fluid"> <a href="#"><?= $post['authorName'] ?></a> </li>
+								<li class="meta-date"><a href="#"><?= formatDate($post['postTime']) ?></a></li>
+								<li class="meta-comments"><a href="#"><i class="fa fa-comment"></i><?= ' ' . count($post['comments']) ?></a></li>
+								<li class="meta-likes"><a href="#"><i class="fa fa-heart"></i><?= ' 6' ?></a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			<?php } ?>
+
+			<!-- Post 1 -->
 			<div class="col-md-6">
 				<div class="post-default post-has-bg-img">
-					<div class="post-thumb"> <a href="blog-details.html">
+					<div class="post-thumb">
+						<a href="details-full-width.php">
 							<div data-bg-img="assets/images/blog/1.jpg"></div>
-						</a> </div>
+						</a>
+					</div>
 					<div class="post-data">
 						<div class="cats"><a href="category-result.html">Love</a></div>
 						<div class="title">
-							<h2><a href="blog-details.html">A Funny Thing That Happens In Relationships</a></h2>
+							<h2><a href="details-full-width.php">A Funny Thing That Happens In Relationships</a></h2>
 						</div>
 						<ul class="nav meta align-items-center">
 							<li class="meta-author"> <img src="assets/images/blog/author.jpg" alt="" class="img-fluid"> <a href="#">Alex Garry</a> </li>
@@ -135,15 +174,17 @@
 					</div>
 				</div>
 			</div>
+
+			<!-- Post 2 -->
 			<div class="col-md-6">
 				<div class="post-default post-has-bg-img">
-					<div class="post-thumb"> <a href="blog-details.html">
+					<div class="post-thumb"> <a href="details-full-width.php">
 							<div data-bg-img="assets/images/blog/2.jpg"></div>
 						</a> </div>
 					<div class="post-data">
 						<div class="cats"><a href="category-result.html">Fashion</a></div>
 						<div class="title">
-							<h2><a href="blog-details.html">The One Thing I Do When Fashion Come Over</a></h2>
+							<h2><a href="details-full-width.php">The One Thing I Do When Fashion Come Over</a></h2>
 						</div>
 						<ul class="nav meta align-items-center">
 							<li class="meta-author"> <img src="assets/images/blog/author.jpg" alt="" class="img-fluid"> <a href="#">Alex Garry</a> </li>
@@ -153,15 +194,16 @@
 					</div>
 				</div>
 			</div>
+
 			<div class="col-md-6">
 				<div class="post-default post-has-bg-img">
-					<div class="post-thumb"> <a href="blog-details.html">
+					<div class="post-thumb"> <a href="details-full-width.php">
 							<div data-bg-img="assets/images/blog/3.jpg"></div>
 						</a> </div>
 					<div class="post-data">
 						<div class="cats"><a href="category-result.html">Travel</a></div>
 						<div class="title">
-							<h2><a href="blog-details.html">Summer Adventure Essentials From Backcountry</a></h2>
+							<h2><a href="details-full-width.php">Summer Adventure Essentials From Backcountry</a></h2>
 						</div>
 						<ul class="nav meta align-items-center">
 							<li class="meta-author"> <img src="assets/images/blog/author.jpg" alt="" class="img-fluid"> <a href="#">Alex Garry</a> </li>
@@ -171,15 +213,16 @@
 					</div>
 				</div>
 			</div>
+
 			<div class="col-md-6">
 				<div class="post-default post-has-bg-img">
-					<div class="post-thumb"> <a href="blog-details.html">
+					<div class="post-thumb"> <a href="details-full-width.php">
 							<div data-bg-img="assets/images/blog/4.jpg"></div>
 						</a> </div>
 					<div class="post-data">
 						<div class="cats"><a href="category-result.html">Adventure</a></div>
 						<div class="title">
-							<h2><a href="blog-details.html">Top Things To Look For When Choosing A Safari Lodge</a></h2>
+							<h2><a href="details-full-width.php">Top Things To Look For When Choosing A Safari Lodge</a></h2>
 						</div>
 						<ul class="nav meta align-items-center">
 							<li class="meta-author"> <img src="assets/images/blog/author.jpg" alt="" class="img-fluid"> <a href="#">Alex Garry</a> </li>
@@ -189,15 +232,16 @@
 					</div>
 				</div>
 			</div>
+
 			<div class="col-md-6">
 				<div class="post-default post-has-bg-img">
-					<div class="post-thumb"> <a href="blog-details.html">
+					<div class="post-thumb"> <a href="details-full-width.php">
 							<div data-bg-img="assets/images/blog/5.jpg"></div>
 						</a> </div>
 					<div class="post-data">
 						<div class="cats"><a href="category-result.html">Sports</a></div>
 						<div class="title">
-							<h2><a href="blog-details.html">Blaak Attack Earns Boels First 2019 Victory</a></h2>
+							<h2><a href="details-full-width.php">Blaak Attack Earns Boels First 2019 Victory</a></h2>
 						</div>
 						<ul class="nav meta align-items-center">
 							<li class="meta-author"> <img src="assets/images/blog/author.jpg" alt="" class="img-fluid"> <a href="#">Alex Garry</a> </li>
@@ -207,15 +251,16 @@
 					</div>
 				</div>
 			</div>
+
 			<div class="col-md-6">
 				<div class="post-default post-has-bg-img">
-					<div class="post-thumb"> <a href="blog-details.html">
+					<div class="post-thumb"> <a href="details-full-width.php">
 							<div data-bg-img="assets/images/blog/6.jpg"></div>
 						</a> </div>
 					<div class="post-data">
 						<div class="cats"><a href="category-result.html">Food</a></div>
 						<div class="title">
-							<h2><a href="blog-details.html">Five Important Facts Should Know About Recipe</a></h2>
+							<h2><a href="details-full-width.php">Five Important Facts Should Know About Recipe</a></h2>
 						</div>
 						<ul class="nav meta align-items-center">
 							<li class="meta-author"> <img src="assets/images/blog/author.jpg" alt="" class="img-fluid"> <a href="#">Alex Garry</a> </li>
@@ -225,15 +270,16 @@
 					</div>
 				</div>
 			</div>
+
 			<div class="col-md-6">
 				<div class="post-default post-has-bg-img">
-					<div class="post-thumb"> <a href="blog-details.html">
+					<div class="post-thumb"> <a href="details-full-width.php">
 							<div data-bg-img="assets/images/blog/7.jpg"></div>
 						</a> </div>
 					<div class="post-data">
 						<div class="cats"><a href="category-result.html">Lifestyle</a></div>
 						<div class="title">
-							<h2><a href="blog-details.html">Great Britain's Winter Olympics Athletes Rated And Slated</a></h2>
+							<h2><a href="details-full-width.php">Great Britain's Winter Olympics Athletes Rated And Slated</a></h2>
 						</div>
 						<ul class="nav meta align-items-center">
 							<li class="meta-author"> <img src="assets/images/blog/author.jpg" alt="" class="img-fluid"> <a href="#">Alex Garry</a> </li>
@@ -243,15 +289,16 @@
 					</div>
 				</div>
 			</div>
+
 			<div class="col-md-6">
 				<div class="post-default post-has-bg-img">
-					<div class="post-thumb"> <a href="blog-details.html">
+					<div class="post-thumb"> <a href="details-full-width.php">
 							<div data-bg-img="assets/images/blog/8.jpg"></div>
 						</a> </div>
 					<div class="post-data">
 						<div class="cats"><a href="category-result.html">Technology</a></div>
 						<div class="title">
-							<h2><a href="blog-details.html">Apple Admits To Macbook And Macbook Pro</a></h2>
+							<h2><a href="details-full-width.php">Apple Admits To Macbook And Macbook Pro</a></h2>
 						</div>
 						<ul class="nav meta align-items-center">
 							<li class="meta-author"> <img src="assets/images/blog/author.jpg" alt="" class="img-fluid"> <a href="#">Alex Garry</a> </li>
@@ -261,9 +308,18 @@
 					</div>
 				</div>
 			</div>
+
 		</div>
-		<div class="post-pagination d-flex justify-content-center"> <span class="current">1</span> <a href="#">2</a> <a href="#">3</a> <a href="#"><i class="fa fa-angle-right"></i></a> </div>
-	</div>
+		<!-- Pagination below posts -->
+		<div class="post-pagination d-flex justify-content-center">
+			<span class="current">1</span>
+			<a href="#">2</a>
+			<a href="#">3</a>
+			<a href="#"><i class="fa fa-angle-right"></i></a>
+		</div>
+	</main>
+
+	<!-- Subscribe to our newsletter -->
 	<section class="newsletter-cover">
 		<div class="nl-bg-ol"></div>
 		<div class="container">

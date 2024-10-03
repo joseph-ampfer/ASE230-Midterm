@@ -1,3 +1,9 @@
 /*==================================================================================
     Custom Stylesheet (Any custom styling you want to apply should be defined here).
 ====================================================================================*/
+.join-project {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    
+}
