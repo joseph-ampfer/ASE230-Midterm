@@ -12,16 +12,21 @@
 
 <body>
     <div class="container d-flex justify-content-center p-3">
-        <form class="card d-flex flex-column justify-content-center w-50 h-auto p-4 shadow border-0">
+        <form class="card d-flex flex-column justify-content-center w-50 h-25 p-4 shadow border-0">
             <h1 class="mb-3">Log in</h1>
+            <div class = "d-flex align-items-center mx-auto mb-3">
+                <div>Don't have an account yet?</div>
+                <a href = "signup.php">Sign up</a>
+            </div>
+           
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
                 <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
             </div>
             <div class="mb-3">
                 <label for="exampleInputPassword1" class="form-label">Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1">
+                <input type="password" class="form-control" id="exampleInputPassword1" required>
                 <a href="changePasswordPage" class="form-text">Forgot password?</a>
             </div>
             <button type="submit" class="btn btn-primary">Login</button>
