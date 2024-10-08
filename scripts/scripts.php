@@ -33,6 +33,22 @@ function saveToJson($filePath, $data)
 // saveToJson('data/uv_readings.json', $newReading);
 
 
+function saveComment($filePath, $postIndex, $data)
+{
+  $existingData = [];
+  if (file_exists($filePath)) {
+    $existingData = json_decode(file_get_contents($filePath), true);
+  }
+  // Add current timestamp
+  $dateTime = date("Y-m-d H:i:s");
+
+  $data["time"] = $dateTime;
+
+  $existingData[$postIndex]['comments'][] = $data; // Append new data to existing array
+  file_put_contents($filePath, json_encode($existingData, JSON_PRETTY_PRINT));
+}
+
+
 function formatDate($time) {
   // Create a Datetime object from the ISO 8601 string
   $date = new DateTime($time);

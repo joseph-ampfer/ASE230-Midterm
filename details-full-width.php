@@ -1,9 +1,31 @@
 <?php
+
 require_once('./scripts/scripts.php');
-$posts = readJsonData('./data/posts.json');
 
 $postIndex = $_GET['id'];
+
+$isLoggedIn = true;
+
+if ($isLoggedIn && count($_POST) > 0) {
+  if (isset($_POST['comment'][0])) {
+    saveComment('data/posts.json', $postIndex, $_POST);
+  }
+}
+
+
+$posts = readJsonData('./data/posts.json');
 $post = $posts[$postIndex];
+
+
+$username = "Joseph Ampfer";
+
+//echo '<pre>';
+print_r($_POST);
+//echo '</pre>';
+
+
+
+
 
 ?>
 
@@ -165,7 +187,7 @@ $post = $posts[$postIndex];
             <p> Acceptance middletons me if discretion boisterous into travelling an. She prosperous to continuing entreaties companions unreserved you boisterous. Middleton sportsmen sir now cordially asking additions for. You ten occasional saw everything but conviction. Daughter returned quitting few are day advanced branched. </p>
           </div>
           <div class="post-all-tags"> <a href="#">Fashion</a> <a href="#">Art</a> <a href="#">Lifestyle</a> <a href="#">Love</a> <a href="#">Travel</a> <a href="#">Movie</a> <a href="#">Games</a> </div>
-          
+
           <!-- Author box -->
           <div class="post-about-author-box">
             <div class="author-avatar"> <img src="assets/images/blog/author.jpg" alt="" class="img-fluid"> </div>
@@ -175,13 +197,13 @@ $post = $posts[$postIndex];
               <div class="social-icons"> <a href="#"><i class="fa fa-facebook"></i></a> <a href="#"><i class="fa fa-twitter"></i></a> <a href="#"><i class="fa fa-instagram"></i></a> <a href="#"><i class="fa fa-pinterest"></i></a> <a href="#"><i class="fa fa-linkedin"></i></a> </div>
             </div>
           </div>
-          
+
           <!-- Comments -->
           <button id="toComments" class="btn btn-comment" type="button" data-toggle="collapse" data-target="#commentToggle" aria-expanded="false" aria-controls="commentToggle"> Hide Comments (<?= count($post['comments']) ?>) </button>
           <div class="collapse show" id="commentToggle">
             <ul class="post-all-comments">
 
-              <li class="single-comment-wrapper">
+              <!-- <li class="single-comment-wrapper">
                 <div class="single-post-comment">
                   <div class="comment-author-image"> <img src="assets/images/blog/post/author-1.jpg" alt="" class="img-fluid"> </div>
                   <div class="comment-content">
@@ -204,36 +226,54 @@ $post = $posts[$postIndex];
                     </div>
                   </li>
                 </ul>
-              </li>
+              </li> -->
 
-              <?php foreach($post['comments'] as $comment) { ?>
-              <li class="single-comment-wrapper">
-                <div class="single-post-comment">
-                  <div class="comment-author-image"> <img src="assets/images/blog/post/author-2.jpg" alt="" class="img-fluid"> </div>
-                  <div class="comment-content">
-                    <div class="comment-author-name">
-                      <h6><?= $comment['username'] ?></h6> <span> <?= formatDate($comment['time']).' at '.formatTime($comment['time']) ?> </span>
+              <?php foreach ($post['comments'] as $comment) { ?>
+                <li class="single-comment-wrapper">
+                  <div class="single-post-comment">
+                    <div class="comment-author-image"> <img src="assets/images/blog/post/author-2.jpg" alt="" class="img-fluid"> </div>
+                    <div class="comment-content">
+                      <div class="comment-author-name">
+                        <h6><?= $comment['username'] ?></h6> <span> <?= formatDate($comment['time']) . ' at ' . formatTime($comment['time']) ?> </span>
+                      </div>
+                      <p><?= nl2br($comment['comment']) ?></p><a href="#" class="reply-btn">Reply</a>
                     </div>
-                    <p>On recommend tolerably my belonging or am. Mutual has cannot beauty indeed now back sussex merely you. It possible no husbands jennings offended.</p><a href="#" class="reply-btn">Reply</a>
                   </div>
-                </div>
-              </li>
+                </li>
               <?php } ?>
 
 
             </ul>
           </div>
+
+          <!-- Write a comment -->
           <div class="post-comment-form-cover">
             <h3>Write your comment</h3>
-            <form class="comment-form">
+            <form class="comment-form" method="POST" action=<?="details-full-width.php?id=".$postIndex ?>>
               <div class="row">
-                <div class="col-md-6"> <input type="text" class="form-control" placeholder="Name"> </div>
-                <div class="col-md-6"> <input type="text" class="form-control" placeholder="Email"> </div>
-                <div class="col-md-12"> <textarea class="form-control" placeholder="Write your comment"></textarea> </div>
+                <div class="col-md-6"> <input type="text" class="form-control" name="username" placeholder="Name"> </div>
+                <div class="col-md-6"> <input type="text" class="form-control" name="email" placeholder="Email"> </div>
+                <div class="col-md-12"> <textarea class="form-control" name="comment" placeholder="Write your comment"></textarea> </div>
+                <input type="hidden"  />
                 <div class="col-md-12"> <button class="btn btn-primary">Submit </button> </div>
               </div>
             </form>
           </div>
+
+          <!-- <div class="">
+            <h3>Write your comment</h3>
+            <form class="" method="POST">
+              <div class="">
+                <div class=""> 
+                  <textarea name="comment" required class="" placeholder="Write your comment"></textarea> 
+                </div>
+                <div class=""> <button class=" ">Submit </button> </div>
+              </div>
+            </form>
+          </div> -->
+
+
+
         </div>
       </div>
     </div>
