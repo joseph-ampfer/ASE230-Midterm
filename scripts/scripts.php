@@ -18,10 +18,11 @@ function saveToJson($filePath, $data)
   if (file_exists($filePath)) {
     $existingData = json_decode(file_get_contents($filePath), true);
   }
+
   $existingData[] = $data; // Append new data to existing array
   file_put_contents($filePath, json_encode($existingData, JSON_PRETTY_PRINT));
 }
-// Example usage
+//======= Example usage =============================
 // $newReading = [
 //   "id" => 3,
 //   "uv_index" => 7,
@@ -31,6 +32,7 @@ function saveToJson($filePath, $data)
 // ];
 
 // saveToJson('data/uv_readings.json', $newReading);
+// ==================================================
 
 
 function saveComment($filePath, $postIndex, $data)

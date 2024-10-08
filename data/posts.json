@@ -1,5 +1,5 @@
-{
-    "0": {
+[
+    {
         "postID": 1,
         "postTime": "2024-10-03T10:00:00Z",
         "authorName": "Joey Ampfer",
@@ -35,7 +35,7 @@
             }
         ]
     },
-    "1": {
+    {
         "postID": 2,
         "postTime": "2024-10-02T09:30:00Z",
         "authorName": "Name of Author",
@@ -94,7 +94,7 @@
             }
         ]
     },
-    "2": {
+    {
         "postID": 3,
         "postTime": "2024-10-01T15:00:00Z",
         "authorName": "Name of Author",
@@ -128,7 +128,7 @@
             }
         ]
     },
-    "3": {
+    {
         "postID": 4,
         "postTime": "2024-09-30T11:00:00Z",
         "authorName": "Name of Author",
@@ -162,7 +162,7 @@
             }
         ]
     },
-    "4": {
+    {
         "postID": 5,
         "postTime": "2024-09-29T13:00:00Z",
         "authorName": "Name of Author",
@@ -196,7 +196,7 @@
             }
         ]
     },
-    "5": {
+    {
         "postID": 6,
         "postTime": "2024-09-28T08:00:00Z",
         "authorName": "Name of Author",
@@ -230,14 +230,40 @@
             }
         ]
     },
-    "": {
-        "comments": [
-            {
-                "username": "teenytinydoctorsbooks",
-                "email": "s",
-                "comment": "sdf",
-                "time": "2024-10-08 16:31:48"
-            }
-        ]
+    {
+        "postTitle": "Touch Grass Royale",
+        "postCategories": [
+            "Mobile Apps",
+            "Game Development"
+        ],
+        "lookingFor": [
+            "Animator",
+            "Marketing Specialist"
+        ],
+        "description": "A competitive app.\r\n\r\nI need a marketer to help get users.",
+        "postImage": "",
+        "postTime": "2024-10-08 22:31:38",
+        "likes": 0,
+        "comments": [],
+        "authorName": "Joseph Ampfer"
+    },
+    {
+        "postTitle": "Touch Grass Royale",
+        "postCategories": [
+            "Software Development",
+            "Robotics",
+            "IoT Projects"
+        ],
+        "lookingFor": [
+            "Technical Writer",
+            "Copywriter",
+            "Project Manager"
+        ],
+        "description": "Very cool description",
+        "postTime": "2024-10-08 23:14:17",
+        "likes": 0,
+        "comments": [],
+        "authorName": "Joseph Ampfer",
+        "postImage": ".\/assets\/images\/blog\/1728422057.jpeg"
     }
-}
+]

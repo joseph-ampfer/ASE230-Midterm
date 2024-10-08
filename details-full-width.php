@@ -2,22 +2,25 @@
 
 require_once('./scripts/scripts.php');
 
+// Index for the post page
 $postIndex = $_GET['id'];
 
+// Change to session logic !!!!!!
 $isLoggedIn = true;
+$username = "Joseph Ampfer";
 
+// To post a comment, check if logged and comment there
 if ($isLoggedIn && count($_POST) > 0) {
   if (isset($_POST['comment'][0])) {
     saveComment('data/posts.json', $postIndex, $_POST);
   }
 }
 
-
+// Get page content
 $posts = readJsonData('./data/posts.json');
 $post = $posts[$postIndex];
 
 
-$username = "Joseph Ampfer";
 
 //echo '<pre>';
 print_r($_POST);
@@ -40,6 +43,10 @@ print_r($_POST);
   <link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
   <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+  <!-- Include Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
   <link rel="stylesheet" href="assets/css/font-awesome.min.css">
   <link rel="stylesheet" href="assets/plugins/animate/animate.min.css">
   <link rel="stylesheet" href="assets/plugins/owl-carousel/owl.carousel.min.css">
@@ -170,7 +177,9 @@ print_r($_POST);
           </div>
           <div class="post-content-cover my-drop-cap">
             <p><?= nl2br($post['description']) ?></p>
-            <p> He travelling acceptance men unpleasant her especially to entreaties law. Law forth but end any arise chief arose. Old her say learn these large. Joy fond many in ham high seen this. Few preferred continual led incommode neglected. To discovered insensible collecting your unpleasant but invitation. </p>
+
+            <!-- EXTRA CONTENT FROM TEMPLATE, EXTRA IMAGES AND BLOCK QUOTE -->
+            <!-- <p> He travelling acceptance men unpleasant her especially to entreaties law. Law forth but end any arise chief arose. Old her say learn these large. Joy fond many in ham high seen this. Few preferred continual led incommode neglected. To discovered insensible collecting your unpleasant but invitation. </p>
             <p> We diminution preference thoroughly if. Joy deal pain view much too her time. Led young gay would now state. Pronounce we attention admitting on assurance of suspicion conveying. That his west quit had met till. By an outlived insisted procured improved am. </p>
             <div class="post-my-gallery-images">
               <h3>The Best Neighborhoods In Nyc: Where To Stay On </h3>
@@ -184,7 +193,8 @@ print_r($_POST);
             <blockquote>
               <p>For me, running is both exercise and a metaphor. Running day after day, piling up each level I elevate myself.</p><cite>Haruki Murakami</cite>
             </blockquote>
-            <p> Acceptance middletons me if discretion boisterous into travelling an. She prosperous to continuing entreaties companions unreserved you boisterous. Middleton sportsmen sir now cordially asking additions for. You ten occasional saw everything but conviction. Daughter returned quitting few are day advanced branched. </p>
+            <p> Acceptance middletons me if discretion boisterous into travelling an. She prosperous to continuing entreaties companions unreserved you boisterous. Middleton sportsmen sir now cordially asking additions for. You ten occasional saw everything but conviction. Daughter returned quitting few are day advanced branched. </p> -->
+          
           </div>
           <div class="post-all-tags"> <a href="#">Fashion</a> <a href="#">Art</a> <a href="#">Lifestyle</a> <a href="#">Love</a> <a href="#">Travel</a> <a href="#">Movie</a> <a href="#">Games</a> </div>
 
@@ -246,7 +256,7 @@ print_r($_POST);
             </ul>
           </div>
 
-          <!-- Write a comment -->
+          <!-- FORM Write a comment -->
           <div class="post-comment-form-cover">
             <h3>Write your comment</h3>
             <form class="comment-form" method="POST" action=<?="details-full-width.php?id=".$postIndex ?>>
@@ -259,18 +269,6 @@ print_r($_POST);
               </div>
             </form>
           </div>
-
-          <!-- <div class="">
-            <h3>Write your comment</h3>
-            <form class="" method="POST">
-              <div class="">
-                <div class=""> 
-                  <textarea name="comment" required class="" placeholder="Write your comment"></textarea> 
-                </div>
-                <div class=""> <button class=" ">Submit </button> </div>
-              </div>
-            </form>
-          </div> -->
 
 
 
@@ -300,6 +298,8 @@ print_r($_POST);
       </div>
     </div>
   </section>
+
+  
   <footer class="footer-container d-flex align-items-center">
     <div class="container">
       <div class="row align-items-center footer">
@@ -316,8 +316,14 @@ print_r($_POST);
     </div>
   </footer>
   <div class="back-to-top d-flex align-items-center justify-content-center"> <span><i class="fa fa-long-arrow-up"></i></span> </div>
+  
+
   <script src="assets/js/jquery-1.12.1.min.js"></script>
   <script src="assets/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Include Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
   <script src="assets/plugins/owl-carousel/owl.carousel.min.js"></script>
   <script src="assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
   <script src="assets/js/scripts.js"></script>

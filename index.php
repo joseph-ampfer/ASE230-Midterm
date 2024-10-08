@@ -1,11 +1,48 @@
 <?php
 
 require_once('scripts/scripts.php');
+
+
+// TODO
+// 1. LOGIN LOGIC
+// 2. DATA VERIFICATION FOR POST
+
+
+// !!! REplace with session
+$isLoggedIn = true;
+$username = "Joseph Ampfer";
+
+// To post a comment, check if logged and comment there
+if ($isLoggedIn && count($_POST) > 0) {
+  if (isset($_POST['postTitle'][0])) {
+		
+		$fextension = pathinfo($_FILES['postImage']['name'], PATHINFO_EXTENSION);
+		$time = time();
+		$imagePath = './assets/images/blog/'.$time.'.'.$fextension;
+		move_uploaded_file($_FILES['postImage']['tmp_name'], $imagePath);
+		
+		$data = $_POST;
+     
+    // Add time, likes, etc
+    $data['postTime'] = date("Y-m-d H:i:s");
+    $data['likes'] = 0;
+    $data['comments'] = [];
+    $data['authorName'] = $username;
+		$postCategories = json_decode($_POST['postCategories'], true);
+		$lookingFor = json_decode($_POST['lookingFor'], true);
+
+		$data['postCategories'] = array_map(function($item) {return $item['value']; }, $postCategories);
+		$data['lookingFor'] = array_map(function($item) {return $item['value']; }, $lookingFor);
+		$data['postImage'] = $imagePath;
+
+    saveToJson('data/posts.json', $data);
+
+  }
+}
+
+
+
 $posts = readJsonData('data/posts.json');
-
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -18,7 +55,11 @@ $posts = readJsonData('data/posts.json');
 	<title>U Collab</title>
 	<link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
 	<link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700" rel="stylesheet">
-	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+	<!-- <link rel="stylesheet" href="assets/css/bootstrap.min.css"> -->
+
+	<!-- Include Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
 	<link rel="stylesheet" href="assets/css/font-awesome.min.css">
 	<link rel="stylesheet" href="assets/plugins/animate/animate.min.css">
 	<link rel="stylesheet" href="assets/plugins/owl-carousel/owl.carousel.min.css">
@@ -27,6 +68,7 @@ $posts = readJsonData('data/posts.json');
 	<link rel="stylesheet" href="assets/css/responsive.css">
 	<link rel="stylesheet" href="assets/css/custom.css">
 
+	<!-- FAVICONS FOR DIFFERENT DEVICES -->
 	<link rel="apple-touch-icon" sizes="180x180" href="assets/images/favicon/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon/favicon-32x32.png">
 	<link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon/favicon-16x16.png">
@@ -113,16 +155,21 @@ $posts = readJsonData('data/posts.json');
 	</header>
 
 	<!-- Banner below nav bar -->
-	<div class="page-title">
+	<!-- <div class="page-title">
 		<div class="container">
-			<h2>Blog Overlay</h2>
+			<h2>Available Projects</h2>
 			<ul class="nav">
 				<li><a href="index.html">Home</a></li>
 				<li><a href="#">Blog</a></li>
 				<li>Blog Overlay</li>
 			</ul>
 		</div>
-	</div>
+	</div> -->
+
+	  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    Post Your Project
+  </button>
 
 	<!-- Main content -->
 	<main class="container pt-120 pb-90">
@@ -171,8 +218,9 @@ $posts = readJsonData('data/posts.json');
 								<div class="post-footer">
 									<div class="looking-for">
 										<strong>Looking for:</strong>
-										<span class="badge badge-success">UI Designer</span>
-										<span class="badge badge-success">Backend Developer</span>
+										<?php foreach($post['lookingFor'] as $word) { ?>
+										<span class="badge badge-success"><?= $word ?></span>
+										<?php } ?>
 									</div>
 								</div>
 
@@ -434,6 +482,7 @@ $posts = readJsonData('data/posts.json');
 			</div>
 		</div>
 	</section>
+
 	<footer class="footer-container d-flex align-items-center">
 		<div class="container">
 			<div class="row align-items-center footer">
@@ -450,12 +499,230 @@ $posts = readJsonData('data/posts.json');
 		</div>
 	</footer>
 	<div class="back-to-top d-flex align-items-center justify-content-center"> <span><i class="fa fa-long-arrow-up"></i></span> </div>
+	
+	
+
+  <!-- ============= POST PROJECT MODAL ================= -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Post Your Project</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+					<!-- FORM -->
+          <div class="post-comment-form-cover">
+            <form id="projectForm" class="comment-form" method="POST" action=<?="index.php"?> enctype="multipart/form-data" >
+              <div class="row">
+                <div class="col-md-6"> 
+									<label for="postTitle"><strong>Project Title</strong></label> 
+									<input type="text" class="form-control" name="postTitle" placeholder="Project Title"> 
+								</div>
+                <div class="col-md-12 mb-5"> 
+									<label for="postCategories"><strong>Project Categories</strong></label> 
+									<input name='postCategories' class='w-100' placeholder='Choose categories for your project' value='' data-blacklist='badwords, asdf'> 
+								</div>
+								<br/><br/>
+								<div class="col-md-12 mb-5"> 
+									<label for="lookingFor"><strong>Looking For</strong></label> 
+									<input name='lookingFor' class='w-100' placeholder='Who do you want to collaborate with?' value='' data-blacklist='badwords, asdf'> 
+								</div>
+								<div class="col-md-12 mb-5">
+									<label for="description"><strong>Project Description</strong></label> 
+									<textarea class="form-control" name="description" placeholder="Describe your project... your current progress... if you want collaboarators... etc."></textarea> 
+								</div>
+								<div class="col-md-12">
+									<label for="description"><strong>Project Image</strong></label> 
+									<input type="file" class="form-control" name="postImage" placeholder="Upload Image"> 
+								</div>
+
+              </div>
+            </form>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" form="projectForm" class="btn btn-primary">Post Project</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  
+	
+	
 	<script src="assets/js/jquery-1.12.1.min.js"></script>
-	<script src="assets/js/bootstrap.bundle.min.js"></script>
+	<!-- <script src="assets/js/bootstrap.bundle.min.js"></script> -->
+
+	<!-- Include Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+	<!-- Tagify -->
+	<script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
+	<link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+
 	<script src="assets/plugins/owl-carousel/owl.carousel.min.js"></script>
 	<script src="assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
 	<script src="assets/js/scripts.js"></script>
 	<script src="assets/js/custom.js"></script>
+<script>
+  var categoriesInputElm = document.querySelector('input[name=postCategories]');
+
+  // Define the list of project categories
+  var whitelist = [
+    "Web Development", 
+    "Mobile Apps", 
+    "Game Development", 
+    "Data Science", 
+    "Machine Learning", 
+    "AI Projects", 
+    "Software Development", 
+    "Robotics", 
+    "IoT Projects", 
+    "Embedded Systems", 
+    "Mechanical Engineering", 
+    "Electrical Engineering", 
+    "Civil Engineering", 
+    "Biomedical Engineering", 
+    "Graphic Design", 
+    "UI/UX Design", 
+    "Animation", 
+    "Video Production", 
+    "Writing", 
+    "Literature", 
+    "Music Composition", 
+    "Theater", 
+    "Business", 
+    "Marketing", 
+    "Finance", 
+    "Entrepreneurship", 
+    "Educational Projects", 
+    "Environmental Projects", 
+    "Health & Medicine", 
+    "Social Impact", 
+    "Psychology", 
+    "History", 
+    "Cryptocurrency", 
+    "Blockchain", 
+    "Virtual Reality", 
+    "Augmented Reality", 
+    "Fashion Design", 
+    "Sports", 
+    "Physical Fitness"
+  ];
+
+  // Initialize Tagify on the input element
+  var tagify = new Tagify(categoriesInputElm, {
+    whitelist: whitelist, // Use the predefined whitelist array
+    enforceWhitelist: false, // Only allow items from the whitelist
+    maxTags: 10, // Limit the number of tags
+    dropdown: {
+      maxItems: 20,           // Maximum items to show in the dropdown
+      classname: "suggestions", // Custom class name for styling
+      enabled: 0,              // Show suggestions on focus
+      closeOnSelect: false     // Keep the dropdown open after selecting a tag
+    },
+		//originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(',')
+  });
+
+	var collaboratorInputElm = document.querySelector('input[name=lookingFor]');
+
+	var lookingForWhitelist = [
+		"Software Developer",
+		"Front-End Developer",
+		"Back-End Developer",
+		"Full Stack Developer",
+		"Mobile App Developer",
+		"Game Developer",
+		"Data Scientist",
+		"Machine Learning Engineer",
+		"AI Specialist",
+		"Web Designer",
+		"Graphic Designer",
+		"UI/UX Designer",
+		"Animator",
+		"Video Editor",
+		"Content Writer",
+		"Technical Writer",
+		"Copywriter",
+		"Project Manager",
+		"Business Analyst",
+		"Marketing Specialist",
+		"Social Media Manager",
+		"SEO Specialist",
+		"Product Manager",
+		"Entrepreneur",
+		"Startup Mentor",
+		"Finance Specialist",
+		"Marketing Strategist",
+		"Photographer",
+		"Music Composer",
+		"Sound Engineer",
+		"Hardware Engineer",
+		"Robotics Specialist",
+		"Mechanical Engineer",
+		"Electrical Engineer",
+		"Biomedical Engineer",
+		"Civil Engineer",
+		"Environmental Scientist",
+		"Researcher",
+		"Physicist",
+		"Chemist",
+		"Biologist",
+		"Community Organizer",
+		"Public Health Specialist",
+		"Educator",
+		"Teacher",
+		"Student Mentor",
+		"Legal Advisor",
+		"Fashion Designer",
+		"Artist",
+		"3D Modeler",
+		"DevOps Engineer",
+		"Cybersecurity Specialist",
+		"Blockchain Developer",
+		"Cryptocurrency Expert",
+		"Virtual Reality Specialist",
+		"Augmented Reality Specialist",
+		"Game Designer",
+		"Scriptwriter",
+		"Voice Actor",
+		"Performance Artist",
+		"Psychologist",
+		"Sociologist",
+		"Philosopher",
+		"Historian",
+		"Language Specialist",
+		"Translator",
+		"Linguist",
+		"Athlete",
+		"Coach",
+		"Community Volunteer",
+		"Other"
+	];
+
+
+  // Initialize Tagify on the collaborator input element
+  var collaboratorTagify = new Tagify(collaboratorInputElm, {
+    whitelist: lookingForWhitelist, // Use the predefined list of collaborator roles
+    enforceWhitelist: false, // Allow additional roles if needed
+    maxTags: 10, // Limit to 10 tags for collaboration roles
+    dropdown: {
+      maxItems: 20,            // Maximum items to show in the dropdown
+      classname: "suggestions", // Custom class name for styling
+      enabled: 0,              // Show suggestions on focus
+      closeOnSelect: false     // Keep dropdown open after selecting a tag
+    },
+		//originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(',')
+  });
+	
+</script>
+
 </body>
 
 </html>
