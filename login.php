@@ -1,3 +1,42 @@
+<?php
+session_start();
+// Enable error reporting for debugging
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL); // Report all errors
+if (isset($_SESSION['email']))
+    die('You are already sign in, no need to sign in.');
+if (count($_POST) > 0) {
+    if (isset($_POST['email'][0]) && isset($_POST['password'][0])) {
+        // process information
+        $index = 0;
+        $fp = fopen(__DIR__ . '/data/users.csv', 'r');
+        while (!feof($fp)) {
+            $line = fgets($fp);
+            if (strstr($line, '<?php die() ?>') || strlen($line) < 5)
+                continue;
+            $index++;
+            $line = explode(';', trim($line));
+            if ($line[0] == $_POST['email'] && password_verify($_POST['password'], $line[1])) {
+                // Sign the user in
+                //1. Save the user's data into the session
+                $_SESSION['email'] = $_POST['email'];
+                $_SESSION['ID'] = $index;
+                //Navigate the user to home page
+                header("Location: index.php");
+            }
+        }
+        fclose($fp);
+        // The credentials are wrong
+        if ($showForm)
+            echo 'Your credentials are wrong';
+    } else
+        echo 'Email and password are missing';
+}
+?>
+
+
+
 <!doctype html>
 <html lang="en">
 
@@ -14,11 +53,11 @@
     <div class="container d-flex justify-content-center p-3">
         <form class="card d-flex flex-column justify-content-center w-50 h-25 p-4 shadow border-0">
             <h1 class="mb-3">Log in</h1>
-            <div class = "d-flex align-items-center mx-auto mb-3">
+            <div class="d-flex align-items-center mx-auto mb-3">
                 <div>Don't have an account yet?</div>
-                <a href = "signup.php">Sign up</a>
+                <a href="signup.php">Sign up</a>
             </div>
-           
+
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Email address</label>
                 <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>

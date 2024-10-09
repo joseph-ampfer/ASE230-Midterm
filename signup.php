@@ -1,11 +1,27 @@
 <?php
-
-
-
+require_once('scripts/scripts.php');
+session_start();
+// Enable error reporting for debugging
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL); // Report all errors
+//if the session is already there that means the user is logged in and do not need to sign up
+if (isset($_SESSION['email']))
+    die('You are already logged in, please log out if you want to create a new account.');
+//if the post request sent by form has some values
+//then check if the user has entered email or not
+if (count($_POST) > 0) {
+    if (isset($_POST['email'][0]) && isset($_POST['password'][0])) {
+        $_SESSION['email'] = $_POST['email'];
+        $_SESSION['password'] = $_POST['password'];
+        $fp = fopen(__DIR__ . '/data/users.csv', 'a+');
+        fputs($fp, $_POST['email'] . ';' . password_hash($_POST['password'], PASSWORD_DEFAULT) . PHP_EOL);
+        fclose($fp);
+        header("Location: index.php");
+    } else
+        echo 'Email and password are missing';
+}
 ?>
-
-
-
 
 <!doctype html>
 <html lang="en">
@@ -33,7 +49,8 @@
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email address</label>
-                <input type="email" name = "email" class="form-control" id="emailInput" aria-describedby="emailHelp" required>
+                <input type="email" name="email" class="form-control" id="emailInput" aria-describedby="emailHelp"
+                    required>
                 <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
             </div>
             <div class="mb-3">
