@@ -1,17 +1,17 @@
 <?php
 session_start();
-print_r($_SESSION);
+// print_r($_SESSION);
+require_once('scripts/scripts.php');
+$isLoggedIn = true;
 //Read the json file that has posts
 $jsonData = file_get_contents('data/posts.json');
-
 //Decode the json data 
 $posts = json_decode($jsonData, true);
-
-
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -29,6 +29,7 @@ $posts = json_decode($jsonData, true);
     <link rel="stylesheet" href="assets/css/responsive.css">
     <link rel="stylesheet" href="assets/css/custom.css">
 </head>
+
 <body>
     <div class="preloader">
         <div class="preload-img">
@@ -42,8 +43,7 @@ $posts = json_decode($jsonData, true);
         <form>
             <div class="input-group"> <input type="text" class="form-control" placeholder="eg. feel the love and …">
                 <span class="b-line"></span> <span class="b-line-under"></span>
-                <div class="input-group-append"> <button type="button" class="btn"> <img
-                            src="assets/images/search-icon.svg" alt="" class="img-fluid svg"> </button> </div>
+                <div class="input-group-append"> <button type="button" class="btn"> <img src="assets/images/search-icon.svg" alt="" class="img-fluid svg"> </button> </div>
             </div>
         </form>
     </div>
@@ -61,7 +61,9 @@ $posts = json_decode($jsonData, true);
                                 <li><a href="index.html">Home</a></li>
                                 <li><a href="about.html">About</a></li>
                                 <li><a href="contact.html">Contact</a></li>
-                                <li>Sign out</li>
+                                <form method="POST" action="logout.php">
+                                    <button type="submit" class="btn btn-link">Sign out</button>
+                                </form>
                             </ul>
                         </div>
                         <div class="mobile-menu-cover">
