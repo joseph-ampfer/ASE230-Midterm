@@ -186,5 +186,6 @@
             a = e.parseJSON(a),
             t.parent(".my-contact-form-cover").find(".form-response").html("<span>" + a[1] + "</span>")
         })
-    })
-}(jQuery);
+    }) 
+}
+(jQuery);

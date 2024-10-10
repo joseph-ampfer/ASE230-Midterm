@@ -85,37 +85,40 @@ $posts = readJsonData('data/posts.json');
 </head>
 
 <body>
-	<div class="preloader">
-		<div class="preload-img">
-			<div class="spinnerBounce">
-				<div class="double-bounce1"></div>
-				<div class="double-bounce2"></div>
-			</div>
-		</div>
-	</div>
-	<div class="nav-search-box">
-		<form>
-			<div class="input-group"> <input type="text" class="form-control" placeholder="eg. feel the love and …"> <span class="b-line"></span> <span class="b-line-under"></span>
-				<div class="input-group-append"> <button type="button" class="btn"> <img src="assets/images/search-icon.svg" alt="" class="img-fluid svg"> </button> </div>
-			</div>
-		</form>
-	</div>
-	<header class="header">
-		<div class="header-fixed">
-			<div class="container-fluid pl-120 pr-120 position-relative">
-				<div class="row d-flex align-items-center">
-					<div class="col-lg-3 col-md-4 col-6">
-						<div class="logo"> <a href="#"><img src="assets/images/logo.png" alt="" class="img-fluid"></a> </div>
-					</div>
-					<div class="col-lg-9 col-md-8 col-6 d-flex align-items-center justify-content-end position-static">
-						<div class="nav-menu-cover">
-							<ul class="nav nav-menu align-items-center">
-								<li><a href="index.php">Home</a></li>
-								<li><a href="about.php">About</a></li>
-								<li><a href="contact.php">Contact</a></li>
-								<?php
-								echo $isLoggedIn ?
-									'<li class="dropdown">
+    <div class="preloader">
+        <div class="preload-img">
+            <div class="spinnerBounce">
+                <div class="double-bounce1"></div>
+                <div class="double-bounce2"></div>
+            </div>
+        </div>
+    </div>
+    <div class="nav-search-box">
+        <form>
+            <div class="input-group"> <input type="text" class="form-control" placeholder="eg. feel the love and …">
+                <span class="b-line"></span> <span class="b-line-under"></span>
+                <div class="input-group-append"> <button type="button" class="btn"> <img
+                            src="assets/images/search-icon.svg" alt="" class="img-fluid svg"> </button> </div>
+            </div>
+        </form>
+    </div>
+    <header class="header">
+        <div class="header-fixed" style="background-color:#fcfcfc">
+            <div class="container-fluid pl-120 pr-120 position-relative">
+                <div class="row d-flex align-items-center">
+                    <div class="col-lg-3 col-md-4 col-6">
+                        <div class="logo"> <a href="#"><img src="assets/images/logo.png" alt="" class="img-fluid"></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-6 d-flex align-items-center justify-content-end position-static">
+                        <div class="nav-menu-cover">
+                            <ul class="nav nav-menu align-items-center">
+                                <li><a href="index.php">Home</a></li>
+                                <li><a href="about.php">About</a></li>
+                                <li><a href="contact.php">Contact</a></li>
+                                <?php
+                                echo $isLoggedIn ?
+                                    '<li class="dropdown">
                                     <!-- User image as the dropdown trigger with inline styles -->
                                     <img src="assets/images/blog/author.jpg"
                                         style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;"
@@ -124,7 +127,7 @@ $posts = readJsonData('data/posts.json');
                                 
                                     <!-- Dropdown menu -->
                                     <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                                        <li><a class="dropdown-item" href="profile.php">Profile</a></li>
+                                        <li><a class="dropdown-item" href="#">Profile</a></li>
                                         <li><a class="dropdown-item" href="#">Settings</a></li>
                                         <li><a class="dropdown-item" href="#">Help</a></li>
                                         <li><hr class="dropdown-divider"></li>
