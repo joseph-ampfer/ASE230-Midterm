@@ -11,13 +11,14 @@ require_once('scripts/scripts.php');
 // !!! REplace with session
 $isLoggedIn = true;
 $username = "Joseph Ampfer";
+$sessionEmail = "jampfer@gmail.com";
 
 // To post a comment, check if logged and comment there
 if ($isLoggedIn && count($_POST) > 0) {
 	if (isset($_POST['postTitle'][0])) {
 
 		$fextension = pathinfo($_FILES['postImage']['name'], PATHINFO_EXTENSION);
-		$time = time();
+		$time = uniqid();
 		$imagePath = './assets/images/blog/' . $time . '.' . $fextension;
 		move_uploaded_file($_FILES['postImage']['tmp_name'], $imagePath);
 
@@ -116,25 +117,25 @@ $posts = readJsonData('data/posts.json');
 								<?php
 								echo $isLoggedIn ?
 									'<li class="dropdown">
-                                    <!-- User image as the dropdown trigger with inline styles -->
-                                    <img src="assets/images/blog/author.jpg"
-                                        style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;"
-                                        class="dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown"
-                                        aria-expanded="false" alt="User Avatar">
-                                
-                                    <!-- Dropdown menu -->
-                                    <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                                        <li><a class="dropdown-item" href="profile.php">Profile</a></li>
-                                        <li><a class="dropdown-item" href="#">Settings</a></li>
-                                        <li><a class="dropdown-item" href="#">Help</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li>
-                                            <form method="POST" action="logout.php">
-                                                <button type="submit" class="dropdown-item">Sign out</button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </li>' :
+                    <!-- User image as the dropdown trigger with inline styles -->
+                    <img src="assets/images/blog/author.jpg"
+                        style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;"
+                        class="dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown"
+                        aria-expanded="false" alt="User Avatar">
+                
+                    <!-- Dropdown menu -->
+                    <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                      <li><a class="dropdown-item" href="profile.php">Profile</a></li>
+                      <li><a class="dropdown-item" href="#">Settings</a></li>
+                      <li><a class="dropdown-item" href="#">Help</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li>
+                        <form method="POST" action="logout.php">
+                            <button type="submit" class="dropdown-item">Sign out</button>
+                        </form>
+                      </li>
+                    </ul>
+                </li>' :
 									'<li><a href="login.php">Log in</a></li>';
 								?>
 							</ul>
@@ -155,24 +156,11 @@ $posts = readJsonData('data/posts.json');
 		</div>
 	</header>
 
-	<!-- Banner below nav bar -->
-	<!-- <div class="page-title">
-		<div class="container">
-			<h2>Available Projects</h2>
-			<ul class="nav">
-				<li><a href="index.html">Home</a></li>
-				<li><a href="#">Blog</a></li>
-				<li>Blog Overlay</li>
-			</ul>
-		</div>
-	</div> -->
-
-	<!-- Button trigger modal -->
-
 
 	<!-- Main content -->
 	<main class="container pt-15 pb-90">
 		<div class="flex items-center justify-center">
+      Your Profile
 			<button type="button" class="mb-10 bg-red-300 p-5 rounded-full text-white hover:bg-red-300/50" data-bs-toggle="modal" data-bs-target="#exampleModal">
 				Post Your Project
 			</button>
@@ -180,9 +168,15 @@ $posts = readJsonData('data/posts.json');
 
 		<div class="row">
 
+
 			<!-- v2 -->
-			<?php foreach ($posts as $key => $post) { ?>
+			<?php foreach ($posts as $key => $post) { 
+        if (isset($post['email']) && $sessionEmail == $post['email']) { ?>
+        
 				<div class="col-md-6">
+          <div class="z-100 bg-red-300 text-white p-3 hover:bg-red-300/50">
+            <button type="button" class="" data-bs-toggle="modal" data-bs-target="#exampleModal" >Edit</button>
+          </div>
 					<div class="post-default post-has-bg-img">
 						<div class="post-thumb">
 							<a href="details-full-width.php">
@@ -217,15 +211,16 @@ $posts = readJsonData('data/posts.json');
 								<li class="meta-likes"><a class="text-white/80" href="#"><i class="fa fa-heart text-white/80"></i> <?= $post['likes'] ?? 0 ?></a></li> <!-- Optional likes feature -->
 							</ul>
 							<!-- <div class="join-project">
-								<a href="contact-owner.php?id=<?= $key ?>" class="btn btn-primary">Join Project</a>
+								<a href="contact-owner.php?id=" class="btn btn-primary">Join Project</a>
 							</div> -->
 						</div>
 					</div>
 				</div>
-			<?php } ?>
+			<?php }} ?>
 
+
+			
 		</div>
-
 		<!-- Pagination below posts -->
 		<div class="post-pagination d-flex justify-content-center">
 			<span class="current">1</span>
