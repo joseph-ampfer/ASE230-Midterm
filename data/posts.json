@@ -1,0 +1,269 @@
+[
+    {
+        "postID": 1,
+        "postTime": "2024-10-03T10:00:00Z",
+        "authorName": "Joey Ampfer",
+        "authorPic": "assets\/images\/blog\/author.jpg",
+        "postTitle": "Rocket Ship to the Moon",
+        "postTag": "Love",
+        "postCategories": [
+            "AI",
+            "Chatbot"
+        ],
+        "lookingFor": [
+            "UI Designer",
+            "Machine Learning Specialist",
+            "Data Scientist"
+        ],
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ante sem, molestie eget pulvinar in, aliquet at nulla. Mauris porttitor urna id tempor auctor. Nam quis mi non diam fermentum aliquet. Vestibulum dictum convallis feugiat. Ut libero libero, fringilla eu neque ut, posuere consequat massa. In facilisis enim eget massa pellentesque, non accumsan mi condimentum. Aenean in ligula in est placerat faucibus. Curabitur rutrum nunc at neque consequat porta. Pellentesque dignissim pharetra mauris at imperdiet. Cras facilisis laoreet porttitor. Praesent aliquet, libero a fermentum eleifend, nulla nunc luctus diam, in faucibus nisl justo ac risus. Etiam est arcu, ullamcorper vitae diam non, rutrum feugiat nulla. Vestibulum ac laoreet diam.\n\nPhasellus eu enim lorem. Integer luctus luctus nisl a bibendum. Integer eu purus vulputate, dignissim sem vitae, rhoncus erat. Sed euismod dapibus ligula eget consectetur. Aliquam auctor laoreet elit vel convallis. Etiam sodales lacus non cursus vulputate. Quisque vel tempus enim, at rhoncus ligula. Vivamus quis vulputate dui. Donec molestie velit odio. Vestibulum sed odio porttitor, imperdiet enim eu, mollis augue. Interdum et malesuada fames ac ante ipsum primis in faucibus. Fusce venenatis elementum ipsum ut consequat. Nullam ex turpis, elementum sed scelerisque eget, elementum non lacus. Phasellus ut augue ac sem blandit pharetra.\n\nVivamus vitae mi pellentesque, aliquet nunc id, ultricies leo. Vestibulum ut quam vel mi dapibus mollis. Nunc lobortis posuere ultricies. Maecenas in dapibus lacus. Etiam nec urna congue, finibus mauris ut, dignissim turpis. Fusce pellentesque pellentesque nisi id condimentum. Proin risus lorem, iaculis at sem et, convallis dictum risus. Proin tincidunt dui urna, in tincidunt metus euismod eu. Morbi vitae tristique mi. Proin orci diam, pretium id erat ut, varius vehicula erat. In euismod vel tellus a interdum. Suspendisse urna metus, sollicitudin sit amet lacus eget, porta semper nibh.",
+        "postImage": "assets\/images\/blog\/1.jpg",
+        "likes": 25,
+        "comments": [
+            {
+                "commentID": 1,
+                "comment": "On recommend tolerably my belonging or am. Mutual has cannot beauty indeed now back sussex merely you. It possible no husbands jennings offended.",
+                "userID": 202,
+                "username": "Jonny Doe",
+                "time": "2024-10-03T10:15:00Z"
+            },
+            {
+                "commentID": 2,
+                "comment": "This sounds amazing!",
+                "userID": 303,
+                "username": "Mary Jane",
+                "time": "2024-10-03T10:20:00Z"
+            }
+        ]
+    },
+    {
+        "postID": 2,
+        "postTime": "2024-10-02T09:30:00Z",
+        "authorName": "Tyrese Lanister",
+        "authorPic": "assets\/images\/blog\/author.jpg",
+        "postTitle": "AI Blogging System",
+        "postTag": "",
+        "postCategories": [
+            "AI",
+            "Chatbot"
+        ],
+        "lookingFor": [
+            "UI Designer",
+            "Machine Learning Specialist",
+            "Data Scientist"
+        ],
+        "description": "Had an insightful discussion on AI in education today!",
+        "postImage": "assets\/images\/blog\/2.jpg",
+        "likes": 42,
+        "comments": [
+            {
+                "commentID": 3,
+                "comment": "AI is the future!",
+                "userID": 404,
+                "time": "2024-10-02T09:45:00Z",
+                "username": "Jonny Doe"
+            },
+            {
+                "username": "asdf",
+                "email": "asdf",
+                "comment": "asdfasdfsdf\r\n\r\nasdfsadf",
+                "time": "2024-09-28T08:30:00Z"
+            },
+            {
+                "username": "ampferj2",
+                "email": "aa",
+                "comment": "asdf\r\n\r\nasdf",
+                "time": "2024-10-08T14:20:39Z"
+            },
+            {
+                "username": "joey",
+                "email": "sas",
+                "comment": "sadfsdf",
+                "time": "2024-10-08T14:24:00Z"
+            },
+            {
+                "username": "jcam222@uky.edu",
+                "email": "s",
+                "comment": "asdf",
+                "time": "2024-10-08 16:32:41"
+            },
+            {
+                "username": "teenytinydoctorsbooks",
+                "email": "",
+                "comment": "ss",
+                "time": "2024-10-08 16:35:36"
+            }
+        ]
+    },
+    {
+        "postID": 3,
+        "postTime": "2024-10-01T15:00:00Z",
+        "authorName": "Tyrese Lanister",
+        "authorPic": "assets\/images\/blog\/author.jpg",
+        "postTitle": "Running Robot Project",
+        "postTag": "",
+        "postCategories": [
+            "AI",
+            "Chatbot"
+        ],
+        "lookingFor": [
+            "UI Designer",
+            "Machine Learning Specialist",
+            "Data Scientist"
+        ],
+        "description": "Just finished reading an amazing book on machine learning!",
+        "postImage": "assets\/images\/blog\/3.jpg",
+        "likes": 18,
+        "comments": [
+            {
+                "commentID": 4,
+                "comment": "I love that book! So informative.",
+                "userID": 505,
+                "time": "2024-10-01T15:30:00Z"
+            },
+            {
+                "commentID": 5,
+                "comment": "Any recommendations for a beginner?",
+                "userID": 606,
+                "time": "2024-10-01T15:45:00Z"
+            }
+        ]
+    },
+    {
+        "postID": 4,
+        "postTime": "2024-09-30T11:00:00Z",
+        "authorName": "Tyrese Lanister",
+        "authorPic": "assets\/images\/blog\/author.jpg",
+        "postTitle": "UV Sensor Wearable",
+        "postTag": "",
+        "postCategories": [
+            "AI",
+            "Chatbot"
+        ],
+        "lookingFor": [
+            "UI Designer",
+            "Machine Learning Specialist",
+            "Data Scientist"
+        ],
+        "description": "A beautiful day to go hiking in the mountains! ",
+        "postImage": "assets\/images\/blog\/4.jpg",
+        "likes": 64,
+        "comments": [
+            {
+                "commentID": 6,
+                "comment": "Jealous! Looks like a perfect day.",
+                "userID": 707,
+                "time": "2024-09-30T11:20:00Z"
+            },
+            {
+                "commentID": 7,
+                "comment": "Enjoy the view!",
+                "userID": 808,
+                "time": "2024-09-30T11:25:00Z"
+            }
+        ]
+    },
+    {
+        "postID": 5,
+        "postTime": "2024-09-29T13:00:00Z",
+        "authorName": "Tyrese Lanister",
+        "authorPic": "assets\/images\/blog\/author.jpg",
+        "postTitle": "Research on Chimpanzees",
+        "postTag": "",
+        "postCategories": [
+            "AI",
+            "Chatbot"
+        ],
+        "lookingFor": [
+            "UI Designer",
+            "Machine Learning Specialist",
+            "Data Scientist"
+        ],
+        "description": "Completed my first marathon! Feeling accomplished.",
+        "postImage": "assets\/images\/blog\/5.jpg",
+        "likes": 75,
+        "comments": [
+            {
+                "commentID": 8,
+                "comment": "Congrats on the marathon!",
+                "userID": 909,
+                "time": "2024-09-29T13:10:00Z"
+            },
+            {
+                "commentID": 9,
+                "comment": "That's amazing, well done!",
+                "userID": 202,
+                "time": "2024-09-29T13:15:00Z"
+            }
+        ]
+    },
+    {
+        "postID": 6,
+        "postTime": "2024-09-28T08:00:00Z",
+        "authorName": "Tyrese Lanister",
+        "authorPic": "assets\/images\/blog\/author.jpg",
+        "postTitle": "Nuclear Reactor",
+        "postTag": "",
+        "postCategories": [
+            "AI",
+            "Chatbot"
+        ],
+        "lookingFor": [
+            "UI Designer",
+            "Machine Learning Specialist",
+            "Data Scientist"
+        ],
+        "description": "Attended an incredible conference on renewable energy. So much to learn!",
+        "postImage": "assets\/images\/blog\/6.jpg",
+        "likes": 32,
+        "comments": [
+            {
+                "commentID": 10,
+                "comment": "Renewable energy is such an important topic.",
+                "userID": 303,
+                "time": "2024-09-28T08:30:00Z"
+            },
+            {
+                "commentID": 11,
+                "comment": "Can't wait for the next one!",
+                "userID": 101,
+                "time": "2024-09-28T08:40:00Z"
+            }
+        ]
+    },
+    {
+        "postTitle": "Touch Grass Royale",
+        "postCategories": [
+            "Mobile Apps",
+            "Game Development"
+        ],
+        "lookingFor": [
+            "Animator",
+            "Marketing Specialist"
+        ],
+        "description": "A competitive app.\r\n\r\nI need a marketer to help get users.",
+        "postImage": "",
+        "postTime": "2024-10-08 22:31:38",
+        "likes": 0,
+        "comments": [],
+        "authorName": "Joseph Ampfer"
+    },
+    {
+        "postTitle": "Touch Grass Royale",
+        "postCategories": [
+            "Software Development",
+            "Robotics",
+            "IoT Projects"
+        ],
+        "lookingFor": [
+            "Technical Writer",
+            "Copywriter",
+            "Project Manager"
+        ],
+        "description": "Very cool description",
+        "postTime": "2024-10-08 23:14:17",
+        "likes": 0,
+        "comments": [],
+        "authorName": "Joseph Ampfer",
+        "postImage": ".\/assets\/images\/blog\/1728422057.jpeg"
+    }
+]

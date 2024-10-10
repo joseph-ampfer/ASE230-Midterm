@@ -1,3 +1,51 @@
+<?php
+
+require_once('scripts/scripts.php');
+
+// TODO
+// 1. LOGIN LOGIC
+// 2. DATA VERIFICATION FOR POST
+
+
+// !!! REplace with session
+$isLoggedIn = true;
+$username = "Joseph Ampfer";
+
+// To post a comment, check if logged and comment there
+if ($isLoggedIn && count($_POST) > 0) {
+    if (isset($_POST['postTitle'][0])) {
+
+        $fextension = pathinfo($_FILES['postImage']['name'], PATHINFO_EXTENSION);
+        $time = time();
+        $imagePath = './assets/images/blog/' . $time . '.' . $fextension;
+        move_uploaded_file($_FILES['postImage']['tmp_name'], $imagePath);
+
+        $data = $_POST;
+
+        // Add time, likes, etc
+        $data['postTime'] = date("Y-m-d H:i:s");
+        $data['likes'] = 0;
+        $data['comments'] = [];
+        $data['authorName'] = $username;
+        $postCategories = json_decode($_POST['postCategories'], true);
+        $lookingFor = json_decode($_POST['lookingFor'], true);
+
+        $data['postCategories'] = array_map(function ($item) {
+            return $item['value']; }, $postCategories);
+        $data['lookingFor'] = array_map(function ($item) {
+            return $item['value']; }, $lookingFor);
+        $data['postImage'] = $imagePath;
+
+        saveToJson('data/posts.json', $data);
+
+    }
+}
+
+
+
+$posts = readJsonData('data/posts.json');
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,11 +53,16 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>BizBlog</title>
+    <title>U Collab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
     <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700"
         rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="assets/css/bootstrap.min.css"> -->
+
+    <!-- Include Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <link rel="stylesheet" href="assets/css/font-awesome.min.css">
     <link rel="stylesheet" href="assets/plugins/animate/animate.min.css">
     <link rel="stylesheet" href="assets/plugins/owl-carousel/owl.carousel.min.css">
@@ -17,6 +70,17 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/responsive.css">
     <link rel="stylesheet" href="assets/css/custom.css">
+
+
+
+    <!-- FAVICONS FOR DIFFERENT DEVICES -->
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/images/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon/favicon-16x16.png">
+    <link rel="manifest" href="assets/images/favicon/site.webmanifest">
+    <link rel="mask-icon" href="assets/images/favicon/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
 </head>
 
 <body>
@@ -48,7 +112,7 @@
                     <div class="col-lg-9 col-md-8 col-6 d-flex justify-content-end position-static">
                         <div class="nav-menu-cover">
                             <ul class="nav nav-menu">
-                                <li><a href="index.html">Home</a></li>
+                                <li><a href="index.php">Home</a></li>
                                 <li><a href="about.html">About</a></li>
                                 <li class="menu-item-has-children"><a href="#">Blog</a>
                                     <ul class="sub-menu">
@@ -66,7 +130,7 @@
                                         </li>
                                         <li class="menu-item-has-children"><a href="#">Blog Details</a>
                                             <ul class="sub-menu">
-                                                <li><a href="blog-details.html">Default Style</a></li>
+                                                <li><a href="details-full-width.php">Default Style</a></li>
                                                 <li><a href="blog-details-full-width.html">Full Width</a></li>
                                                 <li><a href="blog-details-video.html">Video Post</a></li>
                                                 <li><a href="blog-details-slide.html">Slide Post</a></li>
@@ -100,183 +164,265 @@
             </div>
         </div>
     </header>
-    <div class="page-title">
+
+    <!-- Banner below nav bar -->
+    <!-- <div class="page-title">
         <div class="container">
-            <h2>Blog Overlay</h2>
+            <h2>Available Projects</h2>
             <ul class="nav">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="#">Blog</a></li>
                 <li>Blog Overlay</li>
             </ul>
         </div>
-    </div>
-    <div class="container pt-120 pb-90">
+    </div> -->
+
+    <!-- Button trigger modal -->
+
+
+    <!-- Main content -->
+    <main class="container pt-15 pb-90">
+        <div class="flex items-center justify-center">
+            <button type="button" class="mb-10 bg-red-300 p-5 rounded-full text-white hover:bg-red-300/50"
+                data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Post Your Project
+            </button>
+        </div>
+
         <div class="row">
+
+
+            <!-- v2 -->
+            <?php foreach ($posts as $key => $post) { ?>
+                <div class="col-md-6">
+                    <div class="post-default post-has-bg-img">
+                        <div class="post-thumb">
+                            <a href="details-full-width.php">
+                                <div data-bg-img=<?= $post['postImage'] ?>></div>
+                            </a>
+                        </div>
+                        <div class="post-data">
+                            <div class="cats">
+                                <?php foreach ($post['postCategories'] as $category) { ?>
+                                    <a href="category-result.html"><?= $category ?></a>
+                                <?php } ?>
+                            </div>
+                            <div class="title mb-1">
+                                <h2><a href="details-full-width.php?id=<?= $key ?>"><?= $post['postTitle'] ?></a></h2>
+                            </div>
+                            <p class="shortDescription mb-5 px-10">
+                                <?= !empty($post['description']) ? substr($post['description'], 0, 100) . '...' : '' ?></p>
+                            <!-- Shortened project description -->
+                            <div>
+                                <p>Looking for:</p>
+                                <div class="flex space-x-2 items-center justify-center">
+                                    <?php foreach ($post['lookingFor'] as $cat) { ?>
+                                        <span class="bg-white/10 p-2 text-white"><?= $cat ?></span>
+                                    <?php } ?>
+                                </div>
+                            </div>
+                            <ul class="nav meta align-items-center absolute bottom-0 left-0 ml-5">
+                                <li class="meta-author flex items-center justify-center space-x-2">
+                                    <img src="<?= !empty($post['authorPic']) ? $post['authorPic'] : 'default-avatar.png' ?>"
+                                        alt="" class="img-fluid">
+                                    <a class="text-white/80" href="#"><?= $post['authorName'] ?></a>
+                                </li>
+                                <li class="meta-date"><a class="text-white/80"
+                                        href="#"><?= formatDate($post['postTime']) ?></a></li>
+                                <li class="meta-comments"><a class="text-white/80" href="#"><i
+                                            class="fa fa-comment text-white/80"></i> <?= count($post['comments']) ?></a>
+                                </li>
+                                <li class="meta-likes"><a class="text-white/80" href="#"><i
+                                            class="fa fa-heart text-white/80"></i> <?= $post['likes'] ?? 0 ?></a></li>
+                                <!-- Optional likes feature -->
+                            </ul>
+                            <!-- <div class="join-project">
+                                <a href="contact-owner.php?id=<?= $key ?>" class="btn btn-primary">Join Project</a>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            <?php } ?>
+
+
+            <!-- Post 1 -->
             <div class="col-md-6">
                 <div class="post-default post-has-bg-img">
-                    <div class="post-thumb"> <a href="blog-details.html">
+                    <div class="post-thumb">
+                        <a href="details-full-width.php">
                             <div data-bg-img="assets/images/blog/1.jpg"></div>
-                        </a> </div>
+                        </a>
+                    </div>
                     <div class="post-data">
                         <div class="cats"><a href="category-result.html">Love</a></div>
                         <div class="title">
-                            <h2><a href="blog-details.html">A Funny Thing That Happens In Relationships</a></h2>
+                            <h2><a href="details-full-width.php">A Funny Thing That Happens In Relationships</a></h2>
                         </div>
                         <ul class="nav meta align-items-center">
                             <li class="meta-author"> <img src="assets/images/blog/author.jpg" alt="" class="img-fluid">
-                                <a href="#">Alex Garry</a>
-                            </li>
+                                <a href="#">Alex Garry</a> </li>
                             <li class="meta-date"><a href="#">2 Feb 2019</a></li>
                             <li class="meta-comments"><a href="#"><i class="fa fa-comment"></i> 2</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
+
+            <!-- Post 2 -->
             <div class="col-md-6">
                 <div class="post-default post-has-bg-img">
-                    <div class="post-thumb"> <a href="blog-details.html">
+                    <div class="post-thumb"> <a href="details-full-width.php">
                             <div data-bg-img="assets/images/blog/2.jpg"></div>
                         </a> </div>
                     <div class="post-data">
                         <div class="cats"><a href="category-result.html">Fashion</a></div>
                         <div class="title">
-                            <h2><a href="blog-details.html">The One Thing I Do When Fashion Come Over</a></h2>
+                            <h2><a href="details-full-width.php">The One Thing I Do When Fashion Come Over</a></h2>
                         </div>
                         <ul class="nav meta align-items-center">
                             <li class="meta-author"> <img src="assets/images/blog/author.jpg" alt="" class="img-fluid">
-                                <a href="#">Alex Garry</a>
-                            </li>
+                                <a href="#">Alex Garry</a> </li>
                             <li class="meta-date"><a href="#">2 Feb 2019</a></li>
                             <li class="meta-comments"><a href="#"><i class="fa fa-comment"></i> 2</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
+
             <div class="col-md-6">
                 <div class="post-default post-has-bg-img">
-                    <div class="post-thumb"> <a href="blog-details.html">
+                    <div class="post-thumb"> <a href="details-full-width.php">
                             <div data-bg-img="assets/images/blog/3.jpg"></div>
                         </a> </div>
                     <div class="post-data">
                         <div class="cats"><a href="category-result.html">Travel</a></div>
                         <div class="title">
-                            <h2><a href="blog-details.html">Summer Adventure Essentials From Backcountry</a></h2>
+                            <h2><a href="details-full-width.php">Summer Adventure Essentials From Backcountry</a></h2>
                         </div>
                         <ul class="nav meta align-items-center">
                             <li class="meta-author"> <img src="assets/images/blog/author.jpg" alt="" class="img-fluid">
-                                <a href="#">Alex Garry</a>
-                            </li>
+                                <a href="#">Alex Garry</a> </li>
                             <li class="meta-date"><a href="#">2 Feb 2019</a></li>
                             <li class="meta-comments"><a href="#"><i class="fa fa-comment"></i> 2</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
+
             <div class="col-md-6">
                 <div class="post-default post-has-bg-img">
-                    <div class="post-thumb"> <a href="blog-details.html">
+                    <div class="post-thumb"> <a href="details-full-width.php">
                             <div data-bg-img="assets/images/blog/4.jpg"></div>
                         </a> </div>
                     <div class="post-data">
                         <div class="cats"><a href="category-result.html">Adventure</a></div>
                         <div class="title">
-                            <h2><a href="blog-details.html">Top Things To Look For When Choosing A Safari Lodge</a></h2>
+                            <h2><a href="details-full-width.php">Top Things To Look For When Choosing A Safari Lodge</a>
+                            </h2>
                         </div>
                         <ul class="nav meta align-items-center">
                             <li class="meta-author"> <img src="assets/images/blog/author.jpg" alt="" class="img-fluid">
-                                <a href="#">Alex Garry</a>
-                            </li>
+                                <a href="#">Alex Garry</a> </li>
                             <li class="meta-date"><a href="#">2 Feb 2019</a></li>
                             <li class="meta-comments"><a href="#"><i class="fa fa-comment"></i> 2</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
+
             <div class="col-md-6">
                 <div class="post-default post-has-bg-img">
-                    <div class="post-thumb"> <a href="blog-details.html">
+                    <div class="post-thumb"> <a href="details-full-width.php">
                             <div data-bg-img="assets/images/blog/5.jpg"></div>
                         </a> </div>
                     <div class="post-data">
                         <div class="cats"><a href="category-result.html">Sports</a></div>
                         <div class="title">
-                            <h2><a href="blog-details.html">Blaak Attack Earns Boels First 2019 Victory</a></h2>
+                            <h2><a href="details-full-width.php">Blaak Attack Earns Boels First 2019 Victory</a></h2>
                         </div>
                         <ul class="nav meta align-items-center">
                             <li class="meta-author"> <img src="assets/images/blog/author.jpg" alt="" class="img-fluid">
-                                <a href="#">Alex Garry</a>
-                            </li>
+                                <a href="#">Alex Garry</a> </li>
                             <li class="meta-date"><a href="#">2 Feb 2019</a></li>
                             <li class="meta-comments"><a href="#"><i class="fa fa-comment"></i> 2</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
+
             <div class="col-md-6">
                 <div class="post-default post-has-bg-img">
-                    <div class="post-thumb"> <a href="blog-details.html">
+                    <div class="post-thumb"> <a href="details-full-width.php">
                             <div data-bg-img="assets/images/blog/6.jpg"></div>
                         </a> </div>
                     <div class="post-data">
                         <div class="cats"><a href="category-result.html">Food</a></div>
                         <div class="title">
-                            <h2><a href="blog-details.html">Five Important Facts Should Know About Recipe</a></h2>
+                            <h2><a href="details-full-width.php">Five Important Facts Should Know About Recipe</a></h2>
                         </div>
                         <ul class="nav meta align-items-center">
                             <li class="meta-author"> <img src="assets/images/blog/author.jpg" alt="" class="img-fluid">
-                                <a href="#">Alex Garry</a>
-                            </li>
+                                <a href="#">Alex Garry</a> </li>
                             <li class="meta-date"><a href="#">2 Feb 2019</a></li>
                             <li class="meta-comments"><a href="#"><i class="fa fa-comment"></i> 2</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
+
             <div class="col-md-6">
                 <div class="post-default post-has-bg-img">
-                    <div class="post-thumb"> <a href="blog-details.html">
+                    <div class="post-thumb"> <a href="details-full-width.php">
                             <div data-bg-img="assets/images/blog/7.jpg"></div>
                         </a> </div>
                     <div class="post-data">
                         <div class="cats"><a href="category-result.html">Lifestyle</a></div>
                         <div class="title">
-                            <h2><a href="blog-details.html">Great Britain's Winter Olympics Athletes Rated And
+                            <h2><a href="details-full-width.php">Great Britain's Winter Olympics Athletes Rated And
                                     Slated</a></h2>
                         </div>
                         <ul class="nav meta align-items-center">
                             <li class="meta-author"> <img src="assets/images/blog/author.jpg" alt="" class="img-fluid">
-                                <a href="#">Alex Garry</a>
-                            </li>
+                                <a href="#">Alex Garry</a> </li>
                             <li class="meta-date"><a href="#">2 Feb 2019</a></li>
                             <li class="meta-comments"><a href="#"><i class="fa fa-comment"></i> 2</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
+
             <div class="col-md-6">
                 <div class="post-default post-has-bg-img">
-                    <div class="post-thumb"> <a href="blog-details.html">
+                    <div class="post-thumb"> <a href="details-full-width.php">
                             <div data-bg-img="assets/images/blog/8.jpg"></div>
                         </a> </div>
                     <div class="post-data">
                         <div class="cats"><a href="category-result.html">Technology</a></div>
                         <div class="title">
-                            <h2><a href="blog-details.html">Apple Admits To Macbook And Macbook Pro</a></h2>
+                            <h2><a href="details-full-width.php">Apple Admits To Macbook And Macbook Pro</a></h2>
                         </div>
                         <ul class="nav meta align-items-center">
-                            <li class="meta-author"> <img src="assets/images/blog/author.jpg" alt="" class="img-fluid">
-                                <a href="#">Alex Garry</a>
-                            </li>
+                            <li class="meta-author flex items-center justify-center"> <img
+                                    src="assets/images/blog/author.jpg" alt="" class="img-fluid"> <a href="#">Alex
+                                    Garry</a> </li>
                             <li class="meta-date"><a href="#">2 Feb 2019</a></li>
                             <li class="meta-comments"><a href="#"><i class="fa fa-comment"></i> 2</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
+
         </div>
-        <div class="post-pagination d-flex justify-content-center"> <span class="current">1</span> <a href="#">2</a> <a
-                href="#">3</a> <a href="#"><i class="fa fa-angle-right"></i></a> </div>
-    </div>
+        <!-- Pagination below posts -->
+        <div class="post-pagination d-flex justify-content-center">
+            <span class="current">1</span>
+            <a href="#">2</a>
+            <a href="#">3</a>
+            <a href="#"><i class="fa fa-angle-right"></i></a>
+        </div>
+    </main>
+
+    <!-- Subscribe to our newsletter -->
     <section class="newsletter-cover">
         <div class="nl-bg-ol"></div>
         <div class="container">
@@ -302,6 +448,7 @@
             </div>
         </div>
     </section>
+
     <footer class="footer-container d-flex align-items-center">
         <div class="container">
             <div class="row align-items-center footer">
@@ -323,12 +470,236 @@
     </footer>
     <div class="back-to-top d-flex align-items-center justify-content-center"> <span><i
                 class="fa fa-long-arrow-up"></i></span> </div>
+
+
+
+    <!-- ============= POST PROJECT MODAL ================= -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Post Your Project</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- FORM -->
+                    <div class="post-comment-form-cover">
+                        <form id="projectForm" class="comment-form" method="POST" action=<?= "index.php" ?>
+                            enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="postTitle"><strong>Project Title</strong></label>
+                                    <input type="text" class="form-control" name="postTitle"
+                                        placeholder="Project Title">
+                                </div>
+                                <div class="col-md-12 mb-5">
+                                    <label for="postCategories"><strong>Project Categories</strong></label>
+                                    <input name='postCategories' class='w-100'
+                                        placeholder='Choose categories for your project' value=''
+                                        data-blacklist='badwords, asdf'>
+                                </div>
+                                <br /><br />
+                                <div class="col-md-12 mb-5">
+                                    <label for="lookingFor"><strong>Looking For</strong></label>
+                                    <input name='lookingFor' class='w-100'
+                                        placeholder='Who do you want to collaborate with?' value=''
+                                        data-blacklist='badwords, asdf'>
+                                </div>
+                                <div class="col-md-12 mb-5">
+                                    <label for="description"><strong>Project Description</strong></label>
+                                    <textarea class="form-control" name="description"
+                                        placeholder="Describe your project... your current progress... if you want collaboarators... etc."></textarea>
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="description"><strong>Project Image</strong></label>
+                                    <input type="file" class="form-control" name="postImage" placeholder="Upload Image">
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" form="projectForm" class="btn btn-primary">Post Project</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
     <script src="assets/js/jquery-1.12.1.min.js"></script>
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <!-- <script src="assets/js/bootstrap.bundle.min.js"></script> -->
+
+    <!-- Include Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Tagify -->
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+
     <script src="assets/plugins/owl-carousel/owl.carousel.min.js"></script>
     <script src="assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
     <script src="assets/js/scripts.js"></script>
     <script src="assets/js/custom.js"></script>
+    <script>
+        var categoriesInputElm = document.querySelector('input[name=postCategories]');
+
+        // Define the list of project categories
+        var whitelist = [
+            "Web Development",
+            "Mobile Apps",
+            "Game Development",
+            "Data Science",
+            "Machine Learning",
+            "AI Projects",
+            "Software Development",
+            "Robotics",
+            "IoT Projects",
+            "Embedded Systems",
+            "Mechanical Engineering",
+            "Electrical Engineering",
+            "Civil Engineering",
+            "Biomedical Engineering",
+            "Graphic Design",
+            "UI/UX Design",
+            "Animation",
+            "Video Production",
+            "Writing",
+            "Literature",
+            "Music Composition",
+            "Theater",
+            "Business",
+            "Marketing",
+            "Finance",
+            "Entrepreneurship",
+            "Educational Projects",
+            "Environmental Projects",
+            "Health & Medicine",
+            "Social Impact",
+            "Psychology",
+            "History",
+            "Cryptocurrency",
+            "Blockchain",
+            "Virtual Reality",
+            "Augmented Reality",
+            "Fashion Design",
+            "Sports",
+            "Physical Fitness"
+        ];
+
+        // Initialize Tagify on the input element
+        var tagify = new Tagify(categoriesInputElm, {
+            whitelist: whitelist, // Use the predefined whitelist array
+            enforceWhitelist: false, // Only allow items from the whitelist
+            maxTags: 10, // Limit the number of tags
+            dropdown: {
+                maxItems: 20,           // Maximum items to show in the dropdown
+                classname: "suggestions", // Custom class name for styling
+                enabled: 0,              // Show suggestions on focus
+                closeOnSelect: false     // Keep the dropdown open after selecting a tag
+            },
+            //originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(',')
+        });
+
+        var collaboratorInputElm = document.querySelector('input[name=lookingFor]');
+
+        var lookingForWhitelist = [
+            "Software Developer",
+            "Front-End Developer",
+            "Back-End Developer",
+            "Full Stack Developer",
+            "Mobile App Developer",
+            "Game Developer",
+            "Data Scientist",
+            "Machine Learning Engineer",
+            "AI Specialist",
+            "Web Designer",
+            "Graphic Designer",
+            "UI/UX Designer",
+            "Animator",
+            "Video Editor",
+            "Content Writer",
+            "Technical Writer",
+            "Copywriter",
+            "Project Manager",
+            "Business Analyst",
+            "Marketing Specialist",
+            "Social Media Manager",
+            "SEO Specialist",
+            "Product Manager",
+            "Entrepreneur",
+            "Startup Mentor",
+            "Finance Specialist",
+            "Marketing Strategist",
+            "Photographer",
+            "Music Composer",
+            "Sound Engineer",
+            "Hardware Engineer",
+            "Robotics Specialist",
+            "Mechanical Engineer",
+            "Electrical Engineer",
+            "Biomedical Engineer",
+            "Civil Engineer",
+            "Environmental Scientist",
+            "Researcher",
+            "Physicist",
+            "Chemist",
+            "Biologist",
+            "Community Organizer",
+            "Public Health Specialist",
+            "Educator",
+            "Teacher",
+            "Student Mentor",
+            "Legal Advisor",
+            "Fashion Designer",
+            "Artist",
+            "3D Modeler",
+            "DevOps Engineer",
+            "Cybersecurity Specialist",
+            "Blockchain Developer",
+            "Cryptocurrency Expert",
+            "Virtual Reality Specialist",
+            "Augmented Reality Specialist",
+            "Game Designer",
+            "Scriptwriter",
+            "Voice Actor",
+            "Performance Artist",
+            "Psychologist",
+            "Sociologist",
+            "Philosopher",
+            "Historian",
+            "Language Specialist",
+            "Translator",
+            "Linguist",
+            "Athlete",
+            "Coach",
+            "Community Volunteer",
+            "Other"
+        ];
+
+
+        // Initialize Tagify on the collaborator input element
+        var collaboratorTagify = new Tagify(collaboratorInputElm, {
+            whitelist: lookingForWhitelist, // Use the predefined list of collaborator roles
+            enforceWhitelist: false, // Allow additional roles if needed
+            maxTags: 10, // Limit to 10 tags for collaboration roles
+            dropdown: {
+                maxItems: 20,            // Maximum items to show in the dropdown
+                classname: "suggestions", // Custom class name for styling
+                enabled: 0,              // Show suggestions on focus
+                closeOnSelect: false     // Keep dropdown open after selecting a tag
+            },
+            //originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(',')
+        });
+
+    </script>
+
 </body>
 
 </html>

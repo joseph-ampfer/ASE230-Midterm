@@ -1,3 +1,52 @@
 /*==================================================================================
     Custom Stylesheet (Any custom styling you want to apply should be defined here).
 ====================================================================================*/
+.join-project {
+    position: absolute;
+    bottom: 0;
+    right: 0; 
+}
+
+.shortDescription {
+    color: #f3f3f3;
+}
+
+
+.project-categories {
+    margin-bottom: 10px;
+}
+
+.badge {
+    margin-right: 5px;
+    font-size: 12px;
+    font-family: Spectral,serif;
+}
+
+.looking-for {
+    font-family: Spectral,serif;
+}
+
+.looking-for strong {
+    color: #f3f3f3;   
+}
+
+.post-thumb {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.join-project {
+    margin-top: 15px;
+}
+
+.mt-30 {
+    margin-top: 30px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+a {
+    text-decoration: none !important;
+}
