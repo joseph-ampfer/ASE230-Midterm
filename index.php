@@ -53,6 +53,7 @@ $posts = readJsonData('data/posts.json');
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>U Collab</title>
+	<script src="https://cdn.tailwindcss.com"></script>
 	<link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
 	<link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700" rel="stylesheet">
 	<!-- <link rel="stylesheet" href="assets/css/bootstrap.min.css"> -->
@@ -67,6 +68,8 @@ $posts = readJsonData('data/posts.json');
 	<link rel="stylesheet" href="assets/css/style.css">
 	<link rel="stylesheet" href="assets/css/responsive.css">
 	<link rel="stylesheet" href="assets/css/custom.css">
+
+	
 
 	<!-- FAVICONS FOR DIFFERENT DEVICES -->
 	<link rel="apple-touch-icon" sizes="180x180" href="assets/images/favicon/apple-touch-icon.png">
@@ -167,71 +170,17 @@ $posts = readJsonData('data/posts.json');
 	</div> -->
 
 	  <!-- Button trigger modal -->
-  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    Post Your Project
-  </button>
+	
 
 	<!-- Main content -->
-	<main class="container pt-120 pb-90">
+	<main class="container pt-15 pb-90">
+		<div class="flex items-center justify-center">
+			<button type="button" class="mb-10 bg-red-300 p-5 rounded-full text-white hover:bg-red-300/50" data-bs-toggle="modal" data-bs-target="#exampleModal">
+				Post Your Project
+			</button>
+		</div>
+		
 		<div class="row">
-
-			<!-- v3 -->
-			<?php foreach ($posts as $key => $post) { ?>
-				<div class="col-md-6">
-					<div class="post-default post-has-bg-img">
-						<!-- Post Image -->
-						<div class="post-thumb">
-							<a href="details-full-width.php">
-								<div data-bg-img=<?= $post['postImage'] ?>></div>
-							</a>
-						</div>
-
-						<!-- Post Content -->
-						<div class="post-data">
-							<!-- Project Categories (Displayed as Tags) -->
-							<div class="project-categories">
-								<?php foreach ($post['postCategories'] as $category) { ?>
-									<span class="badge badge-primary"><?= $category ?></span>
-								<?php } ?>
-							</div>
-
-							<!-- Post Title -->
-							<div class="title">
-								<h2><a href="details-full-width.php?id=<?= $key ?>"><?= $post['postTitle'] ?></a></h2>
-							</div>
-
-							<!-- Short Description -->
-							<p class="shortDescription"><?= substr($post['description'], 0, 100) . '...' ?></p>
-
-							<!-- Meta Information -->
-							<ul class="nav meta align-items-center mt-30">
-								<li class="meta-author">
-									<img src="<?= !empty($post['authorPic']) ? $post['authorPic'] : 'default-avatar.png' ?>" alt="" class="img-fluid">
-									<a href="#"><?= $post['authorName'] ?></a>
-								</li>
-								<li class="meta-date"><a href="#"><?= formatDate($post['postTime']) ?></a></li>
-								<li class="meta-comments"><a href="#"><i class="fa fa-comment"></i> <?= count($post['comments']) ?></a></li>
-								<li class="meta-likes"><a href="#"><i class="fa fa-heart"></i> <?= $post['likes'] ?? 0 ?></a></li>
-							</ul>
-
-							<!-- "Looking for" Tags -->
-								<div class="post-footer">
-									<div class="looking-for">
-										<strong>Looking for:</strong>
-										<?php foreach($post['lookingFor'] as $word) { ?>
-										<span class="badge badge-success"><?= $word ?></span>
-										<?php } ?>
-									</div>
-								</div>
-
-							<!-- Join Project Button -->
-							<div class="join-project">
-								<a href="contact-owner.php?id=<?= $key ?>" class="btn btn-primary">Join Project</a>
-							</div>
-						</div>
-					</div>
-				</div>
-			<?php } ?>
 
 
 			<!-- v2 -->
@@ -249,51 +198,35 @@ $posts = readJsonData('data/posts.json');
 								<a href="category-result.html"><?= $category ?></a>
 								<?php } ?>
 							</div>
-							<div class="title">
+							<div class="title mb-1">
 								<h2><a href="details-full-width.php?id=<?= $key ?>"><?= $post['postTitle'] ?></a></h2>
 							</div>
-							<p class="shortDescription"><?= !empty($post['description']) ? substr($post['description'], 0, 100) . '...' : '' ?></p> <!-- Shortened project description -->
-							<ul class="nav meta align-items-center">
-								<li class="meta-author">
-									<img src="<?= !empty($post['authorPic']) ? $post['authorPic'] : 'default-avatar.png' ?>" alt="" class="img-fluid">
-									<a href="#"><?= $post['authorName'] ?></a>
-								</li>
-								<li class="meta-date"><a href="#"><?= formatDate($post['postTime']) ?></a></li>
-								<li class="meta-comments"><a href="#"><i class="fa fa-comment"></i> <?= count($post['comments']) ?></a></li>
-								<li class="meta-likes"><a href="#"><i class="fa fa-heart"></i> <?= $post['likes'] ?? 0 ?></a></li> <!-- Optional likes feature -->
-							</ul>
-							<div class="join-project">
-								<a href="contact-owner.php?id=<?= $key ?>" class="btn btn-primary">Join Project</a>
+							<p class="shortDescription mb-5 px-10"><?= !empty($post['description']) ? substr($post['description'], 0, 100) . '...' : '' ?></p> <!-- Shortened project description -->
+							<div>
+								<p>Looking for:</p>
+								<div class="flex space-x-2 items-center justify-center">
+									<?php foreach($post['lookingFor'] as $cat) { ?>
+									<span class="bg-white/10 p-2 text-white" ><?= $cat ?></span>
+									<?php } ?>
+								</div>
 							</div>
+							<ul class="nav meta align-items-center absolute bottom-0 left-0 ml-5">
+								<li class="meta-author flex items-center justify-center space-x-2">
+									<img src="<?= !empty($post['authorPic']) ? $post['authorPic'] : 'default-avatar.png' ?>" alt="" class="img-fluid">
+									<a class="text-white/80" href="#"><?= $post['authorName'] ?></a>
+								</li>
+								<li class="meta-date"><a class="text-white/80" href="#"><?= formatDate($post['postTime']) ?></a></li>
+								<li class="meta-comments"><a class="text-white/80" href="#"><i class="fa fa-comment text-white/80"></i> <?= count($post['comments']) ?></a></li>
+								<li class="meta-likes"><a class="text-white/80" href="#"><i class="fa fa-heart text-white/80"></i> <?= $post['likes'] ?? 0 ?></a></li> <!-- Optional likes feature -->
+							</ul>
+							<!-- <div class="join-project">
+								<a href="contact-owner.php?id=<?= $key ?>" class="btn btn-primary">Join Project</a>
+							</div> -->
 						</div>
 					</div>
 				</div>
 			<?php } ?>
 
-			<!-- original -->
-			<?php foreach ($posts as $key => $post) { ?>
-				<div class="col-md-6">
-					<div class="post-default post-has-bg-img">
-						<div class="post-thumb">
-							<a href="details-full-width.php">
-								<div data-bg-img=<?= $post['postImage'] ?>></div>
-							</a>
-						</div>
-						<div class="post-data">
-							<div class="cats"><a href="category-result.html"><?= $post['postTag'] ?></a></div>
-							<div class="title">
-								<h2><a href="details-full-width.php"><?= $post['postTitle'] ?></a></h2>
-							</div>
-							<ul class="nav meta align-items-center">
-								<li class="meta-author"> <img src=<?= $post['authorPic'] ?> alt="" class="img-fluid"> <a href="#"><?= $post['authorName'] ?></a> </li>
-								<li class="meta-date"><a href="#"><?= formatDate($post['postTime']) ?></a></li>
-								<li class="meta-comments"><a href="#"><i class="fa fa-comment"></i><?= ' ' . count($post['comments']) ?></a></li>
-								<li class="meta-likes"><a href="#"><i class="fa fa-heart"></i><?= ' 6' ?></a></li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			<?php } ?>
 
 			<!-- Post 1 -->
 			<div class="col-md-6">
@@ -443,7 +376,7 @@ $posts = readJsonData('data/posts.json');
 							<h2><a href="details-full-width.php">Apple Admits To Macbook And Macbook Pro</a></h2>
 						</div>
 						<ul class="nav meta align-items-center">
-							<li class="meta-author"> <img src="assets/images/blog/author.jpg" alt="" class="img-fluid"> <a href="#">Alex Garry</a> </li>
+							<li class="meta-author flex items-center justify-center"> <img src="assets/images/blog/author.jpg" alt="" class="img-fluid"> <a href="#">Alex Garry</a> </li>
 							<li class="meta-date"><a href="#">2 Feb 2019</a></li>
 							<li class="meta-comments"><a href="#"><i class="fa fa-comment"></i> 2</a></li>
 						</ul>

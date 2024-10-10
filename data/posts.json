@@ -38,7 +38,7 @@
     {
         "postID": 2,
         "postTime": "2024-10-02T09:30:00Z",
-        "authorName": "Name of Author",
+        "authorName": "Tyrese Lanister",
         "authorPic": "assets\/images\/blog\/author.jpg",
         "postTitle": "AI Blogging System",
         "postTag": "",
@@ -97,7 +97,7 @@
     {
         "postID": 3,
         "postTime": "2024-10-01T15:00:00Z",
-        "authorName": "Name of Author",
+        "authorName": "Tyrese Lanister",
         "authorPic": "assets\/images\/blog\/author.jpg",
         "postTitle": "Running Robot Project",
         "postTag": "",
@@ -131,7 +131,7 @@
     {
         "postID": 4,
         "postTime": "2024-09-30T11:00:00Z",
-        "authorName": "Name of Author",
+        "authorName": "Tyrese Lanister",
         "authorPic": "assets\/images\/blog\/author.jpg",
         "postTitle": "UV Sensor Wearable",
         "postTag": "",
@@ -165,7 +165,7 @@
     {
         "postID": 5,
         "postTime": "2024-09-29T13:00:00Z",
-        "authorName": "Name of Author",
+        "authorName": "Tyrese Lanister",
         "authorPic": "assets\/images\/blog\/author.jpg",
         "postTitle": "Research on Chimpanzees",
         "postTag": "",
@@ -199,7 +199,7 @@
     {
         "postID": 6,
         "postTime": "2024-09-28T08:00:00Z",
-        "authorName": "Name of Author",
+        "authorName": "Tyrese Lanister",
         "authorPic": "assets\/images\/blog\/author.jpg",
         "postTitle": "Nuclear Reactor",
         "postTag": "",

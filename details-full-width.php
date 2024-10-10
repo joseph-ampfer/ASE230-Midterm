@@ -22,13 +22,6 @@ $post = $posts[$postIndex];
 
 
 
-//echo '<pre>';
-print_r($_POST);
-//echo '</pre>';
-
-
-
-
 
 ?>
 
@@ -141,7 +134,7 @@ print_r($_POST);
   </header>
 
   <!-- Banner below nav bar  -->
-  <div class="page-title">
+  <!-- <div class="page-title">
     <div class="container">
       <h2>Blog Details: Full Width</h2>
       <ul class="nav">
@@ -150,7 +143,7 @@ print_r($_POST);
         <li>Blog Details: Full Width</li>
       </ul>
     </div>
-  </div>
+  </div> -->
 
   <!-- Main content -->
   <main class="container pb-120">
