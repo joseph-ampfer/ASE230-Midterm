@@ -50,3 +50,7 @@ html {
 a {
     text-decoration: none !important;
 }
+
+.header .header-fixed {
+    z-index: 1000;
+}
