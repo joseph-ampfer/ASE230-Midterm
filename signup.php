@@ -72,7 +72,7 @@ if (count($_POST) > 0) {
         </div>
     </header>
     <div class="container d-flex justify-content-center p-3">
-        <form id="signUpForm" method="POST"
+        <form id="authForm" method="POST"
             class="d-flex flex-column justify-content-center w-50 h-100 p-4 shadow border-0">
             <h1 class="mb-3">Sign up</h1>
             <div class="mb-3">

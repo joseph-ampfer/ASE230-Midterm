@@ -11,10 +11,9 @@ error_reporting(E_ALL); // Report all errors
 if (count($_POST) > 0) {
     print_r($_POST);
     if (isset($_POST['email'][0]) && isset($_POST['password'][0])) {
-
         // process information
         $index = 0;
-        $fp = fopen(__DIR__ . 'data/users.csv', 'r');
+        $fp = fopen(__DIR__ . '/data/users.csv', 'r');
         while (!feof($fp)) {
             $line = fgets($fp);
             if (strstr($line, '<?php die() ?>') || strlen($line) < 5)
@@ -80,8 +79,9 @@ if (count($_POST) > 0) {
             </div>
         </div>
     </header>
+    <!-- login form--> 
     <div class="container d-flex justify-content-center p-3">
-        <form class="d-flex flex-column justify-content-center w-50 h-25 p-4 shadow border-0">
+        <form id = "authForm" method = "POST" class="d-flex flex-column justify-content-center w-50 h-25 p-4 shadow border-0">
             <h1 class="mb-3">Log in</h1>
             <div class="d-flex align-items-center text-center mx-auto mb-3">
                 <div>Don't have an account yet?</div>
@@ -103,6 +103,7 @@ if (count($_POST) > 0) {
             <button type="submit" class="btn btn-primary">Login</button>
         </form>
     </div>
+
     <footer class="footer-container d-flex align-items-center">
         <div class="container">
             <div class="row align-items-center footer">
