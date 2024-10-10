@@ -1,17 +1,14 @@
 <?php
-
+session_start();
 require_once('scripts/scripts.php');
-
-
-// TODO
-// 1. LOGIN LOGIC
-// 2. DATA VERIFICATION FOR POST
-
-
-// !!! REplace with session
-$isLoggedIn = true;
-$username = "Joseph Ampfer";
-$sessionEmail = "jampfer@gmail.com";
+$isLoggedIn = false;
+if (isset($_SESSION['email'])) {
+	$isLoggedIn = true;
+	$email = $_SESSION['email'];
+	$username = getUserName($email);
+} else {
+	header("Location: login.php");
+}
 
 // To post a comment, check if logged and comment there
 if ($isLoggedIn && count($_POST) > 0) {
@@ -57,9 +54,9 @@ $posts = readJsonData('data/posts.json');
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>U Collab</title>
-	<script src="https://cdn.tailwindcss.com"></script>
 	<link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
-	<link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700"
+		rel="stylesheet">
 	<!-- <link rel="stylesheet" href="assets/css/bootstrap.min.css"> -->
 
 	<!-- Include Bootstrap 5 CSS -->
@@ -96,8 +93,10 @@ $posts = readJsonData('data/posts.json');
 	</div>
 	<div class="nav-search-box">
 		<form>
-			<div class="input-group"> <input type="text" class="form-control" placeholder="eg. feel the love and …"> <span class="b-line"></span> <span class="b-line-under"></span>
-				<div class="input-group-append"> <button type="button" class="btn"> <img src="assets/images/search-icon.svg" alt="" class="img-fluid svg"> </button> </div>
+			<div class="input-group"> <input type="text" class="form-control" placeholder="eg. feel the love and …">
+				<span class="b-line"></span> <span class="b-line-under"></span>
+				<div class="input-group-append"> <button type="button" class="btn"> <img
+							src="assets/images/search-icon.svg" alt="" class="img-fluid svg"> </button> </div>
 			</div>
 		</form>
 	</div>
@@ -106,7 +105,8 @@ $posts = readJsonData('data/posts.json');
 			<div class="container-fluid pl-120 pr-120 position-relative">
 				<div class="row d-flex align-items-center">
 					<div class="col-lg-3 col-md-4 col-6">
-						<div class="logo"> <a href="#"><img src="assets/images/logo.png" alt="" class="img-fluid"></a> </div>
+						<div class="logo"> <a href="#"><img src="assets/images/logo.png" alt="" class="img-fluid"></a>
+						</div>
 					</div>
 					<div class="col-lg-9 col-md-8 col-6 d-flex align-items-center justify-content-end position-static">
 						<div class="nav-menu-cover">
@@ -160,66 +160,87 @@ $posts = readJsonData('data/posts.json');
 	<!-- Main content -->
 	<main class="container pt-15 pb-90">
 		<div class="flex items-center justify-center">
-      Your Profile
-			<button type="button" class="mb-10 bg-red-300 p-5 rounded-full text-white hover:bg-red-300/50" data-bs-toggle="modal" data-bs-target="#exampleModal">
+			Your Profile
+			<button type="button" class="mb-10 bg-red-300 p-5 rounded-full text-white hover:bg-red-300/50"
+				data-bs-toggle="modal" data-bs-target="#exampleModal">
 				Post Your Project
 			</button>
 		</div>
 
 		<div class="row">
-
-
+		<div class="col-md-3">
+                <ul style="list-style-type: none; padding: 0;">
+                    <!-- User Avatar -->
+                    <li style="text-align: center; margin-bottom: 15px;">
+                        <img src="assets/images/blog/author.jpg"
+                            style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; cursor: pointer;"
+                            id="userDropdown" alt="User Avatar" />
+                    </li>
+                    <!-- User Name -->
+                    <li style="text-align: center; margin-bottom: 10px; font-weight: bold;"><?= $username?></li>
+                    <li style="text-align: center; margin-bottom: 10px; ">Computer Science</li>
+                </ul>
+            </div>
+			
 			<!-- v2 -->
-			<?php foreach ($posts as $key => $post) { 
-        if (isset($post['email']) && $sessionEmail == $post['email']) { ?>
-        
-				<div class="col-md-6">
-          <div class="z-100 bg-red-300 text-white p-3 hover:bg-red-300/50">
-            <button type="button" class="" data-bs-toggle="modal" data-bs-target="#exampleModal" >Edit</button>
-          </div>
-					<div class="post-default post-has-bg-img">
-						<div class="post-thumb">
-							<a href="details-full-width.php">
-								<div data-bg-img=<?= $post['postImage'] ?>></div>
-							</a>
+			<?php foreach ($posts as $key => $post) {
+				if (isset($_SESSION['email']) && $sessionEmail == $post['email']) { ?>
+					<div class="col-md-6">
+						<div class="z-100 bg-red-300 text-white p-3 hover:bg-red-300/50">
+							<button type="button" class="" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit</button>
 						</div>
-						<div class="post-data">
-							<div class="cats">
-								<?php foreach ($post['postCategories'] as $category) { ?>
-									<a href="category-result.html"><?= $category ?></a>
-								<?php } ?>
+						<div class="post-default post-has-bg-img">
+							<div class="post-thumb">
+								<a href="details-full-width.php">
+									<div data-bg-img=<?= $post['postImage'] ?>></div>
+								</a>
 							</div>
-							<div class="title mb-1">
-								<h2><a href="details-full-width.php?id=<?= $key ?>"><?= $post['postTitle'] ?></a></h2>
-							</div>
-							<p class="shortDescription mb-5 px-10"><?= !empty($post['description']) ? substr($post['description'], 0, 100) . '...' : '' ?></p> <!-- Shortened project description -->
-							<div>
-								<p>Looking for:</p>
-								<div class="flex space-x-2 items-center justify-center">
-									<?php foreach ($post['lookingFor'] as $cat) { ?>
-										<span class="bg-white/10 p-2 text-white"><?= $cat ?></span>
+							<div class="post-data">
+								<div class="cats">
+									<?php foreach ($post['postCategories'] as $category) { ?>
+										<a href="category-result.html"><?= $category ?></a>
 									<?php } ?>
 								</div>
-							</div>
-							<ul class="nav meta align-items-center absolute bottom-0 left-0 ml-5">
-								<li class="meta-author flex items-center justify-center space-x-2">
-									<img src="<?= !empty($post['authorPic']) ? $post['authorPic'] : 'default-avatar.png' ?>" alt="" class="img-fluid">
-									<a class="text-white/80" href="#"><?= $post['authorName'] ?></a>
-								</li>
-								<li class="meta-date"><a class="text-white/80" href="#"><?= formatDate($post['postTime']) ?></a></li>
-								<li class="meta-comments"><a class="text-white/80" href="#"><i class="fa fa-comment text-white/80"></i> <?= count($post['comments']) ?></a></li>
-								<li class="meta-likes"><a class="text-white/80" href="#"><i class="fa fa-heart text-white/80"></i> <?= $post['likes'] ?? 0 ?></a></li> <!-- Optional likes feature -->
-							</ul>
-							<!-- <div class="join-project">
+								<div class="title mb-1">
+									<h2><a href="details-full-width.php?id=<?= $key ?>"><?= $post['postTitle'] ?></a></h2>
+								</div>
+								<p class="shortDescription mb-5 px-10">
+									<?= !empty($post['description']) ? substr($post['description'], 0, 100) . '...' : '' ?></p>
+								<!-- Shortened project description -->
+								<div>
+									<p>Looking for:</p>
+									<div class="flex space-x-2 items-center justify-center">
+										<?php foreach ($post['lookingFor'] as $cat) { ?>
+											<span class="bg-white/10 p-2 text-white"><?= $cat ?></span>
+										<?php } ?>
+									</div>
+								</div>
+								<ul class="nav meta align-items-center absolute bottom-0 left-0 ml-5">
+									<li class="meta-author flex items-center justify-center space-x-2">
+										<img src="<?= !empty($post['authorPic']) ? $post['authorPic'] : 'default-avatar.png' ?>"
+											alt="" class="img-fluid">
+										<a class="text-white/80" href="#"><?= $post['authorName'] ?></a>
+									</li>
+									<li class="meta-date"><a class="text-white/80"
+											href="#"><?= formatDate($post['postTime']) ?></a></li>
+									<li class="meta-comments"><a class="text-white/80" href="#"><i
+												class="fa fa-comment text-white/80"></i> <?= count($post['comments']) ?></a>
+									</li>
+									<li class="meta-likes"><a class="text-white/80" href="#"><i
+												class="fa fa-heart text-white/80"></i> <?= $post['likes'] ?? 0 ?></a></li>
+									<!-- Optional likes feature -->
+								</ul>
+								<!-- <div class="join-project">
 								<a href="contact-owner.php?id=" class="btn btn-primary">Join Project</a>
 							</div> -->
+							</div>
 						</div>
 					</div>
-				</div>
-			<?php }} ?>
+				<?php }
+			} ?>
 
 
-			
+
 		</div>
 		<!-- Pagination below posts -->
 		<div class="post-pagination d-flex justify-content-center">
@@ -240,11 +261,16 @@ $posts = readJsonData('data/posts.json');
 				</div>
 				<div class="row">
 					<div class="col-lg-8 offset-lg-2">
-						<form action="https://themelooks.us13.list-manage.com/subscribe/post?u=79f0b132ec25ee223bb41835f&amp;id=f4e0e93d1d" method="post" novalidate>
-							<div class="input-group"> <input type="text" class="form-control" placeholder="Enter Your Email">
+						<form
+							action="https://themelooks.us13.list-manage.com/subscribe/post?u=79f0b132ec25ee223bb41835f&amp;id=f4e0e93d1d"
+							method="post" novalidate>
+							<div class="input-group"> <input type="text" class="form-control"
+									placeholder="Enter Your Email">
 								<div class="input-group-append"> <button class="btn btn-default">Submit</button> </div>
 							</div>
-							<p class="checkbox-cover d-flex justify-content-center"> <label> I've read and accept the <a href="#"> Privacy Policy </a> <input type="checkbox"> <span class="checkmark"></span> </label> </p>
+							<p class="checkbox-cover d-flex justify-content-center"> <label> I've read and accept the <a
+										href="#"> Privacy Policy </a> <input type="checkbox"> <span
+										class="checkmark"></span> </label> </p>
 						</form>
 					</div>
 				</div>
@@ -256,9 +282,13 @@ $posts = readJsonData('data/posts.json');
 		<div class="container">
 			<div class="row align-items-center footer">
 				<div class="col-md-4 text-center text-md-left order-md-1 order-2">
-					<div class="footer-social"> <a href="#"><i class="fa fa-facebook"></i></a> <a href="#"><i class="fa fa-twitter"></i></a> <a href="#"><i class="fa fa-linkedin"></i></a> <a href="#"><i class="fa fa-google"></i></a> <a href="#"><i class="fa fa-pinterest"></i></a> </div>
+					<div class="footer-social"> <a href="#"><i class="fa fa-facebook"></i></a> <a href="#"><i
+								class="fa fa-twitter"></i></a> <a href="#"><i class="fa fa-linkedin"></i></a> <a
+							href="#"><i class="fa fa-google"></i></a> <a href="#"><i class="fa fa-pinterest"></i></a>
+					</div>
 				</div>
-				<div class="col-md-4 d-flex justify-content-center order-md-2 order-1"> <a href="index.html"><img src="assets/images/logo.png" alt="" class="img-fluid"></a> </div>
+				<div class="col-md-4 d-flex justify-content-center order-md-2 order-1"> <a href="index.html"><img
+							src="assets/images/logo.png" alt="" class="img-fluid"></a> </div>
 				<div class="col-md-4 order-md-3 order-3">
 					<div class="footer-cradit text-center text-md-right">
 						<p>© 2019 <a href="index.html">Themelooks.</a></p>
@@ -267,7 +297,8 @@ $posts = readJsonData('data/posts.json');
 			</div>
 		</div>
 	</footer>
-	<div class="back-to-top d-flex align-items-center justify-content-center"> <span><i class="fa fa-long-arrow-up"></i></span> </div>
+	<div class="back-to-top d-flex align-items-center justify-content-center"> <span><i
+				class="fa fa-long-arrow-up"></i></span> </div>
 
 
 
@@ -283,24 +314,31 @@ $posts = readJsonData('data/posts.json');
 
 					<!-- FORM -->
 					<div class="post-comment-form-cover">
-						<form id="projectForm" class="comment-form" method="POST" action=<?= "index.php" ?> enctype="multipart/form-data">
+						<form id="projectForm" class="comment-form" method="POST" action=<?= "index.php" ?>
+							enctype="multipart/form-data">
 							<div class="row">
 								<div class="col-md-6">
 									<label for="postTitle"><strong>Project Title</strong></label>
-									<input type="text" class="form-control" name="postTitle" placeholder="Project Title">
+									<input type="text" class="form-control" name="postTitle"
+										placeholder="Project Title">
 								</div>
 								<div class="col-md-12 mb-5">
 									<label for="postCategories"><strong>Project Categories</strong></label>
-									<input name='postCategories' class='w-100' placeholder='Choose categories for your project' value='' data-blacklist='badwords, asdf'>
+									<input name='postCategories' class='w-100'
+										placeholder='Choose categories for your project' value=''
+										data-blacklist='badwords, asdf'>
 								</div>
 								<br /><br />
 								<div class="col-md-12 mb-5">
 									<label for="lookingFor"><strong>Looking For</strong></label>
-									<input name='lookingFor' class='w-100' placeholder='Who do you want to collaborate with?' value='' data-blacklist='badwords, asdf'>
+									<input name='lookingFor' class='w-100'
+										placeholder='Who do you want to collaborate with?' value=''
+										data-blacklist='badwords, asdf'>
 								</div>
 								<div class="col-md-12 mb-5">
 									<label for="description"><strong>Project Description</strong></label>
-									<textarea class="form-control" name="description" placeholder="Describe your project... your current progress... if you want collaboarators... etc."></textarea>
+									<textarea class="form-control" name="description"
+										placeholder="Describe your project... your current progress... if you want collaboarators... etc."></textarea>
 								</div>
 								<div class="col-md-12">
 									<label for="description"><strong>Project Image</strong></label>
