@@ -266,5 +266,25 @@
         "comments": [],
         "authorName": "Joseph Ampfer",
         "postImage": ".\/assets\/images\/blog\/1728422057.jpeg"
+    },
+    {
+        "postTitle": "Touch Grass Royale",
+        "postCategories": [
+            "Data Science",
+            "Software Development",
+            "IoT Projects",
+            "Game Development"
+        ],
+        "lookingFor": [
+            "Mobile App Developer",
+            "Game Developer",
+            "Machine Learning Engineer"
+        ],
+        "description": "sadfdsafdsafsdfsdaf",
+        "postTime": "2024-10-10 22:36:19",
+        "likes": 0,
+        "comments": [],
+        "authorName": "Joseph Ampfer",
+        "postImage": ".\/assets\/images\/blog\/1728592579.JPG"
     }
 ]
