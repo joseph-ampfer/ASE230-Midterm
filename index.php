@@ -2,7 +2,6 @@
 
 require_once('scripts/scripts.php');
 
-
 // TODO
 // 1. LOGIN LOGIC
 // 2. DATA VERIFICATION FOR POST
@@ -52,36 +51,38 @@ $posts = readJsonData('data/posts.json');
 <html lang="en">
 
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>U Collab</title>
-	<script src="https://cdn.tailwindcss.com"></script>
-	<link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
-	<link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700" rel="stylesheet">
-	<!-- <link rel="stylesheet" href="assets/css/bootstrap.min.css"> -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>U Collab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
+    <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700"
+        rel="stylesheet">
+    <!-- <link rel="stylesheet" href="assets/css/bootstrap.min.css"> -->
 
 	<!-- Include Bootstrap 5 CSS -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-	<link rel="stylesheet" href="assets/css/font-awesome.min.css">
-	<link rel="stylesheet" href="assets/plugins/animate/animate.min.css">
-	<link rel="stylesheet" href="assets/plugins/owl-carousel/owl.carousel.min.css">
-	<link rel="stylesheet" href="assets/plugins/magnific-popup/magnific-popup.css">
-	<link rel="stylesheet" href="assets/css/style.css">
-	<link rel="stylesheet" href="assets/css/responsive.css">
-	<link rel="stylesheet" href="assets/css/custom.css">
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/plugins/animate/animate.min.css">
+    <link rel="stylesheet" href="assets/plugins/owl-carousel/owl.carousel.min.css">
+    <link rel="stylesheet" href="assets/plugins/magnific-popup/magnific-popup.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <link rel="stylesheet" href="assets/css/custom.css">
 
 
 
-	<!-- FAVICONS FOR DIFFERENT DEVICES -->
-	<link rel="apple-touch-icon" sizes="180x180" href="assets/images/favicon/apple-touch-icon.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon/favicon-16x16.png">
-	<link rel="manifest" href="assets/images/favicon/site.webmanifest">
-	<link rel="mask-icon" href="assets/images/favicon/safari-pinned-tab.svg" color="#5bbad5">
-	<meta name="msapplication-TileColor" content="#da532c">
-	<meta name="theme-color" content="#ffffff">
+
+    <!-- FAVICONS FOR DIFFERENT DEVICES -->
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/images/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon/favicon-16x16.png">
+    <link rel="manifest" href="assets/images/favicon/site.webmanifest">
+    <link rel="mask-icon" href="assets/images/favicon/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
 </head>
 
 <body>
@@ -158,17 +159,17 @@ $posts = readJsonData('data/posts.json');
 		</div>
 	</header>
 
-	<!-- Banner below nav bar -->
-	<!-- <div class="page-title">
-		<div class="container">
-			<h2>Available Projects</h2>
-			<ul class="nav">
-				<li><a href="index.html">Home</a></li>
-				<li><a href="#">Blog</a></li>
-				<li>Blog Overlay</li>
-			</ul>
-		</div>
-	</div> -->
+    <!-- Banner below nav bar -->
+    <!-- <div class="page-title">
+        <div class="container">
+            <h2>Available Projects</h2>
+            <ul class="nav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#">Blog</a></li>
+                <li>Blog Overlay</li>
+            </ul>
+        </div>
+    </div> -->
 
 	<!-- Button trigger modal -->
 
@@ -238,27 +239,32 @@ $posts = readJsonData('data/posts.json');
 		</div>
 	</main>
 
-	<!-- Subscribe to our newsletter -->
-	<section class="newsletter-cover">
-		<div class="nl-bg-ol"></div>
-		<div class="container">
-			<div class="newsletter pt-80 pb-80">
-				<div class="section-title text-center">
-					<h2>Subscribe Our Newsletter</h2>
-				</div>
-				<div class="row">
-					<div class="col-lg-8 offset-lg-2">
-						<form action="https://themelooks.us13.list-manage.com/subscribe/post?u=79f0b132ec25ee223bb41835f&amp;id=f4e0e93d1d" method="post" novalidate>
-							<div class="input-group"> <input type="text" class="form-control" placeholder="Enter Your Email">
-								<div class="input-group-append"> <button class="btn btn-default">Submit</button> </div>
-							</div>
-							<p class="checkbox-cover d-flex justify-content-center"> <label> I've read and accept the <a href="#"> Privacy Policy </a> <input type="checkbox"> <span class="checkmark"></span> </label> </p>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
+    <!-- Subscribe to our newsletter -->
+    <section class="newsletter-cover">
+        <div class="nl-bg-ol"></div>
+        <div class="container">
+            <div class="newsletter pt-80 pb-80">
+                <div class="section-title text-center">
+                    <h2>Subscribe Our Newsletter</h2>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8 offset-lg-2">
+                        <form
+                            action="https://themelooks.us13.list-manage.com/subscribe/post?u=79f0b132ec25ee223bb41835f&amp;id=f4e0e93d1d"
+                            method="post" novalidate>
+                            <div class="input-group"> <input type="text" class="form-control"
+                                    placeholder="Enter Your Email">
+                                <div class="input-group-append"> <button class="btn btn-default">Submit</button> </div>
+                            </div>
+                            <p class="checkbox-cover d-flex justify-content-center"> <label> I've read and accept the <a
+                                        href="#"> Privacy Policy </a> <input type="checkbox"> <span
+                                        class="checkmark"></span> </label> </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
 	<footer class="footer-container d-flex align-items-center">
 		<div class="container">
@@ -338,10 +344,10 @@ $posts = readJsonData('data/posts.json');
 	<!-- Include Bootstrap 5 JS Bundle -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-	<!-- Tagify -->
-	<script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
-	<script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
-	<link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+    <!-- Tagify -->
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
 
 	<script src="assets/plugins/owl-carousel/owl.carousel.min.js"></script>
 	<script src="assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
