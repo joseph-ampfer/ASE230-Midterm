@@ -1,15 +1,20 @@
 <?php
-
+session_start();
 require_once('scripts/scripts.php');
 
-
+$isLoggedIn = false;
+if (isset($_SESSION['email'])) {
+    $isLoggedIn = true;
+} else {
+  header("Location: login.php");
+}
 // TODO
 // 1. LOGIN LOGIC
 // 2. DATA VERIFICATION FOR POST
 
 
 // !!! REplace with session
-$isLoggedIn = true;
+
 $username = "Joseph Ampfer";
 $sessionEmail = "jampfer@gmail.com";
 
@@ -171,12 +176,16 @@ $posts = readJsonData('data/posts.json');
 
 			<!-- v2 -->
 			<?php foreach ($posts as $key => $post) { 
-        if (isset($post['email']) && $sessionEmail == $post['email']) { ?>
+        if (isset($_SESSION['email']) && isset($post['email']) && $_SESSION['email'] == $post['email']) { ?>
         
 				<div class="col-md-6">
-          <div class="z-100 bg-red-300 text-white p-3 hover:bg-red-300/50">
-            <button type="button" class="" data-bs-toggle="modal" data-bs-target="#exampleModal" >Edit</button>
+
+          <div class="z-100 bg-slate-50 flex justify-between">
+            <button type="button" class="bg-red-300 text-white p-3 hover:bg-red-300/50" data-bs-toggle="modal" data-bs-target="#editModal">Delete</button>
+            <button type="button" class="w-full bg-black text-white p-3 hover:bg-red-300/50" data-bs-toggle="modal" data-bs-target="#editModal" >Edit</button>  
+            <a href="editPost.php?id=<?= $key ?>">Edit</a>
           </div>
+
 					<div class="post-default post-has-bg-img">
 						<div class="post-thumb">
 							<a href="details-full-width.php">
@@ -320,7 +329,54 @@ $posts = readJsonData('data/posts.json');
 		</div>
 	</div>
 
+	<!-- ============= EDIT PROJECT MODAL ================= -->
+	<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="exampleModalLabel">Post Your Project</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
 
+					<!-- FORM -->
+					<div class="post-comment-form-cover">
+						<form id="projectForm" class="comment-form" method="POST" action=<?= "index.php" ?> enctype="multipart/form-data">
+							<div class="row">
+								<div class="col-md-6">
+									<label for="postTitle"><strong>Project Title</strong></label>
+									<input type="text" class="form-control" name="postTitle" placeholder="Project Title">
+								</div>
+								<div class="col-md-12 mb-5">
+									<label for="postCategories"><strong>Project Categories</strong></label>
+									<input name='postCategories' class='w-100' placeholder='Choose categories for your project' value='' data-blacklist='badwords, asdf'>
+								</div>
+								<br /><br />
+								<div class="col-md-12 mb-5">
+									<label for="lookingFor"><strong>Looking For</strong></label>
+									<input name='lookingFor' class='w-100' placeholder='Who do you want to collaborate with?' value='' data-blacklist='badwords, asdf'>
+								</div>
+								<div class="col-md-12 mb-5">
+									<label for="description"><strong>Project Description</strong></label>
+									<textarea class="form-control" name="description" placeholder="Describe your project... your current progress... if you want collaboarators... etc."></textarea>
+								</div>
+								<div class="col-md-12">
+									<label for="description"><strong>Project Image</strong></label>
+									<input type="file" class="form-control" name="postImage" placeholder="Upload Image">
+								</div>
+
+							</div>
+						</form>
+					</div>
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="submit" form="projectForm" class="btn btn-primary">Post Project</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 
 

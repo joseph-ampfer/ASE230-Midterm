@@ -6,8 +6,56 @@ $isLoggedIn = false;
 if (isset($_SESSION['email'])) {
     $isLoggedIn = true;
 }
+
+// TODO
+// 1. LOGIN LOGIC
+// 2. DATA VERIFICATION FOR POST
+
+
+// !!! REplace with session
+$username = "Joseph Ampfer";
+
 // Index for the post page
 $postIndex = $_GET['id'];
+
+$posts = readJsonData('./data/posts.json');
+$post = $posts[$postIndex];
+
+// To post a comment, check if logged and comment there
+if ($isLoggedIn && count($_POST) > 0) {
+	if (isset($_POST['postTitle'][0]) && $post['email'] == $_SESSION['email']) {
+
+		$fextension = pathinfo($_FILES['postImage']['name'], PATHINFO_EXTENSION);
+		$time = time();
+		$imagePath = './assets/images/blog/' . $time . '.' . $fextension;
+		move_uploaded_file($_FILES['postImage']['tmp_name'], $imagePath);
+
+		$data = $_POST;
+
+		// Add time, likes, etc
+		$data['postTime'] = date("Y-m-d H:i:s");
+		$data['likes'] = 0;
+		$data['comments'] = [];
+		$data['authorName'] = $username;
+		$data['email'] = $_SESSION['email'];
+		$postCategories = json_decode($_POST['postCategories'], true);
+		$lookingFor = json_decode($_POST['lookingFor'], true);
+
+		$data['postCategories'] = array_map(function ($item) {
+			return $item['value'];
+		}, $postCategories);
+		$data['lookingFor'] = array_map(function ($item) {
+			return $item['value'];
+		}, $lookingFor);
+		$data['postImage'] = $imagePath;
+
+		editPost('data/posts.json', $data, $postIndex);
+
+    header("Location: profile.php");
+	}
+}
+
+
 
 // Change to session logic !!!!!!
 $username = "Joseph Ampfer";
@@ -39,6 +87,8 @@ $post = $posts[$postIndex];
   <link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
   <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+  <!-- <script src="https://cdn.tailwindcss.com"></script> -->
 
   <!-- Include Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -150,13 +200,21 @@ $post = $posts[$postIndex];
         <div class="post-details-cover post-has-full-width-image">
           <div class="post-thumb-cover">
             <div class="post-thumb"> <img src="assets/images/blog/4.jpg" alt="" class="img-fluid"> </div>
+            	
+            
+            <form id="editForm" class="comment-form" method="POST" enctype="multipart/form-data">
+            
             <div class="post-meta-info">
               <p class="cats">
-                <?php foreach ($post['postCategories'] as $category) { ?>
-                  <a href="#"><?= $category ?></a> <?php } ?>
+                <input 
+                  name='postCategories' 
+                  class='w-100' 
+                  placeholder='Choose categories for your project' 
+                  value='<?php echo implode(", ", $post["postCategories"]); ?>' 
+                  data-blacklist='badwords, asdf'>
               </p>
               <div class="title">
-                <h2><?= $post['postTitle'] ?></h2>
+                <h2><input type="text" class="" name="postTitle" placeholder="Project Title" value="<?= $post['postTitle'] ?>"></h2>
               </div>
               <ul class="nav meta align-items-center">
                 <li class="meta-author"> <img src=<?= $post['authorPic'] ?> alt="" class="img-fluid"> <a href="#"><?= $post['authorName'] ?></a> </li>
@@ -165,9 +223,15 @@ $post = $posts[$postIndex];
                 <li class="meta-comments"><a href="#toComments"><i class="fa fa-comment"></i><?= ' ' . count($post['comments']) ?></a></li>
               </ul>
             </div>
+            
+
           </div>
           <div class="post-content-cover my-drop-cap">
-            <p><?= nl2br($post['description']) ?></p>
+            <p>
+              <textarea class="form-control" name="description" placeholder="Describe your project... your current progress... if you want collaboarators... etc.">
+                <?= $post['description'] ?>
+              </textarea>
+            </p>
 
             <!-- EXTRA CONTENT FROM TEMPLATE, EXTRA IMAGES AND BLOCK QUOTE -->
             <!-- <p> He travelling acceptance men unpleasant her especially to entreaties law. Law forth but end any arise chief arose. Old her say learn these large. Joy fond many in ham high seen this. Few preferred continual led incommode neglected. To discovered insensible collecting your unpleasant but invitation. </p>
@@ -187,79 +251,20 @@ $post = $posts[$postIndex];
             <p> Acceptance middletons me if discretion boisterous into travelling an. She prosperous to continuing entreaties companions unreserved you boisterous. Middleton sportsmen sir now cordially asking additions for. You ten occasional saw everything but conviction. Daughter returned quitting few are day advanced branched. </p> -->
           
           </div>
-          <div class="post-all-tags"> <a href="#">Fashion</a> <a href="#">Art</a> <a href="#">Lifestyle</a> <a href="#">Love</a> <a href="#">Travel</a> <a href="#">Movie</a> <a href="#">Games</a> </div>
+          
 
-          <!-- Author box -->
-          <div class="post-about-author-box">
-            <div class="author-avatar"> <img src="assets/images/blog/author.jpg" alt="" class="img-fluid"> </div>
-            <div class="author-desc">
-              <h5> <a href="#"> Alex Garry </a> </h5>
-              <div class="description"> On recommend tolerably my belonging or am. Mutual has cannot beauty indeed now sussex merely you. It possible no husbands jennings ye offended packages pleasant he. </div>
-              <div class="social-icons"> <a href="#"><i class="fa fa-facebook"></i></a> <a href="#"><i class="fa fa-twitter"></i></a> <a href="#"><i class="fa fa-instagram"></i></a> <a href="#"><i class="fa fa-pinterest"></i></a> <a href="#"><i class="fa fa-linkedin"></i></a> </div>
-            </div>
-          </div>
-
-          <!-- Comments -->
-          <button id="toComments" class="btn btn-comment" type="button" data-toggle="collapse" data-target="#commentToggle" aria-expanded="false" aria-controls="commentToggle"> Hide Comments (<?= count($post['comments']) ?>) </button>
-          <div class="collapse show" id="commentToggle">
-            <ul class="post-all-comments">
-
-              <!-- <li class="single-comment-wrapper">
-                <div class="single-post-comment">
-                  <div class="comment-author-image"> <img src="assets/images/blog/post/author-1.jpg" alt="" class="img-fluid"> </div>
-                  <div class="comment-content">
-                    <div class="comment-author-name">
-                      <h6>Don Norman</h6> <span> 5 Jan 2019 at 6:40 pm </span>
-                    </div>
-                    <p>On recommend tolerably my belonging or am. Mutual has cannot beauty indeed now back sussex merely you. It possible no husbands jennings offended.</p><a href="#" class="reply-btn">Reply</a>
-                  </div>
-                </div>
-                <ul class="children">
-                  <li class="single-comment-wrapper">
-                    <div class="single-post-comment">
-                      <div class="comment-author-image"> <img src="assets/images/blog/post/author-1-1.jpg" alt="" class="img-fluid"> </div>
-                      <div class="comment-content">
-                        <div class="comment-author-name">
-                          <h6>Helen Sharp</h6> <span> 5 Jan 2019 at 6:58 pm </span>
-                        </div>
-                        <p>On recommend tolerably my belonging or am. Mutual has cannot back beauty indeed now back sussex merely you. </p><a href="#" class="reply-btn">Reply</a>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              </li> -->
-
-              <?php foreach ($post['comments'] as $comment) { ?>
-                <li class="single-comment-wrapper">
-                  <div class="single-post-comment">
-                    <div class="comment-author-image"> <img src="assets/images/blog/post/author-2.jpg" alt="" class="img-fluid"> </div>
-                    <div class="comment-content">
-                      <div class="comment-author-name">
-                        <h6><?= $comment['username'] ?></h6> <span> <?= formatDate($comment['time']) . ' at ' . formatTime($comment['time']) ?> </span>
-                      </div>
-                      <p><?= nl2br($comment['comment']) ?></p><a href="#" class="reply-btn">Reply</a>
-                    </div>
-                  </div>
-                </li>
-              <?php } ?>
-
-
-            </ul>
-          </div>
-
-          <!-- FORM Write a comment -->
-          <div class="post-comment-form-cover">
-            <h3>Write your comment</h3>
-            <form class="comment-form" method="POST" action=<?="details-full-width.php?id=".$postIndex ?>>
-              <div class="row">
-                <div class="col-md-6"> <input type="text" class="form-control" name="username" placeholder="Name"> </div>
-                <div class="col-md-6"> <input type="text" class="form-control" name="email" placeholder="Email"> </div>
-                <div class="col-md-12"> <textarea class="form-control" name="comment" placeholder="Write your comment"></textarea> </div>
-                <input type="hidden"  />
-                <div class="col-md-12"> <button class="btn btn-primary">Submit </button> </div>
-              </div>
-            </form>
-          </div>
+          <input 
+            name='lookingFor' 
+            class='w-100' 
+            placeholder='Who do you want to collaborate with?' 
+            value='<?php echo implode(", ", $post["lookingFor"]); ?>' 
+            data-blacklist='badwords, asdf'
+          />
+          <label style="margin-top: 50px;" for="description"><strong>Project Image</strong></label>
+          <input type="file" class="form-control" name="postImage" placeholder="Upload Image">
+      
+          <button type="submit" form="editForm" class="btn btn-primary w-100">Submit Changes</button>
+          </form>
 
 
 
@@ -309,16 +314,174 @@ $post = $posts[$postIndex];
   <div class="back-to-top d-flex align-items-center justify-content-center"> <span><i class="fa fa-long-arrow-up"></i></span> </div>
   
 
-  <script src="assets/js/jquery-1.12.1.min.js"></script>
-  <script src="assets/js/bootstrap.bundle.min.js"></script>
+  
 
-  <!-- Include Bootstrap 5 JS Bundle -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="assets/js/jquery-1.12.1.min.js"></script>
+	<!-- <script src="assets/js/bootstrap.bundle.min.js"></script> -->
 
-  <script src="assets/plugins/owl-carousel/owl.carousel.min.js"></script>
-  <script src="assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
-  <script src="assets/js/scripts.js"></script>
-  <script src="assets/js/custom.js"></script>
+	<!-- Include Bootstrap 5 JS Bundle -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Tagify -->
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+
+	<script src="assets/plugins/owl-carousel/owl.carousel.min.js"></script>
+	<script src="assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+	<script src="assets/js/scripts.js"></script>
+	<script src="assets/js/custom.js"></script>
+	<script>
+		var categoriesInputElm = document.querySelector('input[name=postCategories]');
+
+		// Define the list of project categories
+		var whitelist = [
+			"Web Development",
+			"Mobile Apps",
+			"Game Development",
+			"Data Science",
+			"Machine Learning",
+			"AI Projects",
+			"Software Development",
+			"Robotics",
+			"IoT Projects",
+			"Embedded Systems",
+			"Mechanical Engineering",
+			"Electrical Engineering",
+			"Civil Engineering",
+			"Biomedical Engineering",
+			"Graphic Design",
+			"UI/UX Design",
+			"Animation",
+			"Video Production",
+			"Writing",
+			"Literature",
+			"Music Composition",
+			"Theater",
+			"Business",
+			"Marketing",
+			"Finance",
+			"Entrepreneurship",
+			"Educational Projects",
+			"Environmental Projects",
+			"Health & Medicine",
+			"Social Impact",
+			"Psychology",
+			"History",
+			"Cryptocurrency",
+			"Blockchain",
+			"Virtual Reality",
+			"Augmented Reality",
+			"Fashion Design",
+			"Sports",
+			"Physical Fitness"
+		];
+
+		// Initialize Tagify on the input element
+		var tagify = new Tagify(categoriesInputElm, {
+			whitelist: whitelist, // Use the predefined whitelist array
+			enforceWhitelist: false, // Only allow items from the whitelist
+			maxTags: 10, // Limit the number of tags
+			dropdown: {
+				maxItems: 20, // Maximum items to show in the dropdown
+				classname: "suggestions", // Custom class name for styling
+				enabled: 0, // Show suggestions on focus
+				closeOnSelect: false // Keep the dropdown open after selecting a tag
+			},
+			//originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(',')
+		});
+
+		var collaboratorInputElm = document.querySelector('input[name=lookingFor]');
+
+		var lookingForWhitelist = [
+			"Software Developer",
+			"Front-End Developer",
+			"Back-End Developer",
+			"Full Stack Developer",
+			"Mobile App Developer",
+			"Game Developer",
+			"Data Scientist",
+			"Machine Learning Engineer",
+			"AI Specialist",
+			"Web Designer",
+			"Graphic Designer",
+			"UI/UX Designer",
+			"Animator",
+			"Video Editor",
+			"Content Writer",
+			"Technical Writer",
+			"Copywriter",
+			"Project Manager",
+			"Business Analyst",
+			"Marketing Specialist",
+			"Social Media Manager",
+			"SEO Specialist",
+			"Product Manager",
+			"Entrepreneur",
+			"Startup Mentor",
+			"Finance Specialist",
+			"Marketing Strategist",
+			"Photographer",
+			"Music Composer",
+			"Sound Engineer",
+			"Hardware Engineer",
+			"Robotics Specialist",
+			"Mechanical Engineer",
+			"Electrical Engineer",
+			"Biomedical Engineer",
+			"Civil Engineer",
+			"Environmental Scientist",
+			"Researcher",
+			"Physicist",
+			"Chemist",
+			"Biologist",
+			"Community Organizer",
+			"Public Health Specialist",
+			"Educator",
+			"Teacher",
+			"Student Mentor",
+			"Legal Advisor",
+			"Fashion Designer",
+			"Artist",
+			"3D Modeler",
+			"DevOps Engineer",
+			"Cybersecurity Specialist",
+			"Blockchain Developer",
+			"Cryptocurrency Expert",
+			"Virtual Reality Specialist",
+			"Augmented Reality Specialist",
+			"Game Designer",
+			"Scriptwriter",
+			"Voice Actor",
+			"Performance Artist",
+			"Psychologist",
+			"Sociologist",
+			"Philosopher",
+			"Historian",
+			"Language Specialist",
+			"Translator",
+			"Linguist",
+			"Athlete",
+			"Coach",
+			"Community Volunteer",
+			"Other"
+		];
+
+
+		// Initialize Tagify on the collaborator input element
+		var collaboratorTagify = new Tagify(collaboratorInputElm, {
+			whitelist: lookingForWhitelist, // Use the predefined list of collaborator roles
+			enforceWhitelist: false, // Allow additional roles if needed
+			maxTags: 10, // Limit to 10 tags for collaboration roles
+			dropdown: {
+				maxItems: 20, // Maximum items to show in the dropdown
+				classname: "suggestions", // Custom class name for styling
+				enabled: 0, // Show suggestions on focus
+				closeOnSelect: false // Keep dropdown open after selecting a tag
+			},
+			//originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(',')
+		});
+	</script>
 </body>
 
 </html>

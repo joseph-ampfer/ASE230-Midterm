@@ -1,6 +1,11 @@
 <?php
-
+session_start();
 require_once('scripts/scripts.php');
+
+$isLoggedIn = false;
+if (isset($_SESSION['email'])) {
+    $isLoggedIn = true;
+}
 
 // TODO
 // 1. LOGIN LOGIC
@@ -8,7 +13,6 @@ require_once('scripts/scripts.php');
 
 
 // !!! REplace with session
-$isLoggedIn = true;
 $username = "Joseph Ampfer";
 
 // To post a comment, check if logged and comment there
@@ -27,6 +31,7 @@ if ($isLoggedIn && count($_POST) > 0) {
 		$data['likes'] = 0;
 		$data['comments'] = [];
 		$data['authorName'] = $username;
+		$data['email'] = $_SESSION['email'];
 		$postCategories = json_decode($_POST['postCategories'], true);
 		$lookingFor = json_decode($_POST['lookingFor'], true);
 
@@ -128,7 +133,7 @@ $posts = readJsonData('data/posts.json');
                                 
                                     <!-- Dropdown menu -->
                                     <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                                        <li><a class="dropdown-item" href="#">Profile</a></li>
+                                        <li><a class="dropdown-item" href="profile.php">Profile</a></li>
                                         <li><a class="dropdown-item" href="#">Settings</a></li>
                                         <li><a class="dropdown-item" href="#">Help</a></li>
                                         <li><hr class="dropdown-divider"></li>
@@ -176,11 +181,29 @@ $posts = readJsonData('data/posts.json');
 
 	<!-- Main content -->
 	<main class="container pt-15 pb-90">
-		<div class="flex items-center justify-center">
-			<button type="button" class="mb-10 bg-red-300 p-5 rounded-full text-white hover:bg-red-300/50" data-bs-toggle="modal" data-bs-target="#exampleModal">
-				Post Your Project
-			</button>
-		</div>
+
+		    <!-- Post Modal Trigger -->
+    <?php
+    if ($isLoggedIn) { ?>
+      
+       <div class="container  mt-5" data-bs-toggle="modal" data-bs-target="#exampleModal" style = "cursor: pointer; ">
+           <div class="d-flex  justify-content-end">
+               <div class="d-flex justify-content-between rounded-pill h-25 w-25 align-items-center p-3 shadow-lg rounded cursor-pointer bg-light hover:bg-gray-200">
+                   <img src="assets/images/blog/author.jpg" alt="User Avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;" />
+                   <div class="ml-3 text-secondary">
+                       What's on your mind?
+                   </div>
+                   <span>
+                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                        <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                    </svg>
+                   </span>
+               </div>
+           </div>
+       </div>';
+    <?php }
+    ;
+    ?>
 
 		<div class="row">
 

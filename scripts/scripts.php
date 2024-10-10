@@ -50,6 +50,17 @@ function saveComment($filePath, $postIndex, $data)
   file_put_contents($filePath, json_encode($existingData, JSON_PRETTY_PRINT));
 }
 
+function editPost($filePath, $data, $index)
+{
+  $existingData = [];
+  if (file_exists($filePath)) {
+    $existingData = json_decode(file_get_contents($filePath), true);
+  }
+
+  $existingData[$index] = $data; // Edit data at the posts index
+  file_put_contents($filePath, json_encode($existingData, JSON_PRETTY_PRINT));
+}
+
 
 function formatDate($time) {
   // Create a Datetime object from the ISO 8601 string
