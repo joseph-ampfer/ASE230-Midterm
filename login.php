@@ -60,6 +60,7 @@ if (count($_POST) > 0) {
                     <div class="col-lg-9 col-md-8 col-6 d-flex justify-content-end position-static">
                         <div class="nav-menu-cover">
                             <ul class="nav nav-menu">
+                                <li><a href="index.php">Home</a></li>
                                 <li><a href="about.html">About</a></li>
                                 <li><a href="contact.html">Contact</a></li>
                             </ul>
@@ -79,9 +80,10 @@ if (count($_POST) > 0) {
             </div>
         </div>
     </header>
-    <!-- login form--> 
+    <!-- login form-->
     <div class="container d-flex justify-content-center p-3">
-        <form id = "authForm" method = "POST" class="d-flex flex-column justify-content-center w-50 h-25 p-4 shadow border-0">
+        <form id="authForm" method="POST"
+            class="d-flex flex-column justify-content-center w-50 h-25 p-4 shadow border-0">
             <h1 class="mb-3">Log in</h1>
             <div class="d-flex align-items-center text-center mx-auto mb-3">
                 <div>Don't have an account yet?</div>

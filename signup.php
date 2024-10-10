@@ -53,7 +53,6 @@ if (count($_POST) > 0) {
                                 <li><a href="index.html">Home</a></li>
                                 <li><a href="about.html">About</a></li>
                                 <li><a href="contact.html">Contact</a></li>
-                                <li>Sign out</li>
                             </ul>
                         </div>
                         <div class="mobile-menu-cover">
@@ -94,17 +93,6 @@ if (count($_POST) > 0) {
                 <div class="input-group">
                     <input type="password" name="password" class="form-control" id="passwordInput" required>
                     <button type="button" class="btn btn-outline-secondary" id="togglePassword">See</button>
-                </div>
-            </div>
-            <div class="mb-3">
-                <label for="confirmPassword" class="form-label">Confirm Password</label>
-                <div class="input-group">
-                    <input type="password" name="confirmPassword" class="form-control" id="confirmPasswordInput"
-                        required>
-                    <button type="button" class="btn btn-outline-secondary" id="toggleConfirmPassword">See</button>
-                </div>
-                <!--show an error if passwords don't match -->
-                <div id="passwordMismatch" class="form-text text-danger" style="display: none;">Passwords do not match
                 </div>
             </div>
             <button type="submit" class="btn btn-primary">Sign Up</button>

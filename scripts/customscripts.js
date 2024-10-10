@@ -17,15 +17,6 @@ authForm.addEventListener("submit", function (event) {
   }
 });
 
-// Real-time check when typing in the confirm password field
-confirmPasswordInput.addEventListener("input", function () {
-  if (passwordInput.value !== confirmPasswordInput.value) {
-    passwordMismatch.style.display = "block"; // Show mismatch message
-  } else {
-    passwordMismatch.style.display = "none"; // Hide mismatch message
-  }
-});
-
 // Toggle password visibility
 togglePassword.addEventListener("click", function () {
   console.log("see button");
@@ -34,9 +25,4 @@ togglePassword.addEventListener("click", function () {
   this.textContent = type === "password" ? "See" : "Hide"; // Change button text
 });
 
-// Toggle confirm password visibility
-toggleConfirmPassword.addEventListener("click", function () {
-  const type = confirmPasswordInput.type === "password" ? "text" : "password";
-  confirmPasswordInput.type = type;
-  this.textContent = type === "password" ? "See" : "Hide"; // Change button text
-});
+console.log("hello world")

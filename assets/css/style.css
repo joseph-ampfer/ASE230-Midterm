@@ -1208,7 +1208,7 @@ body {
 }
 
 .header {
-    min-height: 107px
+    min-height: 107px;
 }
 
 .header .header-fixed {
@@ -1223,7 +1223,7 @@ body {
 
 .header .header-fixed.is-sticky {
     padding: 0 0;
-    background-color: #fff
+    background-color: #fff;
 }
 
 @media only screen and (max-width: 991px) {
