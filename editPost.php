@@ -21,23 +21,42 @@ $postIndex = $_GET['id'];
 $posts = readJsonData('./data/posts.json');
 $post = $posts[$postIndex];
 
-// To post a comment, check if logged and comment there
+// To edit a post, check if loggedin and data there
 if ($isLoggedIn && count($_POST) > 0) {
 	if (isset($_POST['postTitle'][0]) && $post['email'] == $_SESSION['email']) {
 
-		$fextension = pathinfo($_FILES['postImage']['name'], PATHINFO_EXTENSION);
-		$time = time();
-		$imagePath = './assets/images/blog/' . $time . '.' . $fextension;
-		move_uploaded_file($_FILES['postImage']['tmp_name'], $imagePath);
-
 		$data = $_POST;
+
+		if (isset($_FILES['postImage']) && $_FILES['postImage']['error'] === UPLOAD_ERR_OK) {
+			// Delete old picture
+			// Check if the old image exists before trying to delete it
+			if (file_exists($post['postImage'])) {
+					// Delete the old image
+					if (!unlink($post['postImage'])) {
+							// Handle error if unlink fails
+							echo "Error: Failed to delete old image.";
+					}
+			} else {
+					// Handle case where the file doesn't exist
+					echo "Warning: Old image file not found.";
+			}
+
+			// Save new one
+			$fextension = pathinfo($_FILES['postImage']['name'], PATHINFO_EXTENSION);
+			$time = uniqid();
+			$imagePath = './assets/images/blog/' . $time . '.' . $fextension;
+			move_uploaded_file($_FILES['postImage']['tmp_name'], $imagePath);
+			$data['postImage'] = $imagePath;
+		} else {
+			$data['postImage'] = $post['postImage'];
+		}
 
 		// Add time, likes, etc
 		$data['postTime'] = date("Y-m-d H:i:s");
-		$data['likes'] = 0;
-		$data['comments'] = [];
-		$data['authorName'] = $username;
-		$data['email'] = $_SESSION['email'];
+		$data['likes'] = $post['likes'];
+		$data['comments'] = $post['comments'];
+		$data['authorName'] = $post['authorName'];
+		$data['email'] = $post['email'];
 		$postCategories = json_decode($_POST['postCategories'], true);
 		$lookingFor = json_decode($_POST['lookingFor'], true);
 
@@ -47,7 +66,6 @@ if ($isLoggedIn && count($_POST) > 0) {
 		$data['lookingFor'] = array_map(function ($item) {
 			return $item['value'];
 		}, $lookingFor);
-		$data['postImage'] = $imagePath;
 
 		editPost('data/posts.json', $data, $postIndex);
 
@@ -199,7 +217,7 @@ $post = $posts[$postIndex];
       <div class="col-md-10 offset-md-1">
         <div class="post-details-cover post-has-full-width-image">
           <div class="post-thumb-cover">
-            <div class="post-thumb"> <img src="assets/images/blog/4.jpg" alt="" class="img-fluid"> </div>
+            <div class="post-thumb"> <img src="<?= $post['postImage'] ?>" alt="" class="img-fluid mx-auto d-block"> </div>
             	
             
             <form id="editForm" class="comment-form" method="POST" enctype="multipart/form-data">
@@ -207,6 +225,7 @@ $post = $posts[$postIndex];
             <div class="post-meta-info">
               <p class="cats">
                 <input 
+								  required
                   name='postCategories' 
                   class='w-100' 
                   placeholder='Choose categories for your project' 
@@ -214,10 +233,10 @@ $post = $posts[$postIndex];
                   data-blacklist='badwords, asdf'>
               </p>
               <div class="title">
-                <h2><input type="text" class="" name="postTitle" placeholder="Project Title" value="<?= $post['postTitle'] ?>"></h2>
+                <h2><input required type="text" class="w-100" name="postTitle" placeholder="Project Title" value="<?= $post['postTitle'] ?>"></h2>
               </div>
               <ul class="nav meta align-items-center">
-                <li class="meta-author"> <img src=<?= $post['authorPic'] ?> alt="" class="img-fluid"> <a href="#"><?= $post['authorName'] ?></a> </li>
+                <li class="meta-author"> <img src=<?= isset($post['authorPic']) ? $post['authorPic'] : "assets/images/profile_icon.png" ?> alt="" class="img-fluid"> <a href="#"><?= $post['authorName'] ?></a> </li>
                 <li class="meta-date"><a href="#"><?= formatDate($post['postTime']) ?></a></li>
                 <!-- <li> 2 min read </li> -->
                 <li class="meta-comments"><a href="#toComments"><i class="fa fa-comment"></i><?= ' ' . count($post['comments']) ?></a></li>
@@ -228,9 +247,7 @@ $post = $posts[$postIndex];
           </div>
           <div class="post-content-cover my-drop-cap">
             <p>
-              <textarea class="form-control" name="description" placeholder="Describe your project... your current progress... if you want collaboarators... etc.">
-                <?= $post['description'] ?>
-              </textarea>
+              <textarea class="form-control" name="description" placeholder="Describe your project... your current progress... if you want collaboarators... etc."><?= $post['description'] ?></textarea>
             </p>
 
             <!-- EXTRA CONTENT FROM TEMPLATE, EXTRA IMAGES AND BLOCK QUOTE -->
@@ -254,14 +271,15 @@ $post = $posts[$postIndex];
           
 
           <input 
+					  required 
             name='lookingFor' 
             class='w-100' 
             placeholder='Who do you want to collaborate with?' 
             value='<?php echo implode(", ", $post["lookingFor"]); ?>' 
             data-blacklist='badwords, asdf'
           />
-          <label style="margin-top: 50px;" for="description"><strong>Project Image</strong></label>
-          <input type="file" class="form-control" name="postImage" placeholder="Upload Image">
+          <label style="margin-top: 50px;" for="description"><strong>Upload New Image (optional)</strong></label>
+          <input type="file" class="form-control" name="postImage" >
       
           <button type="submit" form="editForm" class="btn btn-primary w-100">Submit Changes</button>
           </form>
