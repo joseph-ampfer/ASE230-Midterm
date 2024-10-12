@@ -74,7 +74,7 @@ if ($isLoggedIn && count($_POST) > 0) {
 				saveToJson('data/posts.json', $data);
 			}
 
-		} else {$error = "Error uploading image";}
+		} 
 
 	}
 }
@@ -235,7 +235,7 @@ $posts = readJsonData('data/posts.json');
     <?php }
     ;
     ?>
-		<mark><?php if($error != "") {echo $error;} ?></mark>
+		<mark><?php if($error != "") {echo $error;} ?></mark><br>
 
 		<div class="row">
 			<!-- v2 -->
