@@ -8,6 +8,7 @@ if (isset($_SESSION['email'])) {
 	$username = getUserName($email);
 }
 
+$error = "";
 
 // To post a comment, check if logged and comment there
 if ($isLoggedIn && count($_POST) > 0) {

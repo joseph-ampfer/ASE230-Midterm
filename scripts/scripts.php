@@ -82,7 +82,7 @@ function formatTime($time)
 
 function getUserName($email)
 {
-  $file = fopen('data/users.csv', 'r'); // Open the file in read mode
+  $file = fopen('data/users.csv.php', 'r'); // Open the file in read mode
 
   // Check through each line
   while (($line = fgets($file)) !== false) {
