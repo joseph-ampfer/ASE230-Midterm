@@ -50,6 +50,13 @@ if ($isLoggedIn && count($_POST) > 0) {
 
 
 $posts = readJsonData('data/posts.json');
+$postsPerPage = 6;  
+$totalPosts = count($posts);  
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$start = ($page - 1) * $postsPerPage;
+$postsForCurrentPage = array_slice($posts, $start, $postsPerPage);
+$totalPages = ceil($totalPosts / $postsPerPage);
+
 ?>
 
 <!DOCTYPE html>
@@ -208,7 +215,7 @@ $posts = readJsonData('data/posts.json');
 		<div class="row">
 
 			<!-- v2 -->
-			<?php foreach ($posts as $key => $post) { ?>
+			<?php foreach ($postsForCurrentPage as $key => $post) { ?>
 				<div class="col-md-6">
 					<div class="post-default post-has-bg-img">
 						<div class="post-thumb">
@@ -254,12 +261,19 @@ $posts = readJsonData('data/posts.json');
 		</div>
 
 		<!-- Pagination below posts -->
-		<div class="post-pagination d-flex justify-content-center">
-			<span class="current">1</span>
-			<a href="#">2</a>
-			<a href="#">3</a>
-			<a href="#"><i class="fa fa-angle-right"></i></a>
-		</div>
+        <div class="post-pagination d-flex justify-content-center">
+            <?php if ($page > 1): ?>
+                <a href="?page=<?= $page - 1 ?>"><i class="fa fa-angle-left"></i></a>
+            <?php endif; ?>
+
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                <a href="?page=<?= $i ?>" class="<?= ($i == $page) ? 'current' : '' ?>"><?= $i ?></a>
+            <?php endfor; ?>
+
+            <?php if ($page < $totalPages): ?>
+                <a href="?page=<?= $page + 1 ?>"><i class="fa fa-angle-right"></i></a>
+            <?php endif; ?>
+        </div>
 	</main>
 
     <!-- Subscribe to our newsletter -->
