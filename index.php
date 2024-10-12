@@ -191,7 +191,7 @@ $posts = readJsonData('data/posts.json');
                <div class="d-flex justify-content-between rounded-pill h-25 w-25 align-items-center p-3 shadow-lg rounded cursor-pointer bg-light hover:bg-gray-200">
                    <img src="assets/images/blog/author.jpg" alt="User Avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;" />
                    <div class="ml-3 text-secondary">
-                       What's on your mind?
+                       Post a Project
                    </div>
                    <span>
                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
@@ -236,7 +236,7 @@ $posts = readJsonData('data/posts.json');
 							</div>
 							<ul class="nav meta align-items-center absolute bottom-0 left-0 ml-5">
 								<li class="meta-author flex items-center justify-center space-x-2">
-									<img src="<?= !empty($post['authorPic']) ? $post['authorPic'] : 'default-avatar.png' ?>" alt="" class="img-fluid">
+									<img src="<?= isset($post['authorPic']) ? $post['authorPic'] : "assets/images/profile_icon.png" ?>" alt="" class="img-fluid">
 									<a class="text-white/80" href="#"><?= $post['authorName'] ?></a>
 								</li>
 								<li class="meta-date"><a class="text-white/80" href="#"><?= formatDate($post['postTime']) ?></a></li>

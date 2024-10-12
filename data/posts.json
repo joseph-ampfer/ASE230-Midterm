@@ -14,7 +14,13 @@
         "postImage": ".\/assets\/images\/blog\/6709faf06aeab.jpeg",
         "postTime": "2024-10-12 06:32:06",
         "likes": 6,
-        "comments": [],
+        "comments": [
+            {
+                "comment": "very nice",
+                "username": "Joseph Ampfer",
+                "time": "2024-10-12 07:52:38"
+            }
+        ],
         "authorName": "Joseph Ampfer",
         "email": "jampfer@gmail.com"
     },
@@ -216,23 +222,6 @@
     {
         "postTitle": "Touch Grass Royale",
         "postCategories": [
-            "Mobile Apps",
-            "Game Development"
-        ],
-        "lookingFor": [
-            "Animator",
-            "Marketing Specialist"
-        ],
-        "description": "A competitive app.\r\n\r\nI need a marketer to help get users.",
-        "postImage": "",
-        "postTime": "2024-10-08 22:31:38",
-        "likes": 0,
-        "comments": [],
-        "authorName": "Joseph Ampfer"
-    },
-    {
-        "postTitle": "Touch Grass Royale",
-        "postCategories": [
             "Software Development",
             "Robotics",
             "IoT Projects"
@@ -268,39 +257,5 @@
         "comments": [],
         "authorName": "Joseph Ampfer",
         "postImage": ".\/assets\/images\/blog\/1728592579.JPG"
-    },
-    {
-        "postTitle": "test test",
-        "postCategories": [
-            "Game Development",
-            "Data Science"
-        ],
-        "lookingFor": [
-            "Full Stack Developer",
-            "Mobile App Developer"
-        ],
-        "description": "test",
-        "postTime": "2024-10-10 23:05:39",
-        "likes": 0,
-        "comments": [],
-        "authorName": "Joseph Ampfer",
-        "postImage": ".\/assets\/images\/blog\/1728594339.JPG"
-    },
-    {
-        "postTitle": "test test",
-        "postCategories": [
-            "Game Development",
-            "Data Science"
-        ],
-        "lookingFor": [
-            "Full Stack Developer",
-            "Mobile App Developer"
-        ],
-        "description": "test",
-        "postTime": "2024-10-10 23:07:06",
-        "likes": 0,
-        "comments": [],
-        "authorName": "Joseph Ampfer",
-        "postImage": ".\/assets\/images\/blog\/1728594426.JPG"
     }
 ]

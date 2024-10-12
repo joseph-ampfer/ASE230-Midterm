@@ -15,7 +15,9 @@ $username = "Joseph Ampfer";
 // To post a comment, check if logged and comment there
 if ($isLoggedIn && count($_POST) > 0) {
   if (isset($_POST['comment'][0])) {
-    saveComment('data/posts.json', $postIndex, $_POST);
+    $data = $_POST;
+    $data['username'] = $username;
+    saveComment('data/posts.json', $postIndex, $data);
   }
 }
 
@@ -149,7 +151,8 @@ $post = $posts[$postIndex];
       <div class="col-md-10 offset-md-1">
         <div class="post-details-cover post-has-full-width-image">
           <div class="post-thumb-cover">
-            <div class="post-thumb"> <img src="assets/images/blog/4.jpg" alt="" class="img-fluid"> </div>
+            <div class="post-thumb"> <img src="<?= $post['postImage'] ?>" alt="" class="img-fluid mx-auto d-block"> </div>
+            	
             <div class="post-meta-info">
               <p class="cats">
                 <?php foreach ($post['postCategories'] as $category) { ?>
@@ -159,7 +162,7 @@ $post = $posts[$postIndex];
                 <h2><?= $post['postTitle'] ?></h2>
               </div>
               <ul class="nav meta align-items-center">
-                <li class="meta-author"> <img src=<?= $post['authorPic'] ?> alt="" class="img-fluid"> <a href="#"><?= $post['authorName'] ?></a> </li>
+                <li class="meta-author"> <img src=<?= isset($post['authorPic']) ? $post['authorPic'] : "assets/images/profile_icon.png" ?> alt="" class="img-fluid"> <a href="#"><?= $post['authorName'] ?></a> </li>
                 <li class="meta-date"><a href="#"><?= formatDate($post['postTime']) ?></a></li>
                 <!-- <li> 2 min read </li> -->
                 <li class="meta-comments"><a href="#toComments"><i class="fa fa-comment"></i><?= ' ' . count($post['comments']) ?></a></li>
@@ -187,7 +190,11 @@ $post = $posts[$postIndex];
             <p> Acceptance middletons me if discretion boisterous into travelling an. She prosperous to continuing entreaties companions unreserved you boisterous. Middleton sportsmen sir now cordially asking additions for. You ten occasional saw everything but conviction. Daughter returned quitting few are day advanced branched. </p> -->
           
           </div>
-          <div class="post-all-tags"> <a href="#">Fashion</a> <a href="#">Art</a> <a href="#">Lifestyle</a> <a href="#">Love</a> <a href="#">Travel</a> <a href="#">Movie</a> <a href="#">Games</a> </div>
+          <div class="post-all-tags"> 
+            <?php foreach($post['lookingFor'] as $cat) {?>
+            <a href="#"><?= $cat ?></a> 
+            <?php } ?>
+           </div>
 
           <!-- Author box -->
           <div class="post-about-author-box">
@@ -248,19 +255,26 @@ $post = $posts[$postIndex];
           </div>
 
           <!-- FORM Write a comment -->
+          <?php if (isset($_SESSION['email'])) { ?>
           <div class="post-comment-form-cover">
             <h3>Write your comment</h3>
             <form class="comment-form" method="POST" action=<?="details-full-width.php?id=".$postIndex ?>>
               <div class="row">
-                <div class="col-md-6"> <input type="text" class="form-control" name="username" placeholder="Name"> </div>
-                <div class="col-md-6"> <input type="text" class="form-control" name="email" placeholder="Email"> </div>
                 <div class="col-md-12"> <textarea class="form-control" name="comment" placeholder="Write your comment"></textarea> </div>
-                <input type="hidden"  />
                 <div class="col-md-12"> <button class="btn btn-primary">Submit </button> </div>
               </div>
             </form>
           </div>
-
+          <?php } else { ?>
+          <div class="post-comment-form-cover">
+            <h3>Want To Comment?</h3>
+            <form class="comment-form" method="POST" action=<?="login.php"?>>
+              <div class="row">
+                 <div class="col-md-12"> <button class="btn btn-primary">Login First</button> </div>
+              </div>
+            </form>
+          </div>
+          <?php } ?>
 
 
         </div>
