@@ -23,7 +23,7 @@ if ($isLoggedIn && count($_POST) > 0) {
 	if (isset($_POST['postTitle'][0])) {
 
 		$fextension = pathinfo($_FILES['postImage']['name'], PATHINFO_EXTENSION);
-		$time = uniqid();
+		$time = time();
 		$imagePath = './assets/images/blog/' . $time . '.' . $fextension;
 		move_uploaded_file($_FILES['postImage']['tmp_name'], $imagePath);
 
@@ -34,6 +34,7 @@ if ($isLoggedIn && count($_POST) > 0) {
 		$data['likes'] = 0;
 		$data['comments'] = [];
 		$data['authorName'] = $username;
+		$data['email'] = $_SESSION['email'];
 		$postCategories = json_decode($_POST['postCategories'], true);
 		$lookingFor = json_decode($_POST['lookingFor'], true);
 
@@ -180,10 +181,9 @@ $posts = readJsonData('data/posts.json');
         
 				<div class="col-md-6">
 
-          <div class="z-100 bg-slate-50 flex justify-between">
-            <button type="button" class="bg-red-300 text-white p-3 hover:bg-red-300/50" data-bs-toggle="modal" data-bs-target="#editModal">Delete</button>
-            <button type="button" class="w-full bg-black text-white p-3 hover:bg-red-300/50" data-bs-toggle="modal" data-bs-target="#editModal" >Edit</button>  
-            <a href="editPost.php?id=<?= $key ?>">Edit</a>
+          <div class="z-100 bg-slate-50 flex justify-between ">
+            <a class="bg-red-300 text-white px-5 py-2 hover:bg-red-500" href="deletePost.php?id=<?= $key ?>">Delete</a>
+						<a class="bg-gray-950 text-white px-5 py-2 hover:bg-gray-950/70" href="editPost.php?id=<?= $key ?>">Edit</a>
           </div>
 
 					<div class="post-default post-has-bg-img">

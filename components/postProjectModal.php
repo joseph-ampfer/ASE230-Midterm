@@ -10,7 +10,7 @@
 
 					<!-- FORM -->
 					<div class="post-comment-form-cover">
-						<form id="projectForm" class="comment-form" method="POST" action=<?= "index.php" ?> enctype="multipart/form-data">
+						<form id="projectForm" class="comment-form" method="POST" enctype="multipart/form-data">
 							<div class="row">
 								<div class="col-md-6">
 									<label for="postTitle"><strong>Project Title</strong></label>
