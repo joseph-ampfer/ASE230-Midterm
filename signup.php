@@ -16,12 +16,12 @@ if (count($_POST) > 0) {
         //we need line count to assign the user an id which is the number of users we have 
         //so that we can save that as session id of the user
         $index = 0;
-        $file = fopen(__DIR__ . '/data/users.csv', 'r');
+        $file = fopen(__DIR__ . '/data/users.csv.php', 'r');
         while (fgets($file)) {
             $lineCount++;
         }
         fclose($file);
-        $fp = fopen(__DIR__ . '/data/users.csv', 'a+');
+        $fp = fopen(__DIR__ . '/data/users.csv.php', 'a+');
         fputs($fp, $_POST['email'] . ';' . password_hash($_POST['password'], PASSWORD_DEFAULT) . ';' . $_POST['firstName'] . ';' . $_POST['lastName'] . PHP_EOL);
         $_SESSION['email'] = $_POST['email'];
         $_SESSION['ID'] = $lineCount;
