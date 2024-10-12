@@ -14,6 +14,7 @@ if (isset($_SESSION['email'])) {
 
 // !!! REplace with session
 $username = "Joseph Ampfer";
+$error = "";
 
 // Index for the post page
 $postIndex = $_GET['id'];
@@ -28,48 +29,63 @@ if ($isLoggedIn && count($_POST) > 0) {
 		$data = $_POST;
 
 		if (isset($_FILES['postImage']) && $_FILES['postImage']['error'] === UPLOAD_ERR_OK) {
-			// Delete old picture
-			// Check if the old image exists before trying to delete it
-			if (file_exists($post['postImage'])) {
-					// Delete the old image
-					if (!unlink($post['postImage'])) {
-							// Handle error if unlink fails
-							echo "Error: Failed to delete old image.";
-					}
-			} else {
-					// Handle case where the file doesn't exist
-					echo "Warning: Old image file not found.";
-			}
+			
+			// Check if new picture is allowed
+			// Allowed MIME types (covers most common image formats)
+			$allowedMimeTypes = [
+					'image/jpeg', 'image/png', 'image/gif', 
+					'image/webp', 'image/bmp', 'image/tiff', 'image/svg+xml'
+			];
 
-			// Save new one
-			$fextension = pathinfo($_FILES['postImage']['name'], PATHINFO_EXTENSION);
-			$time = uniqid();
-			$imagePath = './assets/images/blog/' . $time . '.' . $fextension;
-			move_uploaded_file($_FILES['postImage']['tmp_name'], $imagePath);
-			$data['postImage'] = $imagePath;
+			// Validate Mime type
+			$detectedType = mime_content_type($_FILES['postImage']['tmp_name']);
+			if (!in_array($detectedType, $allowedMimeTypes)) {
+				$error = "Must upload an image (jpeg, jpg, png, gif, webp, bmp, svg)";
+			}	else {
+
+				// Delete old picture
+				// Check if the old image exists before trying to delete it
+				if (file_exists($post['postImage']) && !unlink($post['postImage'])) {
+						// Delete the old image
+							echo "Error: Failed to delete old image.";
+				} else {
+						// Handle case where the file doesn't exist
+						echo "Warning: Old image file not found.";
+				}
+
+				// Save new one
+				$fextension = pathinfo($_FILES['postImage']['name'], PATHINFO_EXTENSION);
+				$time = uniqid();
+				$imagePath = './assets/images/blog/' . $time . '.' . $fextension;
+				move_uploaded_file($_FILES['postImage']['tmp_name'], $imagePath);
+				$data['postImage'] = $imagePath;
+				
+			}
 		} else {
 			$data['postImage'] = $post['postImage'];
 		}
 
-		// Add time, likes, etc
-		$data['postTime'] = date("Y-m-d H:i:s");
-		$data['likes'] = $post['likes'];
-		$data['comments'] = $post['comments'];
-		$data['authorName'] = $post['authorName'];
-		$data['email'] = $post['email'];
-		$postCategories = json_decode($_POST['postCategories'], true);
-		$lookingFor = json_decode($_POST['lookingFor'], true);
+		if ($error === "") {
+			// Add time, likes, etc
+			$data['postTime'] = date("Y-m-d H:i:s");
+			$data['likes'] = $post['likes'];
+			$data['comments'] = $post['comments'];
+			$data['authorName'] = $post['authorName'];
+			$data['email'] = $post['email'];
+			$postCategories = json_decode($_POST['postCategories'], true);
+			$lookingFor = json_decode($_POST['lookingFor'], true);
 
-		$data['postCategories'] = array_map(function ($item) {
-			return $item['value'];
-		}, $postCategories);
-		$data['lookingFor'] = array_map(function ($item) {
-			return $item['value'];
-		}, $lookingFor);
+			$data['postCategories'] = array_map(function ($item) {
+				return $item['value'];
+			}, $postCategories);
+			$data['lookingFor'] = array_map(function ($item) {
+				return $item['value'];
+			}, $lookingFor);
 
-		editPost('data/posts.json', $data, $postIndex);
+			editPost('data/posts.json', $data, $postIndex);
 
-    header("Location: profile.php");
+			header("Location: profile.php");
+		}
 	}
 }
 
@@ -210,7 +226,7 @@ $post = $posts[$postIndex];
       </ul>
     </div>
   </div> -->
-
+<mark> <?php if ($error != "") {echo $error;} ?> </mark>
   <!-- Main content -->
   <main class="container pb-120">
     <div class="row">
@@ -279,7 +295,7 @@ $post = $posts[$postIndex];
             data-blacklist='badwords, asdf'
           />
           <label style="margin-top: 50px;" for="description"><strong>Upload New Image (optional)</strong></label>
-          <input type="file" class="form-control" name="postImage" >
+          <input type="file" class="form-control" name="postImage" accept="image/*" >
       
           <button type="submit" form="editForm" class="btn btn-primary w-100">Submit Changes</button>
           </form>

@@ -16,40 +16,59 @@ if (isset($_SESSION['email'])) {
 // !!! REplace with session
 
 $username = "Joseph Ampfer";
-$sessionEmail = "jampfer@gmail.com";
+
+$error = "";
 
 // To post a comment, check if logged and comment there
 if ($isLoggedIn && count($_POST) > 0) {
 	if (isset($_POST['postTitle'][0])) {
 
-		$fextension = pathinfo($_FILES['postImage']['name'], PATHINFO_EXTENSION);
-		$time = time();
-		$imagePath = './assets/images/blog/' . $time . '.' . $fextension;
-		move_uploaded_file($_FILES['postImage']['tmp_name'], $imagePath);
+		if (isset($_FILES['postImage'] ) && $_FILES['postImage']['error'] === UPLOAD_ERR_OK ) {
 
-		$data = $_POST;
+			// Allowed MIME types (covers most common image formats)
+			$allowedMimeTypes = [
+					'image/jpeg', 'image/png', 'image/gif', 
+					'image/webp', 'image/bmp', 'image/tiff', 'image/svg+xml'
+			];
 
-		// Add time, likes, etc
-		$data['postTime'] = date("Y-m-d H:i:s");
-		$data['likes'] = 0;
-		$data['comments'] = [];
-		$data['authorName'] = $username;
-		$data['email'] = $_SESSION['email'];
-		$postCategories = json_decode($_POST['postCategories'], true);
-		$lookingFor = json_decode($_POST['lookingFor'], true);
+			// Validate Mime type
+			$detectedType = mime_content_type($_FILES['postImage']['tmp_name']);
+			if (!in_array($detectedType, $allowedMimeTypes)) {
+				$error = "Must upload an image (jpeg, jpg, png, gif)";
+			} else {
+							//===== ELSE procede with post upload ===	
+				$fextension = pathinfo($_FILES['postImage']['name'], PATHINFO_EXTENSION);
+				$time = time();
+				$imagePath = './assets/images/blog/' . $time . '.' . $fextension;
+				move_uploaded_file($_FILES['postImage']['tmp_name'], $imagePath);
 
-		$data['postCategories'] = array_map(function ($item) {
-			return $item['value'];
-		}, $postCategories);
-		$data['lookingFor'] = array_map(function ($item) {
-			return $item['value'];
-		}, $lookingFor);
-		$data['postImage'] = $imagePath;
 
-		saveToJson('data/posts.json', $data);
+				$data = $_POST;
+
+				// Add time, likes, etc
+				$data['postTime'] = date("Y-m-d H:i:s");
+				$data['likes'] = 0;
+				$data['comments'] = [];
+				$data['authorName'] = $username;
+				$data['email'] = $_SESSION['email'];
+				$postCategories = json_decode($_POST['postCategories'], true);
+				$lookingFor = json_decode($_POST['lookingFor'], true);
+
+				$data['postCategories'] = array_map(function ($item) {
+					return $item['value'];
+				}, $postCategories);
+				$data['lookingFor'] = array_map(function ($item) {
+					return $item['value'];
+				}, $lookingFor);
+				$data['postImage'] = $imagePath;
+
+				saveToJson('data/posts.json', $data);
+			}
+
+		} else {$error = "Error uploading image";}
+
 	}
 }
-
 
 
 $posts = readJsonData('data/posts.json');
@@ -165,15 +184,29 @@ $posts = readJsonData('data/posts.json');
 
 	<!-- Main content -->
 	<main class="container pt-15 pb-90">
-		<div class="flex items-center justify-center">
-      Your Profile
-			<button type="button" class="mb-10 bg-red-300 p-5 rounded-full text-white hover:bg-red-300/50" data-bs-toggle="modal" data-bs-target="#exampleModal">
-				Post Your Project
-			</button>
-		</div>
+		<h1>Your Profile</h1>
+		<!-- Post Modal Trigger -->
+    <?php if ($isLoggedIn) { ?>
+      
+       <div class="container  mt-5 mb-4" data-bs-toggle="modal" data-bs-target="#exampleModal" style = "cursor: pointer; ">
+           <div class="d-flex  justify-content-end">
+               <div class="d-flex justify-content-between rounded-pill h-25 w-25 align-items-center p-3 shadow-lg rounded cursor-pointer bg-light hover:bg-gray-200">
+                   <img src="assets/images/blog/author.jpg" alt="User Avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;" />
+                   <div class="ml-3 text-secondary">
+                       Post a Project
+                   </div>
+                   <span>
+                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                        <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                    </svg>
+                   </span>
+               </div>
+           </div>
+       </div>
+    <?php }; ?>
+		<mark><?php if($error != "") {echo $error;} ?></mark>
 
 		<div class="row">
-
 
 			<!-- v2 -->
 			<?php foreach ($posts as $key => $post) { 

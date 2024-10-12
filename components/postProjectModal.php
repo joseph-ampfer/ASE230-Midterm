@@ -31,7 +31,7 @@
 								</div>
 								<div class="col-md-12">
 									<label for="description"><strong>Project Image</strong></label>
-									<input required type="file" class="form-control" name="postImage" placeholder="Upload Image">
+									<input required type="file" class="form-control" name="postImage" accept="image/*">
 								</div>
 
 							</div>
