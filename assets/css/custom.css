@@ -54,3 +54,44 @@ a {
 .header .header-fixed {
     z-index: 1000;
 }
+
+.custom-signup-btn {
+    font-size: 1rem;  /* Smaller font size */
+    padding: 10px 30px;  /* Reduced padding for a smaller button */
+    border-radius: 5px;  /* Slightly less rounded corners */
+    background-color: #ff7171;  /* Pink background color */
+    border: none;
+    color: #ffffff;  /* White text */
+    text-transform: uppercase;
+    font-weight: 600;
+    display: inline-block;
+    transition: all 0.5s ease-in-out;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);  /* Subtle shadow */
+    margin-top: 20px;
+}
+
+.custom-signup-btn:hover {
+    background-color: #ffffff;  /* Background becomes white on hover */
+    color: #ff7171;  /* Text color changes to the original pink */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);  /* Slightly larger shadow on hover */
+}
+
+.about-box {
+    background-color: #f9f9f9; /* Light background for contrast */
+    border: 1px solid #ddd;    /* Light border for structure */
+    border-radius: 10px;       /* Slightly rounded corners */
+    padding: 40px;             /* Added padding inside the box */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for emphasis */
+}
+
+ .about-box h1, .what-we-do h2 {
+    font-size: 2.5rem; /* Larger heading size */
+    font-weight: 700;
+}
+
+.about-box p {
+    font-size: 1.1rem; /* Slightly larger paragraph font */
+}
+
+
+
