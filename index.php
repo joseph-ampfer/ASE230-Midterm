@@ -21,7 +21,18 @@ $error = "";
 if ($isLoggedIn && count($_POST) > 0) {
 	if (isset($_POST['postTitle'][0])) {
 
-		if (isset($_FILES['postImage'] ) && $_FILES['postImage']['error'] === UPLOAD_ERR_OK ) {
+		// Check if required fields have values in $_POST
+		if (empty($_POST['postTitle'])) {
+				$error = "Post title is required.";
+		} elseif (empty($_POST['postCategories'])) {
+				$error = "Post categories are required.";
+		} elseif (empty($_POST['lookingFor'])) {
+				$error = "Looking for field is required.";
+		} elseif (empty($_POST['description'])) {
+				$error = "Description is required.";
+		}
+
+		if (isset($_FILES['postImage'] ) && $_FILES['postImage']['error'] === UPLOAD_ERR_OK && $error === "" ) {
 
 			// Allowed MIME types (covers most common image formats)
 			$allowedMimeTypes = [

@@ -26,9 +26,20 @@ $post = $posts[$postIndex];
 if ($isLoggedIn && count($_POST) > 0) {
 	if (isset($_POST['postTitle'][0]) && $post['email'] == $_SESSION['email']) {
 
+		// Check if required fields have values in $_POST
+		if (empty($_POST['postTitle'])) {
+				$error = "Post title is required.";
+		} elseif (empty($_POST['postCategories'])) {
+				$error = "Post categories are required.";
+		} elseif (empty($_POST['lookingFor'])) {
+				$error = "Looking for field is required.";
+		} elseif (empty($_POST['description'])) {
+				$error = "Description is required.";
+		}
+
 		$data = $_POST;
 
-		if (isset($_FILES['postImage']) && $_FILES['postImage']['error'] === UPLOAD_ERR_OK) {
+		if (isset($_FILES['postImage']) && $_FILES['postImage']['error'] === UPLOAD_ERR_OK && $error === "") {
 			
 			// Check if new picture is allowed
 			// Allowed MIME types (covers most common image formats)
@@ -59,7 +70,7 @@ if ($isLoggedIn && count($_POST) > 0) {
 				$imagePath = './assets/images/blog/' . $time . '.' . $fextension;
 				move_uploaded_file($_FILES['postImage']['tmp_name'], $imagePath);
 				$data['postImage'] = $imagePath;
-				
+
 			}
 		} else {
 			$data['postImage'] = $post['postImage'];
