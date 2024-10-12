@@ -13,7 +13,7 @@ if (count($_POST) > 0) {
     if (isset($_POST['email'][0]) && isset($_POST['password'][0])) {
         // process information
         $index = 0;
-        $fp = fopen(__DIR__ . '/data/users.csv', 'r');
+        $fp = fopen(__DIR__ . '/data/users.csv.php', 'r');
         while (!feof($fp)) {
             $line = fgets($fp);
             if (strstr($line, '<?php die() ?>') || strlen($line) < 5)
