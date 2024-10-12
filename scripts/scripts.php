@@ -62,7 +62,8 @@ function editPost($filePath, $data, $index)
 }
 
 
-function formatDate($time) {
+function formatDate($time)
+{
   // Create a Datetime object from the ISO 8601 string
   $date = new DateTime($time);
 
@@ -70,10 +71,30 @@ function formatDate($time) {
   return $date->format('j M Y');
 }
 
-function formatTime($time) {
+function formatTime($time)
+{
   // Create a Datetime object from the ISO 8601 string
   $date = new DateTime($time);
 
   // Format it as "2 Feb 2019"
   return $date->format('g: i A');
+}
+
+function getUserName($email)
+{
+  $file = fopen('data/users.csv', 'r'); // Open the file in read mode
+
+  // Check through each line
+  while (($line = fgets($file)) !== false) {
+    $data = explode(';', trim($line)); // Split the line by semicolons and remove any extra spaces
+
+    // Check if the email in the line matches the provided email
+    if ($data[0] === $email) {
+      fclose($file);
+      return $data[2] . ' ' . $data[3];
+    }
+  }
+
+  fclose($file);
+  return null;
 }

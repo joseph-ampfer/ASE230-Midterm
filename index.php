@@ -1,21 +1,13 @@
 <?php
 session_start();
 require_once('scripts/scripts.php');
-
 $isLoggedIn = false;
 if (isset($_SESSION['email'])) {
-    $isLoggedIn = true;
+	$isLoggedIn = true;
+	$email = $_SESSION['email'];
+	$username = getUserName($email);
 }
 
-// TODO
-// 1. LOGIN LOGIC
-// 2. DATA VERIFICATION FOR POST
-
-
-// !!! Replace with session
-$username = "Joseph Ampfer";
-
-$error = "";
 
 // To post a comment, check if logged and comment there
 if ($isLoggedIn && count($_POST) > 0) {
@@ -87,75 +79,67 @@ $posts = readJsonData('data/posts.json');
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>U Collab</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
-    <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700"
-        rel="stylesheet">
-    <!-- <link rel="stylesheet" href="assets/css/bootstrap.min.css"> -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>U Collab</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
+	<link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700"
+		rel="stylesheet">
+	<!-- <link rel="stylesheet" href="assets/css/bootstrap.min.css"> -->
 
 	<!-- Include Bootstrap 5 CSS -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="assets/css/font-awesome.min.css">
-    <link rel="stylesheet" href="assets/plugins/animate/animate.min.css">
-    <link rel="stylesheet" href="assets/plugins/owl-carousel/owl.carousel.min.css">
-    <link rel="stylesheet" href="assets/plugins/magnific-popup/magnific-popup.css">
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/responsive.css">
-    <link rel="stylesheet" href="assets/css/custom.css">
+	<link rel="stylesheet" href="assets/css/font-awesome.min.css">
+	<link rel="stylesheet" href="assets/plugins/animate/animate.min.css">
+	<link rel="stylesheet" href="assets/plugins/owl-carousel/owl.carousel.min.css">
+	<link rel="stylesheet" href="assets/plugins/magnific-popup/magnific-popup.css">
+	<link rel="stylesheet" href="assets/css/style.css">
+	<link rel="stylesheet" href="assets/css/responsive.css">
+	<link rel="stylesheet" href="assets/css/custom.css">
 
 
 
 
-    <!-- FAVICONS FOR DIFFERENT DEVICES -->
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/images/favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon/favicon-16x16.png">
-    <link rel="manifest" href="assets/images/favicon/site.webmanifest">
-    <link rel="mask-icon" href="assets/images/favicon/safari-pinned-tab.svg" color="#5bbad5">
-    <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="theme-color" content="#ffffff">
+	<!-- FAVICONS FOR DIFFERENT DEVICES -->
+	<link rel="apple-touch-icon" sizes="180x180" href="assets/images/favicon/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon/favicon-16x16.png">
+	<link rel="manifest" href="assets/images/favicon/site.webmanifest">
+	<link rel="mask-icon" href="assets/images/favicon/safari-pinned-tab.svg" color="#5bbad5">
+	<meta name="msapplication-TileColor" content="#da532c">
+	<meta name="theme-color" content="#ffffff">
 </head>
 
 <body>
-    <div class="preloader">
-        <div class="preload-img">
-            <div class="spinnerBounce">
-                <div class="double-bounce1"></div>
-                <div class="double-bounce2"></div>
-            </div>
-        </div>
-    </div>
-    <div class="nav-search-box">
-        <form>
-            <div class="input-group"> <input type="text" class="form-control" placeholder="eg. feel the love and …">
-                <span class="b-line"></span> <span class="b-line-under"></span>
-                <div class="input-group-append"> <button type="button" class="btn"> <img
-                            src="assets/images/search-icon.svg" alt="" class="img-fluid svg"> </button> </div>
-            </div>
-        </form>
-    </div>
-    <header class="header">
-        <div class="header-fixed" style="background-color:#fcfcfc">
-            <div class="container-fluid pl-120 pr-120 position-relative">
-                <div class="row d-flex align-items-center">
-                    <div class="col-lg-3 col-md-4 col-6">
-                        <div class="logo"> <a href="#"><img src="assets/images/logo.png" alt="" class="img-fluid"></a>
-                        </div>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-6 d-flex align-items-center justify-content-end position-static">
-                        <div class="nav-menu-cover">
-                            <ul class="nav nav-menu align-items-center">
-                                <li><a href="index.php">Home</a></li>
-                                <li><a href="about.php">About</a></li>
-                                <li><a href="contact.php">Contact</a></li>
-                                <?php
-                                echo $isLoggedIn ?
-                                    '<li class="dropdown">
+	<div class="preloader">
+		<div class="preload-img">
+			<div class="spinnerBounce">
+				<div class="double-bounce1"></div>
+				<div class="double-bounce2"></div>
+			</div>
+		</div>
+	</div>
+	<header class="header">
+		<div class="header-fixed" style="background-color:#fcfcfc">
+			<div class="container-fluid pl-120 pr-120 position-relative">
+				<div class="row d-flex align-items-center">
+					<div class="col-lg-3 col-md-4 col-6">
+						<div class="logo"> <a href="#"><img src="assets/images/logo.png" alt="" class="img-fluid"></a>
+						</div>
+					</div>
+					<div class="col-lg-9 col-md-8 col-6 d-flex align-items-center justify-content-end position-static">
+						<div class="nav-menu-cover">
+							<ul class="nav nav-menu align-items-center">
+								<li><a href="index.php">Home</a></li>
+								<li><a href="about.php">About</a></li>
+								<li><a href="contact.php">Contact</a></li>
+								<li><a href="contact.php"></a></li>
+								<?php
+								echo $isLoggedIn ?
+									'<li class="dropdown">
                                     <!-- User image as the dropdown trigger with inline styles -->
                                     <img src="assets/images/blog/author.jpg"
                                         style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;"
@@ -165,8 +149,10 @@ $posts = readJsonData('data/posts.json');
                                     <!-- Dropdown menu -->
                                     <ul class="dropdown-menu" aria-labelledby="userDropdown">
                                         <li><a class="dropdown-item" href="profile.php">Profile</a></li>
+                                        <li><a class="dropdown-item" href="profile.php">Profile</a></li>
                                         <li><a class="dropdown-item" href="#">Settings</a></li>
                                         <li><a class="dropdown-item" href="#">Help</a></li>
+										<li><a class="dropdown-item" href="#"></a></li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li>
                                             <form method="POST" action="logout.php">
@@ -194,20 +180,6 @@ $posts = readJsonData('data/posts.json');
 			</div>
 		</div>
 	</header>
-
-    <!-- Banner below nav bar -->
-    <!-- <div class="page-title">
-        <div class="container">
-            <h2>Available Projects</h2>
-            <ul class="nav">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="#">Blog</a></li>
-                <li>Blog Overlay</li>
-            </ul>
-        </div>
-    </div> -->
-
-	<!-- Button trigger modal -->
 
 
 	<!-- Main content -->
@@ -256,7 +228,10 @@ $posts = readJsonData('data/posts.json');
 							<div class="title mb-1">
 								<h2><a href="details-full-width.php?id=<?= $key ?>"><?= $post['postTitle'] ?></a></h2>
 							</div>
-							<p class="shortDescription mb-5 px-10"><?= !empty($post['description']) ? substr($post['description'], 0, 100) . '...' : '' ?></p> <!-- Shortened project description -->
+							<p class="shortDescription mb-5 px-10">
+								<?= !empty($post['description']) ? substr($post['description'], 0, 100) . '...' : '' ?>
+							</p>
+							<!-- Shortened project description -->
 							<div>
 								<p>Looking for:</p>
 								<div class="flex space-x-2 items-center justify-center">
@@ -270,9 +245,14 @@ $posts = readJsonData('data/posts.json');
 									<img src="<?= isset($post['authorPic']) ? $post['authorPic'] : "assets/images/profile_icon.png" ?>" alt="" class="img-fluid">
 									<a class="text-white/80" href="#"><?= $post['authorName'] ?></a>
 								</li>
-								<li class="meta-date"><a class="text-white/80" href="#"><?= formatDate($post['postTime']) ?></a></li>
-								<li class="meta-comments"><a class="text-white/80" href="#"><i class="fa fa-comment text-white/80"></i> <?= count($post['comments']) ?></a></li>
-								<li class="meta-likes"><a class="text-white/80" href="#"><i class="fa fa-heart text-white/80"></i> <?= $post['likes'] ?? 0 ?></a></li> <!-- Optional likes feature -->
+								<li class="meta-date"><a class="text-white/80"
+										href="#"><?= formatDate($post['postTime']) ?></a></li>
+								<li class="meta-comments"><a class="text-white/80" href="#"><i
+											class="fa fa-comment text-white/80"></i> <?= count($post['comments']) ?></a>
+								</li>
+								<li class="meta-likes"><a class="text-white/80" href="#"><i
+											class="fa fa-heart text-white/80"></i> <?= $post['likes'] ?? 0 ?></a></li>
+								<!-- Optional likes feature -->
 							</ul>
 							<!-- <div class="join-project">
 								<a href="contact-owner.php?id=<?= $key ?>" class="btn btn-primary">Join Project</a>
@@ -293,40 +273,44 @@ $posts = readJsonData('data/posts.json');
 		</div>
 	</main>
 
-    <!-- Subscribe to our newsletter -->
-    <section class="newsletter-cover">
-        <div class="nl-bg-ol"></div>
-        <div class="container">
-            <div class="newsletter pt-80 pb-80">
-                <div class="section-title text-center">
-                    <h2>Subscribe Our Newsletter</h2>
-                </div>
-                <div class="row">
-                    <div class="col-lg-8 offset-lg-2">
-                        <form
-                            action="https://themelooks.us13.list-manage.com/subscribe/post?u=79f0b132ec25ee223bb41835f&amp;id=f4e0e93d1d"
-                            method="post" novalidate>
-                            <div class="input-group"> <input type="text" class="form-control"
-                                    placeholder="Enter Your Email">
-                                <div class="input-group-append"> <button class="btn btn-default">Submit</button> </div>
-                            </div>
-                            <p class="checkbox-cover d-flex justify-content-center"> <label> I've read and accept the <a
-                                        href="#"> Privacy Policy </a> <input type="checkbox"> <span
-                                        class="checkmark"></span> </label> </p>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+	<!-- Subscribe to our newsletter -->
+	<section class="newsletter-cover">
+		<div class="nl-bg-ol"></div>
+		<div class="container">
+			<div class="newsletter pt-80 pb-80">
+				<div class="section-title text-center">
+					<h2>Subscribe Our Newsletter</h2>
+				</div>
+				<div class="row">
+					<div class="col-lg-8 offset-lg-2">
+						<form
+							action="https://themelooks.us13.list-manage.com/subscribe/post?u=79f0b132ec25ee223bb41835f&amp;id=f4e0e93d1d"
+							method="post" novalidate>
+							<div class="input-group"> <input type="text" class="form-control"
+									placeholder="Enter Your Email">
+								<div class="input-group-append"> <button class="btn btn-default">Submit</button> </div>
+							</div>
+							<p class="checkbox-cover d-flex justify-content-center"> <label> I've read and accept the <a
+										href="#"> Privacy Policy </a> <input type="checkbox"> <span
+										class="checkmark"></span> </label> </p>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
 
 	<footer class="footer-container d-flex align-items-center">
 		<div class="container">
 			<div class="row align-items-center footer">
 				<div class="col-md-4 text-center text-md-left order-md-1 order-2">
-					<div class="footer-social"> <a href="#"><i class="fa fa-facebook"></i></a> <a href="#"><i class="fa fa-twitter"></i></a> <a href="#"><i class="fa fa-linkedin"></i></a> <a href="#"><i class="fa fa-google"></i></a> <a href="#"><i class="fa fa-pinterest"></i></a> </div>
+					<div class="footer-social"> <a href="#"><i class="fa fa-facebook"></i></a> <a href="#"><i
+								class="fa fa-twitter"></i></a> <a href="#"><i class="fa fa-linkedin"></i></a> <a
+							href="#"><i class="fa fa-google"></i></a> <a href="#"><i class="fa fa-pinterest"></i></a>
+					</div>
 				</div>
-				<div class="col-md-4 d-flex justify-content-center order-md-2 order-1"> <a href="index.html"><img src="assets/images/logo.png" alt="" class="img-fluid"></a> </div>
+				<div class="col-md-4 d-flex justify-content-center order-md-2 order-1"> <a href="index.html"><img
+							src="assets/images/logo.png" alt="" class="img-fluid"></a> </div>
 				<div class="col-md-4 order-md-3 order-3">
 					<div class="footer-cradit text-center text-md-right">
 						<p>© 2019 <a href="index.html">Themelooks.</a></p>
@@ -352,10 +336,10 @@ $posts = readJsonData('data/posts.json');
 	<!-- Include Bootstrap 5 JS Bundle -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Tagify -->
-    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+	<!-- Tagify -->
+	<script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
+	<link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
 
 	<script src="assets/plugins/owl-carousel/owl.carousel.min.js"></script>
 	<script src="assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
