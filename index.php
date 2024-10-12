@@ -1,7 +1,9 @@
 <?php
 session_start();
 // print_r($_SESSION);
-
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 require_once('scripts/scripts.php');
 $isLoggedIn = false;
 if (isset($_SESSION['email'])) {
@@ -14,14 +16,11 @@ if (isset($_SESSION['email'])) {
 // To post a comment, check if logged and comment there
 if ($isLoggedIn && count($_POST) > 0) {
 	if (isset($_POST['postTitle'][0])) {
-
 		$fextension = pathinfo($_FILES['postImage']['name'], PATHINFO_EXTENSION);
 		$time = time();
-		$imagePath = './assets/images/blog/' . $time . '.' . $fextension;
+		$imagePath = './assets/images/blog' . $time . '.' . $fextension;
 		move_uploaded_file($_FILES['postImage']['tmp_name'], $imagePath);
-
 		$data = $_POST;
-
 		// Add time, likes, etc
 		$data['postTime'] = date("Y-m-d H:i:s");
 		$data['likes'] = 0;
@@ -37,7 +36,9 @@ if ($isLoggedIn && count($_POST) > 0) {
 			return $item['value'];
 		}, $lookingFor);
 		$data['postImage'] = $imagePath;
-
+		echo '<pre>';
+		print_r($data);
+		echo '</pre>';
 		saveToJson('data/posts.json', $data);
 	}
 }
@@ -330,16 +331,18 @@ $posts = readJsonData('data/posts.json');
 									<label for="description"><strong>Project Image</strong></label>
 									<input type="file" name="postImage" placeholder="Upload Image" />
 								</div>
-
 							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn bg-danger text-white"
+									data-bs-dismiss="modal">Cancel</button>
+								<button type="submit" class="btn bg-success text-white">Post</button>
+							</div>
+
 						</form>
 					</div>
 
 				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn bg-danger text-white" data-bs-dismiss="modal">Cancel</button>
-					<button type="submit" class="btn bg-success text-white">Post</button>
-				</div>
+
 			</div>
 		</div>
 	</div>
