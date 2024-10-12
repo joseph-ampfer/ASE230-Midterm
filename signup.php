@@ -13,11 +13,18 @@ error_reporting(E_ALL); // Report all errors
 //then check if the user has entered email or not
 if (count($_POST) > 0) {
     if (isset($_POST['email'][0]) && isset($_POST['password'][0])) {
+        //we need line count to assign the user an id which is the number of users we have 
+        //so that we can save that as session id of the user
+        $index = 0;
+        $file = fopen(__DIR__ . '/data/users.csv.php', 'r');
+        while (fgets($file)) {
+            $lineCount++;
+        }
+        fclose($file);
+        $fp = fopen(__DIR__ . '/data/users.csv.php', 'a+');
+        fputs($fp, $_POST['email'] . ';' . password_hash($_POST['password'], PASSWORD_DEFAULT) . ';' . $_POST['firstName'] . ';' . $_POST['lastName'] . PHP_EOL);
         $_SESSION['email'] = $_POST['email'];
-        $_SESSION['password'] = $_POST['password'];
-        $fp = fopen(__DIR__ . '/data/users.csv', 'a+');
-        fputs($fp, $_POST['email'] . ';' . password_hash($_POST['password'], PASSWORD_DEFAULT) . PHP_EOL);
-        fclose($fp);
+        $_SESSION['ID'] = $lineCount;
         header("Location: index.php");
     } else
         echo 'Email and password are missing';

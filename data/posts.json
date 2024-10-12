@@ -5,18 +5,24 @@
             "Chatbot"
         ],
         "postTitle": "Rocket Ship to the Moon Edited",
-        "description": "                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ante sem, molestie eget pulvinar in, aliquet at nulla. Mauris porttitor urna id tempor auctor. Nam quis mi non diam fermentum aliquet. Vestibulum dictum convallis feugiat. Ut libero libero, fringilla eu neque ut, posuere consequat massa. In facilisis enim eget massa pellentesque, non accumsan mi condimentum. Aenean in ligula in est placerat faucibus. Curabitur rutrum nunc at neque consequat porta. Pellentesque dignissim pharetra mauris at imperdiet. Cras facilisis laoreet porttitor. Praesent aliquet, libero a fermentum eleifend, nulla nunc luctus diam, in faucibus nisl justo ac risus. Etiam est arcu, ullamcorper vitae diam non, rutrum feugiat nulla. Vestibulum ac laoreet diam.\r\n\r\nPhasellus eu enim lorem. Integer luctus luctus nisl a bibendum. Integer eu purus vulputate, dignissim sem vitae, rhoncus erat. Sed euismod dapibus ligula eget consectetur. Aliquam auctor laoreet elit vel convallis. Etiam sodales lacus non cursus vulputate. Quisque vel tempus enim, at rhoncus ligula. Vivamus quis vulputate dui. Donec molestie velit odio. Vestibulum sed odio porttitor, imperdiet enim eu, mollis augue. Interdum et malesuada fames ac ante ipsum primis in faucibus. Fusce venenatis elementum ipsum ut consequat. Nullam ex turpis, elementum sed scelerisque eget, elementum non lacus. Phasellus ut augue ac sem blandit pharetra.\r\n\r\nVivamus vitae mi pellentesque, aliquet nunc id, ultricies leo. Vestibulum ut quam vel mi dapibus mollis. Nunc lobortis posuere ultricies. Maecenas in dapibus lacus. Etiam nec urna congue, finibus mauris ut, dignissim turpis. Fusce pellentesque pellentesque nisi id condimentum. Proin risus lorem, iaculis at sem et, convallis dictum risus. Proin tincidunt dui urna, in tincidunt metus euismod eu. Morbi vitae tristique mi. Proin orci diam, pretium id erat ut, varius vehicula erat. In euismod vel tellus a interdum. Suspendisse urna metus, sollicitudin sit amet lacus eget, porta semper nibh.                                          ",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ante sem, molestie eget pulvinar in, aliquet at nulla. Mauris porttitor urna id tempor auctor. Nam quis mi non diam fermentum aliquet. Vestibulum dictum convallis feugiat. Ut libero libero, fringilla eu neque ut, posuere consequat massa. In facilisis enim eget massa pellentesque, non accumsan mi condimentum. Aenean in ligula in est placerat faucibus. Curabitur rutrum nunc at neque consequat porta. Pellentesque dignissim pharetra mauris at imperdiet. Cras facilisis laoreet porttitor. Praesent aliquet, libero a fermentum eleifend, nulla nunc luctus diam, in faucibus nisl justo ac risus. Etiam est arcu, ullamcorper vitae diam non, rutrum feugiat nulla. Vestibulum ac laoreet diam.\r\n\r\nPhasellus eu enim lorem. Integer luctus luctus nisl a bibendum. Integer eu purus vulputate, dignissim sem vitae, rhoncus erat. Sed euismod dapibus ligula eget consectetur. Aliquam auctor laoreet elit vel convallis. Etiam sodales lacus non cursus vulputate. Quisque vel tempus enim, at rhoncus ligula. Vivamus quis vulputate dui. Donec molestie velit odio. Vestibulum sed odio porttitor, imperdiet enim eu, mollis augue. Interdum et malesuada fames ac ante ipsum primis in faucibus. Fusce venenatis elementum ipsum ut consequat. Nullam ex turpis, elementum sed scelerisque eget, elementum non lacus. Phasellus ut augue ac sem blandit pharetra.\r\n\r\nVivamus vitae mi pellentesque, aliquet nunc id, ultricies leo. Vestibulum ut quam vel mi dapibus mollis. Nunc lobortis posuere ultricies. Maecenas in dapibus lacus. Etiam nec urna congue, finibus mauris ut, dignissim turpis. Fusce pellentesque pellentesque nisi id condimentum. Proin risus lorem, iaculis at sem et, convallis dictum risus. Proin tincidunt dui urna, in tincidunt metus euismod eu. Morbi vitae tristique mi. Proin orci diam, pretium id erat ut, varius vehicula erat. In euismod vel tellus a interdum. Suspendisse urna metus, sollicitudin sit amet lacus eget, porta semper nibh.                                                                                                                                                                                            ",
         "lookingFor": [
             "UI Designer",
             "Machine Learning Specialist",
             "Data Scientist"
         ],
-        "postTime": "2024-10-11 01:00:34",
-        "likes": 0,
-        "comments": [],
+        "postImage": ".\/assets\/images\/blog\/670a960f63770.jpeg",
+        "postTime": "2024-10-12 17:30:23",
+        "likes": 6,
+        "comments": [
+            {
+                "comment": "very nice",
+                "username": "Joseph Ampfer",
+                "time": "2024-10-12 07:52:38"
+            }
+        ],
         "authorName": "Joseph Ampfer",
-        "email": "jampfer@gmail.com",
-        "postImage": ".\/assets\/images\/blog\/1728601234.png"
+        "email": "jampfer@gmail.com"
     },
     {
         "postID": 2,
@@ -216,23 +222,6 @@
     {
         "postTitle": "Touch Grass Royale",
         "postCategories": [
-            "Mobile Apps",
-            "Game Development"
-        ],
-        "lookingFor": [
-            "Animator",
-            "Marketing Specialist"
-        ],
-        "description": "A competitive app.\r\n\r\nI need a marketer to help get users.",
-        "postImage": "",
-        "postTime": "2024-10-08 22:31:38",
-        "likes": 0,
-        "comments": [],
-        "authorName": "Joseph Ampfer"
-    },
-    {
-        "postTitle": "Touch Grass Royale",
-        "postCategories": [
             "Software Development",
             "Robotics",
             "IoT Projects"
@@ -248,59 +237,5 @@
         "comments": [],
         "authorName": "Joseph Ampfer",
         "postImage": ".\/assets\/images\/blog\/1728422057.jpeg"
-    },
-    {
-        "postTitle": "Touch Grass Royale",
-        "postCategories": [
-            "Data Science",
-            "Software Development",
-            "IoT Projects",
-            "Game Development"
-        ],
-        "lookingFor": [
-            "Mobile App Developer",
-            "Game Developer",
-            "Machine Learning Engineer"
-        ],
-        "description": "sadfdsafdsafsdfsdaf",
-        "postTime": "2024-10-10 22:36:19",
-        "likes": 0,
-        "comments": [],
-        "authorName": "Joseph Ampfer",
-        "postImage": ".\/assets\/images\/blog\/1728592579.JPG"
-    },
-    {
-        "postTitle": "test test",
-        "postCategories": [
-            "Game Development",
-            "Data Science"
-        ],
-        "lookingFor": [
-            "Full Stack Developer",
-            "Mobile App Developer"
-        ],
-        "description": "test",
-        "postTime": "2024-10-10 23:05:39",
-        "likes": 0,
-        "comments": [],
-        "authorName": "Joseph Ampfer",
-        "postImage": ".\/assets\/images\/blog\/1728594339.JPG"
-    },
-    {
-        "postTitle": "test test",
-        "postCategories": [
-            "Game Development",
-            "Data Science"
-        ],
-        "lookingFor": [
-            "Full Stack Developer",
-            "Mobile App Developer"
-        ],
-        "description": "test",
-        "postTime": "2024-10-10 23:07:06",
-        "likes": 0,
-        "comments": [],
-        "authorName": "Joseph Ampfer",
-        "postImage": ".\/assets\/images\/blog\/1728594426.JPG"
     }
 ]

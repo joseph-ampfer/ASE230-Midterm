@@ -1,54 +1,67 @@
 <?php
 session_start();
 require_once('scripts/scripts.php');
-
 $isLoggedIn = false;
 if (isset($_SESSION['email'])) {
-    $isLoggedIn = true;
+	$isLoggedIn = true;
+	$email = $_SESSION['email'];
+	$username = getUserName($email);
 } else {
-  header("Location: login.php");
+	header("Location: login.php");
 }
-// TODO
-// 1. LOGIN LOGIC
-// 2. DATA VERIFICATION FOR POST
 
-
-// !!! REplace with session
-
-$username = "Joseph Ampfer";
-$sessionEmail = "jampfer@gmail.com";
+$error = "";
 
 // To post a comment, check if logged and comment there
 if ($isLoggedIn && count($_POST) > 0) {
 	if (isset($_POST['postTitle'][0])) {
 
-		$fextension = pathinfo($_FILES['postImage']['name'], PATHINFO_EXTENSION);
-		$time = uniqid();
-		$imagePath = './assets/images/blog/' . $time . '.' . $fextension;
-		move_uploaded_file($_FILES['postImage']['tmp_name'], $imagePath);
+		if (isset($_FILES['postImage'] ) && $_FILES['postImage']['error'] === UPLOAD_ERR_OK ) {
 
-		$data = $_POST;
+			// Allowed MIME types (covers most common image formats)
+			$allowedMimeTypes = [
+					'image/jpeg', 'image/png', 'image/gif', 
+					'image/webp', 'image/bmp', 'image/tiff', 'image/svg+xml'
+			];
 
-		// Add time, likes, etc
-		$data['postTime'] = date("Y-m-d H:i:s");
-		$data['likes'] = 0;
-		$data['comments'] = [];
-		$data['authorName'] = $username;
-		$postCategories = json_decode($_POST['postCategories'], true);
-		$lookingFor = json_decode($_POST['lookingFor'], true);
+			// Validate Mime type
+			$detectedType = mime_content_type($_FILES['postImage']['tmp_name']);
+			if (!in_array($detectedType, $allowedMimeTypes)) {
+				$error = "Must upload an image (jpeg, jpg, png, gif)";
+			} else {
+							//===== ELSE procede with post upload ===	
+				$fextension = pathinfo($_FILES['postImage']['name'], PATHINFO_EXTENSION);
+				$time = time();
+				$imagePath = './assets/images/blog/' . $time . '.' . $fextension;
+				move_uploaded_file($_FILES['postImage']['tmp_name'], $imagePath);
 
-		$data['postCategories'] = array_map(function ($item) {
-			return $item['value'];
-		}, $postCategories);
-		$data['lookingFor'] = array_map(function ($item) {
-			return $item['value'];
-		}, $lookingFor);
-		$data['postImage'] = $imagePath;
 
-		saveToJson('data/posts.json', $data);
+				$data = $_POST;
+
+				// Add time, likes, etc
+				$data['postTime'] = date("Y-m-d H:i:s");
+				$data['likes'] = 0;
+				$data['comments'] = [];
+				$data['authorName'] = $username;
+				$data['email'] = $_SESSION['email'];
+				$postCategories = json_decode($_POST['postCategories'], true);
+				$lookingFor = json_decode($_POST['lookingFor'], true);
+
+				$data['postCategories'] = array_map(function ($item) {
+					return $item['value'];
+				}, $postCategories);
+				$data['lookingFor'] = array_map(function ($item) {
+					return $item['value'];
+				}, $lookingFor);
+				$data['postImage'] = $imagePath;
+
+				saveToJson('data/posts.json', $data);
+			}
+
+		} else {$error = "Error uploading image";}
+
 	}
 }
-
 
 
 $posts = readJsonData('data/posts.json');
@@ -62,9 +75,9 @@ $posts = readJsonData('data/posts.json');
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>U Collab</title>
-	<script src="https://cdn.tailwindcss.com"></script>
 	<link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
-	<link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700"
+		rel="stylesheet">
 	<!-- <link rel="stylesheet" href="assets/css/bootstrap.min.css"> -->
 
 	<!-- Include Bootstrap 5 CSS -->
@@ -101,8 +114,10 @@ $posts = readJsonData('data/posts.json');
 	</div>
 	<div class="nav-search-box">
 		<form>
-			<div class="input-group"> <input type="text" class="form-control" placeholder="eg. feel the love and …"> <span class="b-line"></span> <span class="b-line-under"></span>
-				<div class="input-group-append"> <button type="button" class="btn"> <img src="assets/images/search-icon.svg" alt="" class="img-fluid svg"> </button> </div>
+			<div class="input-group"> <input type="text" class="form-control" placeholder="eg. feel the love and …">
+				<span class="b-line"></span> <span class="b-line-under"></span>
+				<div class="input-group-append"> <button type="button" class="btn"> <img
+							src="assets/images/search-icon.svg" alt="" class="img-fluid svg"> </button> </div>
 			</div>
 		</form>
 	</div>
@@ -111,7 +126,8 @@ $posts = readJsonData('data/posts.json');
 			<div class="container-fluid pl-120 pr-120 position-relative">
 				<div class="row d-flex align-items-center">
 					<div class="col-lg-3 col-md-4 col-6">
-						<div class="logo"> <a href="#"><img src="assets/images/logo.png" alt="" class="img-fluid"></a> </div>
+						<div class="logo"> <a href="#"><img src="assets/images/logo.png" alt="" class="img-fluid"></a>
+						</div>
 					</div>
 					<div class="col-lg-9 col-md-8 col-6 d-flex align-items-center justify-content-end position-static">
 						<div class="nav-menu-cover">
@@ -164,15 +180,29 @@ $posts = readJsonData('data/posts.json');
 
 	<!-- Main content -->
 	<main class="container pt-15 pb-90">
-		<div class="flex items-center justify-center">
-      Your Profile
-			<button type="button" class="mb-10 bg-red-300 p-5 rounded-full text-white hover:bg-red-300/50" data-bs-toggle="modal" data-bs-target="#exampleModal">
-				Post Your Project
-			</button>
-		</div>
+		<h1>Your Profile</h1>
+		<!-- Post Modal Trigger -->
+    <?php if ($isLoggedIn) { ?>
+      
+       <div class="container  mt-5 mb-4" data-bs-toggle="modal" data-bs-target="#exampleModal" style = "cursor: pointer; ">
+           <div class="d-flex  justify-content-end">
+               <div class="d-flex justify-content-between rounded-pill h-25 w-25 align-items-center p-3 shadow-lg rounded cursor-pointer bg-light hover:bg-gray-200">
+                   <img src="assets/images/blog/author.jpg" alt="User Avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;" />
+                   <div class="ml-3 text-secondary">
+                       Post a Project
+                   </div>
+                   <span>
+                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                        <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                    </svg>
+                   </span>
+               </div>
+           </div>
+       </div>
+    <?php }; ?>
+		<mark><?php if($error != "") {echo $error;} ?></mark>
 
 		<div class="row">
-
 
 			<!-- v2 -->
 			<?php foreach ($posts as $key => $post) { 
@@ -180,10 +210,9 @@ $posts = readJsonData('data/posts.json');
         
 				<div class="col-md-6">
 
-          <div class="z-100 bg-slate-50 flex justify-between">
-            <button type="button" class="bg-red-300 text-white p-3 hover:bg-red-300/50" data-bs-toggle="modal" data-bs-target="#editModal">Delete</button>
-            <button type="button" class="w-full bg-black text-white p-3 hover:bg-red-300/50" data-bs-toggle="modal" data-bs-target="#editModal" >Edit</button>  
-            <a href="editPost.php?id=<?= $key ?>">Edit</a>
+          <div class="z-100 bg-slate-50 flex justify-between ">
+            <a class="bg-red-300 text-white px-5 py-2 hover:bg-red-500" href="deletePost.php?id=<?= $key ?>">Delete</a>
+						<a class="bg-gray-950 text-white px-5 py-2 hover:bg-gray-950/70" href="editPost.php?id=<?= $key ?>">Edit</a>
           </div>
 
 					<div class="post-default post-has-bg-img">
@@ -222,13 +251,14 @@ $posts = readJsonData('data/posts.json');
 							<!-- <div class="join-project">
 								<a href="contact-owner.php?id=" class="btn btn-primary">Join Project</a>
 							</div> -->
+							</div>
 						</div>
 					</div>
-				</div>
-			<?php }} ?>
+				<?php }
+			} ?>
 
 
-			
+
 		</div>
 		<!-- Pagination below posts -->
 		<div class="post-pagination d-flex justify-content-center">
@@ -249,11 +279,16 @@ $posts = readJsonData('data/posts.json');
 				</div>
 				<div class="row">
 					<div class="col-lg-8 offset-lg-2">
-						<form action="https://themelooks.us13.list-manage.com/subscribe/post?u=79f0b132ec25ee223bb41835f&amp;id=f4e0e93d1d" method="post" novalidate>
-							<div class="input-group"> <input type="text" class="form-control" placeholder="Enter Your Email">
+						<form
+							action="https://themelooks.us13.list-manage.com/subscribe/post?u=79f0b132ec25ee223bb41835f&amp;id=f4e0e93d1d"
+							method="post" novalidate>
+							<div class="input-group"> <input type="text" class="form-control"
+									placeholder="Enter Your Email">
 								<div class="input-group-append"> <button class="btn btn-default">Submit</button> </div>
 							</div>
-							<p class="checkbox-cover d-flex justify-content-center"> <label> I've read and accept the <a href="#"> Privacy Policy </a> <input type="checkbox"> <span class="checkmark"></span> </label> </p>
+							<p class="checkbox-cover d-flex justify-content-center"> <label> I've read and accept the <a
+										href="#"> Privacy Policy </a> <input type="checkbox"> <span
+										class="checkmark"></span> </label> </p>
 						</form>
 					</div>
 				</div>
@@ -265,9 +300,13 @@ $posts = readJsonData('data/posts.json');
 		<div class="container">
 			<div class="row align-items-center footer">
 				<div class="col-md-4 text-center text-md-left order-md-1 order-2">
-					<div class="footer-social"> <a href="#"><i class="fa fa-facebook"></i></a> <a href="#"><i class="fa fa-twitter"></i></a> <a href="#"><i class="fa fa-linkedin"></i></a> <a href="#"><i class="fa fa-google"></i></a> <a href="#"><i class="fa fa-pinterest"></i></a> </div>
+					<div class="footer-social"> <a href="#"><i class="fa fa-facebook"></i></a> <a href="#"><i
+								class="fa fa-twitter"></i></a> <a href="#"><i class="fa fa-linkedin"></i></a> <a
+							href="#"><i class="fa fa-google"></i></a> <a href="#"><i class="fa fa-pinterest"></i></a>
+					</div>
 				</div>
-				<div class="col-md-4 d-flex justify-content-center order-md-2 order-1"> <a href="index.html"><img src="assets/images/logo.png" alt="" class="img-fluid"></a> </div>
+				<div class="col-md-4 d-flex justify-content-center order-md-2 order-1"> <a href="index.html"><img
+							src="assets/images/logo.png" alt="" class="img-fluid"></a> </div>
 				<div class="col-md-4 order-md-3 order-3">
 					<div class="footer-cradit text-center text-md-right">
 						<p>© 2019 <a href="index.html">Themelooks.</a></p>
@@ -278,106 +317,8 @@ $posts = readJsonData('data/posts.json');
 	</footer>
 	<div class="back-to-top d-flex align-items-center justify-content-center"> <span><i class="fa fa-long-arrow-up"></i></span> </div>
 
-
-
 	<!-- ============= POST PROJECT MODAL ================= -->
-	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered modal-lg">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h1 class="modal-title fs-5" id="exampleModalLabel">Post Your Project</h1>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-
-					<!-- FORM -->
-					<div class="post-comment-form-cover">
-						<form id="projectForm" class="comment-form" method="POST" action=<?= "index.php" ?> enctype="multipart/form-data">
-							<div class="row">
-								<div class="col-md-6">
-									<label for="postTitle"><strong>Project Title</strong></label>
-									<input type="text" class="form-control" name="postTitle" placeholder="Project Title">
-								</div>
-								<div class="col-md-12 mb-5">
-									<label for="postCategories"><strong>Project Categories</strong></label>
-									<input name='postCategories' class='w-100' placeholder='Choose categories for your project' value='' data-blacklist='badwords, asdf'>
-								</div>
-								<br /><br />
-								<div class="col-md-12 mb-5">
-									<label for="lookingFor"><strong>Looking For</strong></label>
-									<input name='lookingFor' class='w-100' placeholder='Who do you want to collaborate with?' value='' data-blacklist='badwords, asdf'>
-								</div>
-								<div class="col-md-12 mb-5">
-									<label for="description"><strong>Project Description</strong></label>
-									<textarea class="form-control" name="description" placeholder="Describe your project... your current progress... if you want collaboarators... etc."></textarea>
-								</div>
-								<div class="col-md-12">
-									<label for="description"><strong>Project Image</strong></label>
-									<input type="file" class="form-control" name="postImage" placeholder="Upload Image">
-								</div>
-
-							</div>
-						</form>
-					</div>
-
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="submit" form="projectForm" class="btn btn-primary">Post Project</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- ============= EDIT PROJECT MODAL ================= -->
-	<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered modal-lg">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h1 class="modal-title fs-5" id="exampleModalLabel">Post Your Project</h1>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-
-					<!-- FORM -->
-					<div class="post-comment-form-cover">
-						<form id="projectForm" class="comment-form" method="POST" action=<?= "index.php" ?> enctype="multipart/form-data">
-							<div class="row">
-								<div class="col-md-6">
-									<label for="postTitle"><strong>Project Title</strong></label>
-									<input type="text" class="form-control" name="postTitle" placeholder="Project Title">
-								</div>
-								<div class="col-md-12 mb-5">
-									<label for="postCategories"><strong>Project Categories</strong></label>
-									<input name='postCategories' class='w-100' placeholder='Choose categories for your project' value='' data-blacklist='badwords, asdf'>
-								</div>
-								<br /><br />
-								<div class="col-md-12 mb-5">
-									<label for="lookingFor"><strong>Looking For</strong></label>
-									<input name='lookingFor' class='w-100' placeholder='Who do you want to collaborate with?' value='' data-blacklist='badwords, asdf'>
-								</div>
-								<div class="col-md-12 mb-5">
-									<label for="description"><strong>Project Description</strong></label>
-									<textarea class="form-control" name="description" placeholder="Describe your project... your current progress... if you want collaboarators... etc."></textarea>
-								</div>
-								<div class="col-md-12">
-									<label for="description"><strong>Project Image</strong></label>
-									<input type="file" class="form-control" name="postImage" placeholder="Upload Image">
-								</div>
-
-							</div>
-						</form>
-					</div>
-
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="submit" form="projectForm" class="btn btn-primary">Post Project</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
+	<?php require_once 'components/postProjectModal.php' ?>
 
 
 	<script src="assets/js/jquery-1.12.1.min.js"></script>
