@@ -58,7 +58,7 @@ if ($isLoggedIn && count($_POST) > 0) {
 				// Check if the old image exists before trying to delete it
 				if (file_exists($post['postImage']) && !unlink($post['postImage'])) {
 						// Delete the old image
-							echo "Error: Failed to delete old image.";
+						echo "Error: Failed to delete old image.";
 				} else {
 						// Handle case where the file doesn't exist
 						echo "Warning: Old image file not found.";
@@ -214,12 +214,15 @@ $post = $posts[$postIndex];
 						</div>
 						<div class="mobile-menu-cover">
 							<ul class="nav mobile-nav-menu">
-								<li class="search-toggle-open"> <img src="assets/images/search-icon.svg" alt=""
-										class="img-fluid svg"> </li>
-								<li class="search-toggle-close hide"> <img src="assets/images/close.svg" alt=""
-										class="img-fluid"> </li>
-								<li class="nav-menu-toggle"> <img src="assets/images/menu-toggler.svg" alt=""
-										class="img-fluid svg"> </li>
+								<li class="search-toggle-open"> 
+									<img src="assets/images/search-icon.svg" alt="" class="img-fluid svg"> 
+								</li>
+								<li class="search-toggle-close hide"> 
+									<img src="assets/images/close.svg" alt="" class="img-fluid"> 
+								</li>
+								<li class="nav-menu-toggle"> 
+									<img src="assets/images/menu-toggler.svg" alt="" class="img-fluid svg"> 
+								</li>
 							</ul>
 						</div>
 					</div>
@@ -253,8 +256,7 @@ $post = $posts[$postIndex];
             
             <div class="post-meta-info">
               <p class="cats">
-                <input 
-								  required
+                <input required
                   name='postCategories' 
                   class='w-100' 
                   placeholder='Choose categories for your project' 
@@ -299,8 +301,7 @@ $post = $posts[$postIndex];
           </div>
           
 
-          <input 
-					  required 
+          <input required 
             name='lookingFor' 
             class='w-100' 
             placeholder='Who do you want to collaborate with?' 

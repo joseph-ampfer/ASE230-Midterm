@@ -38,8 +38,7 @@ if (count($_POST) > 0) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bootstrap demo</title>
-    <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/custom.css">
@@ -65,12 +64,15 @@ if (count($_POST) > 0) {
                         </div>
                         <div class="mobile-menu-cover">
                             <ul class="nav mobile-nav-menu">
-                                <li class="search-toggle-open"> <img src="assets/images/search-icon.svg" alt=""
-                                        class="img-fluid svg"> </li>
-                                <li class="search-toggle-close hide"> <img src="assets/images/close.svg" alt=""
-                                        class="img-fluid"> </li>
-                                <li class="nav-menu-toggle"> <img src="assets/images/menu-toggler.svg" alt=""
-                                        class="img-fluid svg"> </li>
+                                <li class="search-toggle-open"> 
+                                    <img src="assets/images/search-icon.svg" alt="" class="img-fluid svg">
+                                </li>
+                                <li class="search-toggle-close hide"> 
+                                    <img src="assets/images/close.svg" alt="" class="img-fluid">
+                                </li>
+                                <li class="nav-menu-toggle">
+                                    <img src="assets/images/menu-toggler.svg" alt="" class="img-fluid svg">
+                                </li>
                             </ul>
                         </div>
                     </div>

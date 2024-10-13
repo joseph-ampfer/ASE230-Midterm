@@ -90,8 +90,7 @@ $posts = readJsonData('data/posts.json');
 	<title>U Collab</title>
 	<script src="https://cdn.tailwindcss.com"></script>
 	<link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
-	<link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700"
-		rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700" rel="stylesheet">
 	<!-- <link rel="stylesheet" href="assets/css/bootstrap.min.css"> -->
 
 	<!-- Include Bootstrap 5 CSS -->
@@ -173,12 +172,15 @@ $posts = readJsonData('data/posts.json');
 						</div>
 						<div class="mobile-menu-cover">
 							<ul class="nav mobile-nav-menu">
-								<li class="search-toggle-open"> <img src="assets/images/search-icon.svg" alt=""
-										class="img-fluid svg"> </li>
-								<li class="search-toggle-close hide"> <img src="assets/images/close.svg" alt=""
-										class="img-fluid"> </li>
-								<li class="nav-menu-toggle"> <img src="assets/images/menu-toggler.svg" alt=""
-										class="img-fluid svg"> </li>
+								<li class="search-toggle-open"> 
+									<img src="assets/images/search-icon.svg" alt="" class="img-fluid svg"> 
+								</li>
+								<li class="search-toggle-close hide"> 
+									<img src="assets/images/close.svg" alt="" class="img-fluid"> 
+								</li>
+								<li class="nav-menu-toggle"> 
+									<img src="assets/images/menu-toggler.svg" alt="" class="img-fluid svg"> 
+								</li>
 							</ul>
 						</div>
 					</div>
@@ -303,9 +305,9 @@ $posts = readJsonData('data/posts.json');
 									placeholder="Enter Your Email">
 								<div class="input-group-append"> <button class="btn btn-default">Submit</button> </div>
 							</div>
-							<p class="checkbox-cover d-flex justify-content-center"> <label> I've read and accept the <a
-										href="#"> Privacy Policy </a> <input type="checkbox"> <span
-										class="checkmark"></span> </label> </p>
+							<p class="checkbox-cover d-flex justify-content-center"> 
+								<label> I've read and accept the <a href="#"> Privacy Policy </a> <input type="checkbox"> <span class="checkmark"></span> </label> 
+							</p>
 						</form>
 					</div>
 				</div>
@@ -317,9 +319,12 @@ $posts = readJsonData('data/posts.json');
 		<div class="container">
 			<div class="row align-items-center footer">
 				<div class="col-md-4 text-center text-md-left order-md-1 order-2">
-					<div class="footer-social"> <a href="#"><i class="fa fa-facebook"></i></a> <a href="#"><i
-								class="fa fa-twitter"></i></a> <a href="#"><i class="fa fa-linkedin"></i></a> <a
-							href="#"><i class="fa fa-google"></i></a> <a href="#"><i class="fa fa-pinterest"></i></a>
+					<div class="footer-social"> 
+						<a href="#"><i class="fa fa-facebook"></i></a>
+						<a href="#"><i class="fa fa-twitter"></i></a> 
+						<a href="#"><i class="fa fa-linkedin"></i></a> 
+						<a href="#"><i class="fa fa-google"></i></a> 
+						<a href="#"><i class="fa fa-pinterest"></i></a>
 					</div>
 				</div>
 				<div class="col-md-4 d-flex justify-content-center order-md-2 order-1"> <a href="index.php"><img
