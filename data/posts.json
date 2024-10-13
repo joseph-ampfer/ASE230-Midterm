@@ -239,21 +239,21 @@
         "postImage": ".\/assets\/images\/blog\/1728422057.jpeg"
     },
     "8": {
-        "postTitle": "This is the project",
         "postCategories": [
             "Mobile Apps",
             "Data Science"
         ],
+        "postTitle": "This is the project done by us",
+        "description": "This is the project",
         "lookingFor": [
             "Front-End Developer",
             "Game Developer"
         ],
-        "description": "This is the project",
-        "postTime": "2024-10-13 02:00:12",
+        "postImage": ".\/assets\/images\/blog\/1728777612.jpg",
+        "postTime": "2024-10-13 02:41:34",
         "likes": 0,
         "comments": [],
         "authorName": "Bhuwan Bhandari",
-        "email": "bhandarib1@mymail.nku.edu",
-        "postImage": ".\/assets\/images\/blog\/1728777612.jpg"
+        "email": "bhandarib1@mymail.nku.edu"
     }
 }

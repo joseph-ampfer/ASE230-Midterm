@@ -7,7 +7,6 @@ if (isset($_SESSION['email'])) {
 	$email = $_SESSION['email'];
 	$username = getUserName($email);
 }
-
 $error = "";
 
 // To post a comment, check if logged and comment there
@@ -16,21 +15,26 @@ if ($isLoggedIn && count($_POST) > 0) {
 
 		// Check if required fields have values in $_POST
 		if (empty($_POST['postTitle'])) {
-				$error = "Post title is required.";
+			$error = "Post title is required.";
 		} elseif (empty($_POST['postCategories'])) {
-				$error = "Post categories are required.";
+			$error = "Post categories are required.";
 		} elseif (empty($_POST['lookingFor'])) {
-				$error = "Looking for field is required.";
+			$error = "Looking for field is required.";
 		} elseif (empty($_POST['description'])) {
-				$error = "Description is required.";
+			$error = "Description is required.";
 		}
 
-		if (isset($_FILES['postImage'] ) && $_FILES['postImage']['error'] === UPLOAD_ERR_OK && $error === "" ) {
+		if (isset($_FILES['postImage']) && $_FILES['postImage']['error'] === UPLOAD_ERR_OK && $error === "") {
 
 			// Allowed MIME types (covers most common image formats)
 			$allowedMimeTypes = [
-					'image/jpeg', 'image/png', 'image/gif', 
-					'image/webp', 'image/bmp', 'image/tiff', 'image/svg+xml'
+				'image/jpeg',
+				'image/png',
+				'image/gif',
+				'image/webp',
+				'image/bmp',
+				'image/tiff',
+				'image/svg+xml'
 			];
 
 			// Validate Mime type
@@ -38,7 +42,7 @@ if ($isLoggedIn && count($_POST) > 0) {
 			if (!in_array($detectedType, $allowedMimeTypes)) {
 				$error = "Must upload an image (jpeg, jpg, png, gif)";
 			} else {
-							//===== ELSE procede with post upload ===	
+				//===== ELSE procede with post upload ===	
 				$fextension = pathinfo($_FILES['postImage']['name'], PATHINFO_EXTENSION);
 				$time = time();
 				$imagePath = './assets/images/blog/' . $time . '.' . $fextension;
@@ -63,11 +67,11 @@ if ($isLoggedIn && count($_POST) > 0) {
 					return $item['value'];
 				}, $lookingFor);
 				$data['postImage'] = $imagePath;
-                
+
 				saveToJson('data/posts.json', $data);
 			}
 
-		} 
+		}
 
 	}
 }
@@ -128,7 +132,8 @@ $posts = readJsonData('data/posts.json');
 			<div class="container-fluid pl-120 pr-120 position-relative">
 				<div class="row d-flex align-items-center">
 					<div class="col-lg-3 col-md-4 col-6">
-						<div class="logo"> <a href="#"><img src="assets/images/logo.png" alt="" class="img-fluid"></a>
+						<div class="logo"> <a href="#"><img src="assets/images/logo.png" alt="" class="img-fluid"
+									style="height: 100px;"></a>
 						</div>
 					</div>
 					<div class="col-lg-9 col-md-8 col-6 d-flex align-items-center justify-content-end position-static">
@@ -142,8 +147,8 @@ $posts = readJsonData('data/posts.json');
 								echo $isLoggedIn ?
 									'<li class="dropdown">
                                     <!-- User image as the dropdown trigger with inline styles -->
-                                    <img src="assets/images/blog/author.jpg"
-                                        style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;"
+                                    <img src="assets/images/blog/author.png"
+                                        style="width: 50px; height: 5x0px; border-radius: 50%; object-fit: cover; cursor: pointer;"
                                         class="dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown"
                                         aria-expanded="false" alt="User Avatar">
                                 
@@ -186,29 +191,36 @@ $posts = readJsonData('data/posts.json');
 	<!-- Main content -->
 	<main class="container pt-15 pb-90">
 
-		    <!-- Post Modal Trigger -->
-    <?php
-    if ($isLoggedIn) { ?>
-      
-       <div class="container  mt-5 mb-4" data-bs-toggle="modal" data-bs-target="#exampleModal" style = "cursor: pointer; ">
-           <div class="d-flex  justify-content-end">
-               <div class="d-flex justify-content-between rounded-pill h-25 w-25 align-items-center p-3 shadow-lg rounded cursor-pointer bg-light hover:bg-gray-200">
-                   <img src="assets/images/blog/author.jpg" alt="User Avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;" />
-                   <div class="ml-3 text-secondary">
-                       Post a Project
-                   </div>
-                   <span>
-                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
-                        <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
-                    </svg>
-                   </span>
-               </div>
-           </div>
-       </div>
-    <?php }
-    ;
-    ?>
-		<mark><?php if($error != "") {echo $error;} ?></mark><br>
+		<!-- Post Modal Trigger -->
+		<?php
+		if ($isLoggedIn) { ?>
+
+			<div class="container  mt-5 mb-4" data-bs-toggle="modal" data-bs-target="#exampleModal"
+				style="cursor: pointer; ">
+				<div class="d-flex  justify-content-end">
+					<div
+						class="d-flex justify-content-between rounded-pill h-25 w-25 align-items-center p-3 shadow-lg rounded cursor-pointer bg-light hover:bg-gray-200">
+						<img src="assets/images/blog/author.png" alt="User Avatar"
+							style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;" />
+						<div class="ml-3 text-secondary">
+							Post a Project
+						</div>
+						<span>
+							<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+								class="bi bi-send" viewBox="0 0 16 16">
+								<path
+									d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z" />
+							</svg>
+						</span>
+					</div>
+				</div>
+			</div>
+		<?php }
+		;
+		?>
+		<mark><?php if ($error != "") {
+			echo $error;
+		} ?></mark><br>
 
 		<div class="row">
 			<!-- v2 -->
@@ -216,7 +228,7 @@ $posts = readJsonData('data/posts.json');
 				<div class="col-md-6">
 					<div class="post-default post-has-bg-img">
 						<div class="post-thumb">
-						<a href="details-full-width.php?id=<?= $key ?>">
+							<a href="details-full-width.php?id=<?= $key ?>">
 								<div data-bg-img=<?= $post['postImage'] ?>></div>
 							</a>
 						</div>
@@ -233,7 +245,7 @@ $posts = readJsonData('data/posts.json');
 							</p>
 							<!-- Shortened project description -->
 							<div>
-								<p>Looking for:</p>
+								<p style="color:orange; font-weight: bold;">Looking for:</p>
 								<div class="flex space-x-2 items-center justify-center">
 									<?php foreach ($post['lookingFor'] as $cat) { ?>
 										<span class="bg-white/10 p-2 text-white"><?= $cat ?></span>
@@ -242,7 +254,8 @@ $posts = readJsonData('data/posts.json');
 							</div>
 							<ul class="nav meta align-items-center absolute bottom-0 left-0 ml-5">
 								<li class="meta-author flex items-center justify-center space-x-2">
-									<img src="<?= isset($post['authorPic']) ? $post['authorPic'] : "assets/images/profile_icon.png" ?>" alt="" class="img-fluid">
+									<img src="<?= isset($post['authorPic']) ? $post['authorPic'] : "assets/images/profile_icon.png" ?>"
+										alt="" class="img-fluid">
 									<a class="text-white/80" href="#"><?= $post['authorName'] ?></a>
 								</li>
 								<li class="meta-date"><a class="text-white/80"
@@ -309,8 +322,8 @@ $posts = readJsonData('data/posts.json');
 							href="#"><i class="fa fa-google"></i></a> <a href="#"><i class="fa fa-pinterest"></i></a>
 					</div>
 				</div>
-				<div class="col-md-4 d-flex justify-content-center order-md-2 order-1"> <a href="index.html"><img
-							src="assets/images/logo.png" alt="" class="img-fluid"></a> </div>
+				<div class="col-md-4 d-flex justify-content-center order-md-2 order-1"> <a href="index.php"><img
+							src="assets/images/logo.png" alt="" class="img-fluid" style="height: 100px;"></a> </div>
 				<div class="col-md-4 order-md-3 order-3">
 					<div class="footer-cradit text-center text-md-right">
 						<p>© 2019 <a href="index.html">Themelooks.</a></p>
@@ -319,7 +332,8 @@ $posts = readJsonData('data/posts.json');
 			</div>
 		</div>
 	</footer>
-	<div class="back-to-top d-flex align-items-center justify-content-center"> <span><i class="fa fa-long-arrow-up"></i></span> </div>
+	<div class="back-to-top d-flex align-items-center justify-content-center"> <span><i
+				class="fa fa-long-arrow-up"></i></span> </div>
 	<?php require_once 'components/postProjectModal.php' ?>
 	<script src="assets/js/jquery-1.12.1.min.js"></script>
 	<!-- <script src="assets/js/bootstrap.bundle.min.js"></script> -->

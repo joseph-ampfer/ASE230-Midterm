@@ -176,7 +176,9 @@ $post = $posts[$postIndex];
 			<div class="container-fluid pl-120 pr-120 position-relative">
 				<div class="row d-flex align-items-center">
 					<div class="col-lg-3 col-md-4 col-6">
-						<div class="logo"> <a href="#"><img src="assets/images/logo.png" alt="" class="img-fluid"></a> </div>
+					<div class="logo"> <a href="#"><img src="assets/images/logo.png" alt="" class="img-fluid"
+									style="height: 100px;"></a>
+						</div>
 					</div>
 					<div class="col-lg-9 col-md-8 col-6 d-flex align-items-center justify-content-end position-static">
 						<div class="nav-menu-cover">
@@ -188,7 +190,7 @@ $post = $posts[$postIndex];
 								echo $isLoggedIn ?
 									'<li class="dropdown">
                     <!-- User image as the dropdown trigger with inline styles -->
-                    <img src="assets/images/blog/author.jpg"
+                    <img src="assets/images/blog/author.ng"
                         style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;"
                         class="dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown"
                         aria-expanded="false" alt="User Avatar">
@@ -347,7 +349,7 @@ $post = $posts[$postIndex];
         <div class="col-md-4 text-center text-md-left order-md-1 order-2">
           <div class="footer-social"> <a href="#"><i class="fa fa-facebook"></i></a> <a href="#"><i class="fa fa-twitter"></i></a> <a href="#"><i class="fa fa-linkedin"></i></a> <a href="#"><i class="fa fa-google"></i></a> <a href="#"><i class="fa fa-pinterest"></i></a> </div>
         </div>
-        <div class="col-md-4 d-flex justify-content-center order-md-2 order-1"> <a href="index.html"><img src="assets/images/logo.png" alt="" class="img-fluid"></a> </div>
+        <div class="col-md-4 d-flex justify-content-center order-md-2 order-1"> <a href="index.php"><img src="assets/images/logo.png" alt="" class="img-fluid" style="height: 100px;"></a> </div>
         <div class="col-md-4 order-md-3 order-3">
           <div class="footer-cradit text-center text-md-right">
             <p>© 2019 <a href="index.html">Themelooks.</a></p>

@@ -9,15 +9,12 @@ if (isset($_SESSION['email'])) {
 } else {
 	header("Location: login.php");
 }
-
 $error = "";
 
 // To post a comment, check if logged and comment there
 if ($isLoggedIn && count($_POST) > 0) {
 	if (isset($_POST['postTitle'][0])) {
-
 		if (isset($_FILES['postImage']) && $_FILES['postImage']['error'] === UPLOAD_ERR_OK) {
-
 			// Allowed MIME types (covers most common image formats)
 			$allowedMimeTypes = [
 				'image/jpeg',
@@ -124,8 +121,10 @@ $posts = readJsonData('data/posts.json');
 		<form>
 			<div class="input-group"> <input type="text" class="form-control" placeholder="eg. feel the love and …">
 				<span class="b-line"></span> <span class="b-line-under"></span>
-				<div class="input-group-append"> <button type="button" class="btn"> <img
-							src="assets/images/search-icon.svg" alt="" class="img-fluid svg"> </button> </div>
+				<div class="input-group-append"> <button type="button" class="btn">
+						<img src="assets/images/search-icon.svg" alt="" class="img-fluid svg" />
+					</button>
+				</div>
 			</div>
 		</form>
 	</div>
@@ -134,7 +133,8 @@ $posts = readJsonData('data/posts.json');
 			<div class="container-fluid pl-120 pr-120 position-relative">
 				<div class="row d-flex align-items-center">
 					<div class="col-lg-3 col-md-4 col-6">
-						<div class="logo"> <a href="#"><img src="assets/images/logo.png" alt="" class="img-fluid"></a>
+						<div class="logo"> <a href="#"><img src="assets/images/logo.png" alt="" class="img-fluid"
+									style="height: 100px;"></a>
 						</div>
 					</div>
 					<div class="col-lg-9 col-md-8 col-6 d-flex align-items-center justify-content-end position-static">
@@ -147,7 +147,7 @@ $posts = readJsonData('data/posts.json');
 								echo $isLoggedIn ?
 									'<li class="dropdown">
                     <!-- User image as the dropdown trigger with inline styles -->
-                    <img src="assets/images/blog/author.jpg"
+                    <img src="assets/images/blog/author.png"
                         style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;"
                         class="dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown"
                         aria-expanded="false" alt="User Avatar">
@@ -188,16 +188,15 @@ $posts = readJsonData('data/posts.json');
 
 	<!-- Main content -->
 	<main class="container pt-15 pb-90">
-		<h1>Your Profile</h1>
 		<!-- Post Modal Trigger -->
 		<?php if ($isLoggedIn) { ?>
-
 			<div class="container  mt-5 mb-4" data-bs-toggle="modal" data-bs-target="#exampleModal"
 				style="cursor: pointer; ">
-				<div class="d-flex  justify-content-end">
+				<div class="d-flex  justify-content-between">
+					<span><strong><?= $username ?></strong></span>
 					<div
 						class="d-flex justify-content-between rounded-pill h-25 w-25 align-items-center p-3 shadow-lg rounded cursor-pointer bg-light hover:bg-gray-200">
-						<img src="assets/images/blog/author.jpg" alt="User Avatar"
+						<img src="assets/images/blog/author.png" alt="User Avatar"
 							style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;" />
 						<div class="ml-3 text-secondary">
 							Post a Project
@@ -249,7 +248,8 @@ $posts = readJsonData('data/posts.json');
 									<h2><a href="details-full-width.php?id=<?= $key ?>"><?= $post['postTitle'] ?></a></h2>
 								</div>
 								<p class="shortDescription mb-5 px-10">
-									<?= !empty($post['description']) ? substr($post['description'], 0, 100) . '...' : '' ?></p>
+									<?= !empty($post['description']) ? substr($post['description'], 0, 100) . '...' : '' ?>
+								</p>
 								<!-- Shortened project description -->
 								<div>
 									<p>Looking for:</p>
@@ -331,8 +331,8 @@ $posts = readJsonData('data/posts.json');
 							href="#"><i class="fa fa-google"></i></a> <a href="#"><i class="fa fa-pinterest"></i></a>
 					</div>
 				</div>
-				<div class="col-md-4 d-flex justify-content-center order-md-2 order-1"> <a href="index.html"><img
-							src="assets/images/logo.png" alt="" class="img-fluid"></a> </div>
+				<div class="col-md-4 d-flex justify-content-center order-md-2 order-1"> <a href="index.php"><img
+							src="assets/images/logo.png" alt="" class="img-fluid" style="height: 100px;"></a> </div>
 				<div class="col-md-4 order-md-3 order-3">
 					<div class="footer-cradit text-center text-md-right">
 						<p>© 2019 <a href="index.html">Themelooks.</a></p>
