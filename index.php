@@ -63,7 +63,7 @@ if ($isLoggedIn && count($_POST) > 0) {
 					return $item['value'];
 				}, $lookingFor);
 				$data['postImage'] = $imagePath;
-
+                
 				saveToJson('data/posts.json', $data);
 			}
 
@@ -216,14 +216,13 @@ $posts = readJsonData('data/posts.json');
 				<div class="col-md-6">
 					<div class="post-default post-has-bg-img">
 						<div class="post-thumb">
-							<a href="details-full-width.php">
+						<a href="details-full-width.php?id=<?= $key ?>">
 								<div data-bg-img=<?= $post['postImage'] ?>></div>
 							</a>
 						</div>
 						<div class="post-data">
 							<div class="cats">
 								<?php foreach ($post['postCategories'] as $category) { ?>
-									<a href="category-result.html"><?= $category ?></a>
 								<?php } ?>
 							</div>
 							<div class="title mb-1">
@@ -321,16 +320,7 @@ $posts = readJsonData('data/posts.json');
 		</div>
 	</footer>
 	<div class="back-to-top d-flex align-items-center justify-content-center"> <span><i class="fa fa-long-arrow-up"></i></span> </div>
-
-
-
-
 	<?php require_once 'components/postProjectModal.php' ?>
-
-
-
-
-
 	<script src="assets/js/jquery-1.12.1.min.js"></script>
 	<!-- <script src="assets/js/bootstrap.bundle.min.js"></script> -->
 

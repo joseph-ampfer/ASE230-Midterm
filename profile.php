@@ -16,12 +16,17 @@ $error = "";
 if ($isLoggedIn && count($_POST) > 0) {
 	if (isset($_POST['postTitle'][0])) {
 
-		if (isset($_FILES['postImage'] ) && $_FILES['postImage']['error'] === UPLOAD_ERR_OK ) {
+		if (isset($_FILES['postImage']) && $_FILES['postImage']['error'] === UPLOAD_ERR_OK) {
 
 			// Allowed MIME types (covers most common image formats)
 			$allowedMimeTypes = [
-					'image/jpeg', 'image/png', 'image/gif', 
-					'image/webp', 'image/bmp', 'image/tiff', 'image/svg+xml'
+				'image/jpeg',
+				'image/png',
+				'image/gif',
+				'image/webp',
+				'image/bmp',
+				'image/tiff',
+				'image/svg+xml'
 			];
 
 			// Validate Mime type
@@ -29,7 +34,7 @@ if ($isLoggedIn && count($_POST) > 0) {
 			if (!in_array($detectedType, $allowedMimeTypes)) {
 				$error = "Must upload an image (jpeg, jpg, png, gif)";
 			} else {
-							//===== ELSE procede with post upload ===	
+				//===== ELSE procede with post upload ===	
 				$fextension = pathinfo($_FILES['postImage']['name'], PATHINFO_EXTENSION);
 				$time = time();
 				$imagePath = './assets/images/blog/' . $time . '.' . $fextension;
@@ -58,7 +63,9 @@ if ($isLoggedIn && count($_POST) > 0) {
 				saveToJson('data/posts.json', $data);
 			}
 
-		} else {$error = "Error uploading image";}
+		} else {
+			$error = "Error uploading image";
+		}
 
 	}
 }
@@ -75,6 +82,7 @@ $posts = readJsonData('data/posts.json');
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>U Collab</title>
+	<script src="https://cdn.tailwindcss.com"></script>
 	<link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
 	<link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700"
 		rel="stylesheet">
@@ -182,73 +190,91 @@ $posts = readJsonData('data/posts.json');
 	<main class="container pt-15 pb-90">
 		<h1>Your Profile</h1>
 		<!-- Post Modal Trigger -->
-    <?php if ($isLoggedIn) { ?>
-      
-       <div class="container  mt-5 mb-4" data-bs-toggle="modal" data-bs-target="#exampleModal" style = "cursor: pointer; ">
-           <div class="d-flex  justify-content-end">
-               <div class="d-flex justify-content-between rounded-pill h-25 w-25 align-items-center p-3 shadow-lg rounded cursor-pointer bg-light hover:bg-gray-200">
-                   <img src="assets/images/blog/author.jpg" alt="User Avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;" />
-                   <div class="ml-3 text-secondary">
-                       Post a Project
-                   </div>
-                   <span>
-                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
-                        <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
-                    </svg>
-                   </span>
-               </div>
-           </div>
-       </div>
-    <?php }; ?>
-		<mark><?php if($error != "") {echo $error;} ?></mark>
+		<?php if ($isLoggedIn) { ?>
+
+			<div class="container  mt-5 mb-4" data-bs-toggle="modal" data-bs-target="#exampleModal"
+				style="cursor: pointer; ">
+				<div class="d-flex  justify-content-end">
+					<div
+						class="d-flex justify-content-between rounded-pill h-25 w-25 align-items-center p-3 shadow-lg rounded cursor-pointer bg-light hover:bg-gray-200">
+						<img src="assets/images/blog/author.jpg" alt="User Avatar"
+							style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;" />
+						<div class="ml-3 text-secondary">
+							Post a Project
+						</div>
+						<span>
+							<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+								class="bi bi-send" viewBox="0 0 16 16">
+								<path
+									d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z" />
+							</svg>
+						</span>
+					</div>
+				</div>
+			</div>
+		<?php }
+		; ?>
+		<mark><?php if ($error != "") {
+			echo $error;
+		} ?></mark>
 
 		<div class="row">
 
 			<!-- v2 -->
-			<?php foreach ($posts as $key => $post) { 
-        if (isset($_SESSION['email']) && isset($post['email']) && $_SESSION['email'] == $post['email']) { ?>
-        
-				<div class="col-md-6">
+			<?php foreach ($posts as $key => $post) {
+				if (isset($_SESSION['email']) && isset($post['email']) && $_SESSION['email'] == $post['email']) { ?>
 
-          <div class="z-100 bg-slate-50 flex justify-between ">
-            <a class="bg-red-300 text-white px-5 py-2 hover:bg-red-500" href="deletePost.php?id=<?= $key ?>">Delete</a>
-						<a class="bg-gray-950 text-white px-5 py-2 hover:bg-gray-950/70" href="editPost.php?id=<?= $key ?>">Edit</a>
-          </div>
+					<div class="col-md-6">
 
-					<div class="post-default post-has-bg-img">
-						<div class="post-thumb">
-							<a href="details-full-width.php">
-								<div data-bg-img=<?= $post['postImage'] ?>></div>
-							</a>
+						<div class="z-100 bg-slate-50 flex justify-between ">
+							<a class="bg-red-300 text-white px-5 py-2 hover:bg-red-500"
+								href="deletePost.php?id=<?= $key ?>">Delete</a>
+							<a class="bg-gray-950 text-white px-5 py-2 hover:bg-gray-950/70"
+								href="editPost.php?id=<?= $key ?>">Edit</a>
 						</div>
-						<div class="post-data">
-							<div class="cats">
-								<?php foreach ($post['postCategories'] as $category) { ?>
-									<a href="category-result.html"><?= $category ?></a>
-								<?php } ?>
+
+						<div class="post-default post-has-bg-img">
+							<div class="post-thumb">
+								<a href="details-full-width.php">
+									<div data-bg-img=<?= $post['postImage'] ?>></div>
+								</a>
 							</div>
-							<div class="title mb-1">
-								<h2><a href="details-full-width.php?id=<?= $key ?>"><?= $post['postTitle'] ?></a></h2>
-							</div>
-							<p class="shortDescription mb-5 px-10"><?= !empty($post['description']) ? substr($post['description'], 0, 100) . '...' : '' ?></p> <!-- Shortened project description -->
-							<div>
-								<p>Looking for:</p>
-								<div class="flex space-x-2 items-center justify-center">
-									<?php foreach ($post['lookingFor'] as $cat) { ?>
-										<span class="bg-white/10 p-2 text-white"><?= $cat ?></span>
+							<div class="post-data">
+								<div class="cats">
+									<?php foreach ($post['postCategories'] as $category) { ?>
+										<a href="category-result.html"><?= $category ?></a>
 									<?php } ?>
 								</div>
-							</div>
-							<ul class="nav meta align-items-center absolute bottom-0 left-0 ml-5">
-								<li class="meta-author flex items-center justify-center space-x-2">
-									<img src="<?= !empty($post['authorPic']) ? $post['authorPic'] : 'default-avatar.png' ?>" alt="" class="img-fluid">
-									<a class="text-white/80" href="#"><?= $post['authorName'] ?></a>
-								</li>
-								<li class="meta-date"><a class="text-white/80" href="#"><?= formatDate($post['postTime']) ?></a></li>
-								<li class="meta-comments"><a class="text-white/80" href="#"><i class="fa fa-comment text-white/80"></i> <?= count($post['comments']) ?></a></li>
-								<li class="meta-likes"><a class="text-white/80" href="#"><i class="fa fa-heart text-white/80"></i> <?= $post['likes'] ?? 0 ?></a></li> <!-- Optional likes feature -->
-							</ul>
-							<!-- <div class="join-project">
+								<div class="title mb-1">
+									<h2><a href="details-full-width.php?id=<?= $key ?>"><?= $post['postTitle'] ?></a></h2>
+								</div>
+								<p class="shortDescription mb-5 px-10">
+									<?= !empty($post['description']) ? substr($post['description'], 0, 100) . '...' : '' ?></p>
+								<!-- Shortened project description -->
+								<div>
+									<p>Looking for:</p>
+									<div class="flex space-x-2 items-center justify-center">
+										<?php foreach ($post['lookingFor'] as $cat) { ?>
+											<span class="bg-white/10 p-2 text-white"><?= $cat ?></span>
+										<?php } ?>
+									</div>
+								</div>
+								<ul class="nav meta align-items-center absolute bottom-0 left-0 ml-5">
+									<li class="meta-author flex items-center justify-center space-x-2">
+										<img src="<?= !empty($post['authorPic']) ? $post['authorPic'] : 'default-avatar.png' ?>"
+											alt="" class="img-fluid">
+										<a class="text-white/80" href="#"><?= $post['authorName'] ?></a>
+									</li>
+									<li class="meta-date"><a class="text-white/80"
+											href="#"><?= formatDate($post['postTime']) ?></a></li>
+									<li class="meta-comments"><a class="text-white/80" href="#"><i
+												class="fa fa-comment text-white/80"></i> <?= count($post['comments']) ?></a>
+									</li>
+									<li class="meta-likes"><a class="text-white/80" href="#"><i
+												class="fa fa-heart text-white/80"></i> <?= $post['likes'] ?? 0 ?></a></li>
+									<!-- Optional likes feature -->
+								</ul>
+								<!-- <div class="join-project">
 								<a href="contact-owner.php?id=" class="btn btn-primary">Join Project</a>
 							</div> -->
 							</div>
@@ -315,7 +341,8 @@ $posts = readJsonData('data/posts.json');
 			</div>
 		</div>
 	</footer>
-	<div class="back-to-top d-flex align-items-center justify-content-center"> <span><i class="fa fa-long-arrow-up"></i></span> </div>
+	<div class="back-to-top d-flex align-items-center justify-content-center"> <span><i
+				class="fa fa-long-arrow-up"></i></span> </div>
 
 	<!-- ============= POST PROJECT MODAL ================= -->
 	<?php require_once 'components/postProjectModal.php' ?>

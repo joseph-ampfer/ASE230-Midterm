@@ -1,5 +1,5 @@
-[
-    {
+{
+    "0": {
         "postCategories": [
             "AI",
             "Chatbot"
@@ -24,7 +24,7 @@
         "authorName": "Joseph Ampfer",
         "email": "jampfer@gmail.com"
     },
-    {
+    "1": {
         "postID": 2,
         "postTime": "2024-10-02T09:30:00Z",
         "authorName": "Tyrese Lanister",
@@ -83,7 +83,7 @@
             }
         ]
     },
-    {
+    "2": {
         "postID": 3,
         "postTime": "2024-10-01T15:00:00Z",
         "authorName": "Tyrese Lanister",
@@ -117,7 +117,7 @@
             }
         ]
     },
-    {
+    "3": {
         "postID": 4,
         "postTime": "2024-09-30T11:00:00Z",
         "authorName": "Tyrese Lanister",
@@ -151,7 +151,7 @@
             }
         ]
     },
-    {
+    "4": {
         "postID": 5,
         "postTime": "2024-09-29T13:00:00Z",
         "authorName": "Tyrese Lanister",
@@ -185,7 +185,7 @@
             }
         ]
     },
-    {
+    "5": {
         "postID": 6,
         "postTime": "2024-09-28T08:00:00Z",
         "authorName": "Tyrese Lanister",
@@ -219,7 +219,7 @@
             }
         ]
     },
-    {
+    "6": {
         "postTitle": "Touch Grass Royale",
         "postCategories": [
             "Software Development",
@@ -237,5 +237,23 @@
         "comments": [],
         "authorName": "Joseph Ampfer",
         "postImage": ".\/assets\/images\/blog\/1728422057.jpeg"
+    },
+    "8": {
+        "postTitle": "This is the project",
+        "postCategories": [
+            "Mobile Apps",
+            "Data Science"
+        ],
+        "lookingFor": [
+            "Front-End Developer",
+            "Game Developer"
+        ],
+        "description": "This is the project",
+        "postTime": "2024-10-13 02:00:12",
+        "likes": 0,
+        "comments": [],
+        "authorName": "Bhuwan Bhandari",
+        "email": "bhandarib1@mymail.nku.edu",
+        "postImage": ".\/assets\/images\/blog\/1728777612.jpg"
     }
-]
+}

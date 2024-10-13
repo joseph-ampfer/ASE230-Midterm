@@ -3,14 +3,18 @@ session_start();
 require_once('scripts/scripts.php');
 
 $isLoggedIn = false;
+$email = "";
 if (isset($_SESSION['email'])) {
     $isLoggedIn = true;
+    $email = $_SESSION['email'];
+
 }
+
 // Index for the post page
 $postIndex = $_GET['id'];
 
 // Change to session logic !!!!!!
-$username = "Joseph Ampfer";
+$username = getUserName($email);
 
 // To post a comment, check if logged and comment there
 if ($isLoggedIn && count($_POST) > 0) {
@@ -24,9 +28,6 @@ if ($isLoggedIn && count($_POST) > 0) {
 // Get page content
 $posts = readJsonData('./data/posts.json');
 $post = $posts[$postIndex];
-
-
-
 
 ?>
 
@@ -63,14 +64,7 @@ $post = $posts[$postIndex];
 </head>
 
 <body>
-  <div class="preloader">
-    <div class="preload-img">
-      <div class="spinnerBounce">
-        <div class="double-bounce1"></div>
-        <div class="double-bounce2"></div>
-      </div>
-    </div>
-  </div>
+ 
   <div class="nav-search-box">
     <form>
       <div class="input-group"> <input type="text" class="form-control" placeholder="eg. feel the love and …"> <span class="b-line"></span> <span class="b-line-under"></span>
@@ -78,12 +72,13 @@ $post = $posts[$postIndex];
       </div>
     </form>
   </div>
-	<header class="header">
-		<div class="header-fixed">
+		<header class="header">
+		<div class="header-fixed" style="background-color:#fcfcfc">
 			<div class="container-fluid pl-120 pr-120 position-relative">
 				<div class="row d-flex align-items-center">
 					<div class="col-lg-3 col-md-4 col-6">
-						<div class="logo"> <a href="#"><img src="assets/images/logo.png" alt="" class="img-fluid"></a> </div>
+						<div class="logo"> <a href="#"><img src="assets/images/logo.png" alt="" class="img-fluid"></a>
+						</div>
 					</div>
 					<div class="col-lg-9 col-md-8 col-6 d-flex align-items-center justify-content-end position-static">
 						<div class="nav-menu-cover">
@@ -91,28 +86,31 @@ $post = $posts[$postIndex];
 								<li><a href="index.php">Home</a></li>
 								<li><a href="about.php">About</a></li>
 								<li><a href="contact.php">Contact</a></li>
+								<li><a href="contact.php"></a></li>
 								<?php
 								echo $isLoggedIn ?
 									'<li class="dropdown">
-                    <!-- User image as the dropdown trigger with inline styles -->
-                    <img src="assets/images/blog/author.jpg"
-                        style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;"
-                        class="dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown"
-                        aria-expanded="false" alt="User Avatar">
-                
-                    <!-- Dropdown menu -->
-                    <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                      <li><a class="dropdown-item" href="profile.php">Profile</a></li>
-                      <li><a class="dropdown-item" href="#">Settings</a></li>
-                      <li><a class="dropdown-item" href="#">Help</a></li>
-                      <li><hr class="dropdown-divider"></li>
-                      <li>
-                        <form method="POST" action="logout.php">
-                            <button type="submit" class="dropdown-item">Sign out</button>
-                        </form>
-                      </li>
-                    </ul>
-                </li>' :
+                                    <!-- User image as the dropdown trigger with inline styles -->
+                                    <img src="assets/images/blog/author.jpg"
+                                        style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;"
+                                        class="dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown"
+                                        aria-expanded="false" alt="User Avatar">
+                                
+                                    <!-- Dropdown menu -->
+                                    <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                                        <li><a class="dropdown-item" href="profile.php">Profile</a></li>
+                                        <li><a class="dropdown-item" href="profile.php">Profile</a></li>
+                                        <li><a class="dropdown-item" href="#">Settings</a></li>
+                                        <li><a class="dropdown-item" href="#">Help</a></li>
+										<li><a class="dropdown-item" href="#"></a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form method="POST" action="logout.php">
+                                                <button type="submit" class="dropdown-item">Sign out</button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </li>' :
 									'<li><a href="login.php">Log in</a></li>';
 								?>
 							</ul>
@@ -195,17 +193,6 @@ $post = $posts[$postIndex];
             <a href="#"><?= $cat ?></a> 
             <?php } ?>
            </div>
-
-          <!-- Author box -->
-          <div class="post-about-author-box">
-            <div class="author-avatar"> <img src="assets/images/blog/author.jpg" alt="" class="img-fluid"> </div>
-            <div class="author-desc">
-              <h5> <a href="#"> Alex Garry </a> </h5>
-              <div class="description"> On recommend tolerably my belonging or am. Mutual has cannot beauty indeed now sussex merely you. It possible no husbands jennings ye offended packages pleasant he. </div>
-              <div class="social-icons"> <a href="#"><i class="fa fa-facebook"></i></a> <a href="#"><i class="fa fa-twitter"></i></a> <a href="#"><i class="fa fa-instagram"></i></a> <a href="#"><i class="fa fa-pinterest"></i></a> <a href="#"><i class="fa fa-linkedin"></i></a> </div>
-            </div>
-          </div>
-
           <!-- Comments -->
           <button id="toComments" class="btn btn-comment" type="button" data-toggle="collapse" data-target="#commentToggle" aria-expanded="false" aria-controls="commentToggle"> Hide Comments (<?= count($post['comments']) ?>) </button>
           <div class="collapse show" id="commentToggle">
@@ -328,7 +315,6 @@ $post = $posts[$postIndex];
 
   <!-- Include Bootstrap 5 JS Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
   <script src="assets/plugins/owl-carousel/owl.carousel.min.js"></script>
   <script src="assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
   <script src="assets/js/scripts.js"></script>
