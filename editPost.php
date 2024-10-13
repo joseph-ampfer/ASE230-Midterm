@@ -58,7 +58,7 @@ if ($isLoggedIn && count($_POST) > 0) {
 				// Check if the old image exists before trying to delete it
 				if (file_exists($post['postImage']) && !unlink($post['postImage'])) {
 						// Delete the old image
-							echo "Error: Failed to delete old image.";
+						echo "Error: Failed to delete old image.";
 				} else {
 						// Handle case where the file doesn't exist
 						echo "Warning: Old image file not found.";
@@ -212,12 +212,15 @@ $post = $posts[$postIndex];
 						</div>
 						<div class="mobile-menu-cover">
 							<ul class="nav mobile-nav-menu">
-								<li class="search-toggle-open"> <img src="assets/images/search-icon.svg" alt=""
-										class="img-fluid svg"> </li>
-								<li class="search-toggle-close hide"> <img src="assets/images/close.svg" alt=""
-										class="img-fluid"> </li>
-								<li class="nav-menu-toggle"> <img src="assets/images/menu-toggler.svg" alt=""
-										class="img-fluid svg"> </li>
+								<li class="search-toggle-open"> 
+									<img src="assets/images/search-icon.svg" alt="" class="img-fluid svg"> 
+								</li>
+								<li class="search-toggle-close hide"> 
+									<img src="assets/images/close.svg" alt="" class="img-fluid"> 
+								</li>
+								<li class="nav-menu-toggle"> 
+									<img src="assets/images/menu-toggler.svg" alt="" class="img-fluid svg"> 
+								</li>
 							</ul>
 						</div>
 					</div>
@@ -251,8 +254,7 @@ $post = $posts[$postIndex];
             
             <div class="post-meta-info">
               <p class="cats">
-                <input 
-								  required
+                <input required
                   name='postCategories' 
                   class='w-100' 
                   placeholder='Choose categories for your project' 
@@ -297,8 +299,7 @@ $post = $posts[$postIndex];
           </div>
           
 
-          <input 
-					  required 
+          <input required 
             name='lookingFor' 
             class='w-100' 
             placeholder='Who do you want to collaborate with?' 
@@ -342,20 +343,28 @@ $post = $posts[$postIndex];
 
   
   <footer class="footer-container d-flex align-items-center">
-    <div class="container">
-      <div class="row align-items-center footer">
-        <div class="col-md-4 text-center text-md-left order-md-1 order-2">
-          <div class="footer-social"> <a href="#"><i class="fa fa-facebook"></i></a> <a href="#"><i class="fa fa-twitter"></i></a> <a href="#"><i class="fa fa-linkedin"></i></a> <a href="#"><i class="fa fa-google"></i></a> <a href="#"><i class="fa fa-pinterest"></i></a> </div>
-        </div>
-        <div class="col-md-4 d-flex justify-content-center order-md-2 order-1"> <a href="index.html"><img src="assets/images/logo.png" alt="" class="img-fluid"></a> </div>
-        <div class="col-md-4 order-md-3 order-3">
-          <div class="footer-cradit text-center text-md-right">
-            <p>© 2019 <a href="index.html">Themelooks.</a></p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </footer>
+		<div class="container">
+			<div class="row align-items-center footer">
+				<div class="col-md-4 text-center text-md-left order-md-1 order-2">
+					<div class="footer-social"> 
+						<a href="#"><i class="fa fa-facebook"></i></a>
+						<a href="#"><i class="fa fa-twitter"></i></a> 
+						<a href="#"><i class="fa fa-linkedin"></i></a> 
+						<a href="#"><i class="fa fa-google"></i></a> 
+						<a href="#"><i class="fa fa-pinterest"></i></a>
+					</div>
+				</div>
+				<div class="col-md-4 d-flex justify-content-center order-md-2 order-1"> 
+					<a href="index.html"><img src="assets/images/logo.png" alt="" class="img-fluid"></a>
+				</div>
+				<div class="col-md-4 order-md-3 order-3">
+					<div class="footer-cradit text-center text-md-right">
+						<p>© 2019 <a href="index.html">Themelooks.</a></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
   <div class="back-to-top d-flex align-items-center justify-content-center"> <span><i class="fa fa-long-arrow-up"></i></span> </div>
   
 
