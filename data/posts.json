@@ -1,8 +1,8 @@
 {
     "0": {
         "postCategories": [
-            "AI",
-            "Chatbot"
+            "Rockets",
+            "Robotics"
         ],
         "postTitle": "Rocket Ship to the Moon Edited",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ante sem, molestie eget pulvinar in, aliquet at nulla. Mauris porttitor urna id tempor auctor. Nam quis mi non diam fermentum aliquet. Vestibulum dictum convallis feugiat. Ut libero libero, fringilla eu neque ut, posuere consequat massa. In facilisis enim eget massa pellentesque, non accumsan mi condimentum. Aenean in ligula in est placerat faucibus. Curabitur rutrum nunc at neque consequat porta. Pellentesque dignissim pharetra mauris at imperdiet. Cras facilisis laoreet porttitor. Praesent aliquet, libero a fermentum eleifend, nulla nunc luctus diam, in faucibus nisl justo ac risus. Etiam est arcu, ullamcorper vitae diam non, rutrum feugiat nulla. Vestibulum ac laoreet diam.\r\n\r\nPhasellus eu enim lorem. Integer luctus luctus nisl a bibendum. Integer eu purus vulputate, dignissim sem vitae, rhoncus erat. Sed euismod dapibus ligula eget consectetur. Aliquam auctor laoreet elit vel convallis. Etiam sodales lacus non cursus vulputate. Quisque vel tempus enim, at rhoncus ligula. Vivamus quis vulputate dui. Donec molestie velit odio. Vestibulum sed odio porttitor, imperdiet enim eu, mollis augue. Interdum et malesuada fames ac ante ipsum primis in faucibus. Fusce venenatis elementum ipsum ut consequat. Nullam ex turpis, elementum sed scelerisque eget, elementum non lacus. Phasellus ut augue ac sem blandit pharetra.\r\n\r\nVivamus vitae mi pellentesque, aliquet nunc id, ultricies leo. Vestibulum ut quam vel mi dapibus mollis. Nunc lobortis posuere ultricies. Maecenas in dapibus lacus. Etiam nec urna congue, finibus mauris ut, dignissim turpis. Fusce pellentesque pellentesque nisi id condimentum. Proin risus lorem, iaculis at sem et, convallis dictum risus. Proin tincidunt dui urna, in tincidunt metus euismod eu. Morbi vitae tristique mi. Proin orci diam, pretium id erat ut, varius vehicula erat. In euismod vel tellus a interdum. Suspendisse urna metus, sollicitudin sit amet lacus eget, porta semper nibh.                                                                                                                                                                                            ",
@@ -91,8 +91,7 @@
         "postTitle": "Running Robot Project",
         "postTag": "",
         "postCategories": [
-            "AI",
-            "Chatbot"
+            "Mechanical Engineering"
         ],
         "lookingFor": [
             "UI Designer",
@@ -125,8 +124,8 @@
         "postTitle": "UV Sensor Wearable",
         "postTag": "",
         "postCategories": [
-            "AI",
-            "Chatbot"
+            "Health",
+            "Tech"
         ],
         "lookingFor": [
             "UI Designer",
@@ -193,8 +192,8 @@
         "postTitle": "Nuclear Reactor",
         "postTag": "",
         "postCategories": [
-            "AI",
-            "Chatbot"
+            "Chemistry",
+            "Energy"
         ],
         "lookingFor": [
             "UI Designer",
