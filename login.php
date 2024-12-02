@@ -9,8 +9,33 @@ error_reporting(E_ALL); // Report all errors
 
 
 if (count($_POST) > 0) {
-    print_r($_POST);
-    if (isset($_POST['email'][0]) && isset($_POST['password'][0])) {
+    if (isset($_POST['email']) && isset($_POST['password'])) {
+
+        // Clean inputs
+        $email = strtolower(trim($_POST['email']));
+        $password = $_POST['password'];
+
+        require_once('db.php');
+        try {
+            // Begin the Transaction
+            $db->beginTransaction();
+
+            $stmt = $db->prepare("SELECT id, email, password_hash FROM users WHERE email = :email"); /** @var PDOStatement $stmt */
+            $stmt->execute(['email' => $email]);
+            $userInfo = $stmt->fetch();
+
+            
+        
+        } catch(Exception $e) {
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
+
+            // Handle the error (log it, display an error message, etc.)
+            echo "Transaction failed: " . $e->getMessage();
+            $error = $e->getMessage();
+        }
+
         // process information
         $index = 0;
         $fp = fopen(__DIR__ . '/data/users.csv.php', 'r');
