@@ -6,7 +6,7 @@ session_start();
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL); // Report all errors
-
+$error="";
 
 if (count($_POST) > 0) {
     if (isset($_POST['email']) && isset($_POST['password'])) {
@@ -24,7 +24,17 @@ if (count($_POST) > 0) {
             $stmt->execute(['email' => $email]);
             $userInfo = $stmt->fetch();
 
+            if (!$userInfo || !password_verify($password, $userInfo['password_hash'])) {
+                 throw new InvalidArgumentException("Invalid username or password.");
+            }
             
+            // Sign the user in
+            //1. Save the user's data into the session
+            $_SESSION['email'] = $_POST['email'];
+            $_SESSION['ID'] = $index;
+            header("Location: index.php");
+            //2. Show a welcome message
+            echo 'Welcome to our website';
         
         } catch(Exception $e) {
             if ($db->inTransaction()) {
@@ -36,26 +46,6 @@ if (count($_POST) > 0) {
             $error = $e->getMessage();
         }
 
-        // process information
-        $index = 0;
-        $fp = fopen(__DIR__ . '/data/users.csv.php', 'r');
-        while (!feof($fp)) {
-            $line = fgets($fp);
-            if (strstr($line, '<?php die() ?>') || strlen($line) < 5)
-                continue;
-            $index++;
-            $line = explode(';', trim($line));
-            if ($line[0] == $_POST['email'] && password_verify($_POST['password'], $line[1])) {
-                // Sign the user in
-                //1. Save the user's data into the session
-                $_SESSION['email'] = $_POST['email'];
-                $_SESSION['ID'] = $index;
-                header("Location: index.php");
-                //2. Show a welcome message
-                echo 'Welcome to our website';
-            }
-        }
-        fclose($fp);
     } else
         echo 'Email and password are missing';
 }
@@ -70,6 +60,7 @@ if (count($_POST) > 0) {
     <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/custom.css">
 </head>
 
 <body>
@@ -108,6 +99,9 @@ if (count($_POST) > 0) {
             </div>
         </div>
     </header>
+    <?php if (strlen($error) > 0) { ?>
+        <div class="error-message"><?= $error ?></div>
+    <?php } ?>
     <!-- login form-->
     <div class="container d-flex justify-content-center p-3">
         <form id="authForm" method="POST"
