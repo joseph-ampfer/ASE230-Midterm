@@ -50,6 +50,17 @@ function saveComment($filePath, $postIndex, $data)
   file_put_contents($filePath, json_encode($existingData, JSON_PRETTY_PRINT));
 }
 
+function editPost($filePath, $data, $index)
+{
+  $existingData = [];
+  if (file_exists($filePath)) {
+    $existingData = json_decode(file_get_contents($filePath), true);
+  }
+
+  $existingData[$index] = $data; // Edit data at the posts index
+  file_put_contents($filePath, json_encode($existingData, JSON_PRETTY_PRINT));
+}
+
 
 function formatDate($time)
 {
@@ -71,7 +82,7 @@ function formatTime($time)
 
 function getUserName($email)
 {
-  $file = fopen('data/users.csv', 'r'); // Open the file in read mode
+  $file = fopen('data/users.csv.php', 'r'); // Open the file in read mode
 
   // Check through each line
   while (($line = fgets($file)) !== false) {

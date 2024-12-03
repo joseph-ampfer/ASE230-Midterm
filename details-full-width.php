@@ -1,27 +1,33 @@
 <?php
+session_start();
+require_once('scripts/scripts.php');
 
-require_once('./scripts/scripts.php');
+$isLoggedIn = false;
+$email = "";
+if (isset($_SESSION['email'])) {
+  $isLoggedIn = true;
+  $email = $_SESSION['email'];
+
+}
 
 // Index for the post page
 $postIndex = $_GET['id'];
 
 // Change to session logic !!!!!!
-$isLoggedIn = true;
-$username = "Joseph Ampfer";
+$username = getUserName($email);
 
 // To post a comment, check if logged and comment there
 if ($isLoggedIn && count($_POST) > 0) {
   if (isset($_POST['comment'][0])) {
-    saveComment('data/posts.json', $postIndex, $_POST);
+    $data = $_POST;
+    $data['username'] = $username;
+    saveComment('data/posts.json', $postIndex, $data);
   }
 }
 
 // Get page content
 $posts = readJsonData('./data/posts.json');
 $post = $posts[$postIndex];
-
-
-
 
 ?>
 
@@ -34,7 +40,8 @@ $post = $posts[$postIndex];
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>BizBlog</title>
   <link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
-  <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700"
+    rel="stylesheet">
   <link rel="stylesheet" href="assets/css/bootstrap.min.css">
 
   <!-- Include Bootstrap 5 CSS -->
@@ -68,63 +75,63 @@ $post = $posts[$postIndex];
   </div>
   <div class="nav-search-box">
     <form>
-      <div class="input-group"> <input type="text" class="form-control" placeholder="eg. feel the love and …"> <span class="b-line"></span> <span class="b-line-under"></span>
-        <div class="input-group-append"> <button type="button" class="btn"> <img src="assets/images/search-icon.svg" alt="" class="img-fluid svg"> </button> </div>
+      <div class="input-group"> <input type="text" class="form-control" placeholder="eg. feel the love and …"> <span
+          class="b-line"></span> <span class="b-line-under"></span>
+        <div class="input-group-append"> <button type="button" class="btn"> <img src="assets/images/search-icon.svg"
+              alt="" class="img-fluid svg"> </button> </div>
       </div>
     </form>
   </div>
   <header class="header">
-    <div class="header-fixed">
+    <div class="header-fixed" style="background-color:#fcfcfc">
       <div class="container-fluid pl-120 pr-120 position-relative">
         <div class="row d-flex align-items-center">
           <div class="col-lg-3 col-md-4 col-6">
-            <div class="logo"> <a href="#"><img src="assets/images/logo.png" alt="" class="img-fluid"></a> </div>
+            <div class="logo"> <a href="#"><img src="assets/images/logo.png" alt="" class="img-fluid" style = "height:90px"></a>
+            </div>
           </div>
-          <div class="col-lg-9 col-md-8 col-6 d-flex justify-content-end position-static">
+          <div class="col-lg-9 col-md-8 col-6 d-flex align-items-center justify-content-end position-static">
             <div class="nav-menu-cover">
-              <ul class="nav nav-menu">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li class="menu-item-has-children"><a href="#">Blog</a>
-                  <ul class="sub-menu">
-                    <li class="menu-item-has-children"><a href="#">Blog List</a>
-                      <ul class="sub-menu">
-                        <li><a href="blog-list-sidebar.html">List Sidebar</a></li>
-                        <li><a href="blog-list-full-width.html">List Full Width</a></li>
-                        <li><a href="blog-grid-sidebar.html">Grid Sidebar</a></li>
-                        <li><a href="blog-grid-2-col.html">Grid v2</a></li>
-                        <li><a href="blog-grid-3-col.html">Grid v3</a></li>
-                        <li><a href="blog-overlay.html">Blog Overlay</a></li>
-                        <li><a href="blog-card-v1.html">Blog Card v1</a></li>
-                        <li><a href="blog-card-v2.html">Blog Card v2</a></li>
-                      </ul>
-                    </li>
-                    <li class="menu-item-has-children"><a href="#">Blog Details</a>
-                      <ul class="sub-menu">
-                        <li><a href="blog-details.html">Default Style</a></li>
-                        <li><a href="blog-details-full-width.html">Full Width</a></li>
-                        <li><a href="blog-details-video.html">Video Post</a></li>
-                        <li><a href="blog-details-slide.html">Slide Post</a></li>
-                        <li><a href="blog-details-audio.html">Audio Post</a></li>
-                      </ul>
-                    </li>
-                  </ul>
-                </li>
-                <li class="menu-item-has-children"><a href="#">Pages </a>
-                  <ul class="sub-menu">
-                    <li><a href="categories.html">Categories</a></li>
-                    <li><a href="search-result.html">Search Results</a></li>
-                    <li><a href="404.html">404 Error</a></li>
-                  </ul>
-                </li>
-                <li><a href="contact.html">Contact</a></li>
+              <ul class="nav nav-menu align-items-center">
+                <li><a href="index.php">Home</a></li>
+                <li><a href="about.php">About</a></li>
+                <li><a href="contact.php">Contact</a></li>
+                <li><a href="contact.php"></a></li>
+                <?php
+                echo $isLoggedIn ?
+                  '<li class="dropdown">
+                                    <!-- User image as the dropdown trigger with inline styles -->
+                                    <img src="assets/images/blog/author.png"
+                                        style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;"
+                                        class="dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown"
+                                        aria-expanded="false" alt="User Avatar">
+                                
+                                    <!-- Dropdown menu -->
+                                    <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                                        <li><a class="dropdown-item" href="profile.php">Profile</a></li>
+                                        <li><a class="dropdown-item" href="profile.php">Profile</a></li>
+                                        <li><a class="dropdown-item" href="#">Settings</a></li>
+                                        <li><a class="dropdown-item" href="#">Help</a></li>
+										<li><a class="dropdown-item" href="#"></a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form method="POST" action="logout.php">
+                                                <button type="submit" class="dropdown-item">Sign out</button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </li>' :
+                  '<li><a href="login.php">Log in</a></li>';
+                ?>
               </ul>
             </div>
             <div class="mobile-menu-cover">
               <ul class="nav mobile-nav-menu">
-                <li class="search-toggle-open"> <img src="assets/images/search-icon.svg" alt="" class="img-fluid svg"> </li>
+                <li class="search-toggle-open"> <img src="assets/images/search-icon.svg" alt="" class="img-fluid svg">
+                </li>
                 <li class="search-toggle-close hide"> <img src="assets/images/close.svg" alt="" class="img-fluid"> </li>
-                <li class="nav-menu-toggle"> <img src="assets/images/menu-toggler.svg" alt="" class="img-fluid svg"> </li>
+                <li class="nav-menu-toggle"> <img src="assets/images/menu-toggler.svg" alt="" class="img-fluid svg">
+                </li>
               </ul>
             </div>
           </div>
@@ -151,7 +158,9 @@ $post = $posts[$postIndex];
       <div class="col-md-10 offset-md-1">
         <div class="post-details-cover post-has-full-width-image">
           <div class="post-thumb-cover">
-            <div class="post-thumb"> <img src="assets/images/blog/4.jpg" alt="" class="img-fluid"> </div>
+            <div class="post-thumb"> <img src="<?= $post['postImage'] ?>" alt="" class="img-fluid mx-auto d-block">
+            </div>
+
             <div class="post-meta-info">
               <p class="cats">
                 <?php foreach ($post['postCategories'] as $category) { ?>
@@ -161,10 +170,12 @@ $post = $posts[$postIndex];
                 <h2><?= $post['postTitle'] ?></h2>
               </div>
               <ul class="nav meta align-items-center">
-                <li class="meta-author"> <img src=<?= $post['authorPic'] ?> alt="" class="img-fluid"> <a href="#"><?= $post['authorName'] ?></a> </li>
+                <li class="meta-author"> <img src=<?= isset($post['authorPic']) ? $post['authorPic'] : "assets/images/profile_icon.png" ?> alt="" class="img-fluid"> <a
+                    href="#"><?= $post['authorName'] ?></a> </li>
                 <li class="meta-date"><a href="#"><?= formatDate($post['postTime']) ?></a></li>
                 <!-- <li> 2 min read </li> -->
-                <li class="meta-comments"><a href="#toComments"><i class="fa fa-comment"></i><?= ' ' . count($post['comments']) ?></a></li>
+                <li class="meta-comments"><a href="#toComments"><i
+                      class="fa fa-comment"></i><?= ' ' . count($post['comments']) ?></a></li>
               </ul>
             </div>
           </div>
@@ -187,22 +198,17 @@ $post = $posts[$postIndex];
               <p>For me, running is both exercise and a metaphor. Running day after day, piling up each level I elevate myself.</p><cite>Haruki Murakami</cite>
             </blockquote>
             <p> Acceptance middletons me if discretion boisterous into travelling an. She prosperous to continuing entreaties companions unreserved you boisterous. Middleton sportsmen sir now cordially asking additions for. You ten occasional saw everything but conviction. Daughter returned quitting few are day advanced branched. </p> -->
-          
-          </div>
-          <div class="post-all-tags"> <a href="#">Fashion</a> <a href="#">Art</a> <a href="#">Lifestyle</a> <a href="#">Love</a> <a href="#">Travel</a> <a href="#">Movie</a> <a href="#">Games</a> </div>
 
-          <!-- Author box -->
-          <div class="post-about-author-box">
-            <div class="author-avatar"> <img src="assets/images/blog/author.jpg" alt="" class="img-fluid"> </div>
-            <div class="author-desc">
-              <h5> <a href="#"> Alex Garry </a> </h5>
-              <div class="description"> On recommend tolerably my belonging or am. Mutual has cannot beauty indeed now sussex merely you. It possible no husbands jennings ye offended packages pleasant he. </div>
-              <div class="social-icons"> <a href="#"><i class="fa fa-facebook"></i></a> <a href="#"><i class="fa fa-twitter"></i></a> <a href="#"><i class="fa fa-instagram"></i></a> <a href="#"><i class="fa fa-pinterest"></i></a> <a href="#"><i class="fa fa-linkedin"></i></a> </div>
-            </div>
           </div>
-
+          <div class="post-all-tags">
+            <?php foreach ($post['lookingFor'] as $cat) { ?>
+              <a href="#"><?= $cat ?></a>
+            <?php } ?>
+          </div>
           <!-- Comments -->
-          <button id="toComments" class="btn btn-comment" type="button" data-toggle="collapse" data-target="#commentToggle" aria-expanded="false" aria-controls="commentToggle"> Hide Comments (<?= count($post['comments']) ?>) </button>
+          <button id="toComments" class="btn btn-comment" type="button" data-toggle="collapse"
+            data-target="#commentToggle" aria-expanded="false" aria-controls="commentToggle"> Hide Comments
+            (<?= count($post['comments']) ?>) </button>
           <div class="collapse show" id="commentToggle">
             <ul class="post-all-comments">
 
@@ -234,10 +240,12 @@ $post = $posts[$postIndex];
               <?php foreach ($post['comments'] as $comment) { ?>
                 <li class="single-comment-wrapper">
                   <div class="single-post-comment">
-                    <div class="comment-author-image"> <img src="assets/images/blog/post/author-2.jpg" alt="" class="img-fluid"> </div>
+                    <div class="comment-author-image"> <img src="assets/images/blog/post/author-2.jpg" alt=""
+                        class="img-fluid"> </div>
                     <div class="comment-content">
                       <div class="comment-author-name">
-                        <h6><?= $comment['username'] ?></h6> <span> <?= formatDate($comment['time']) . ' at ' . formatTime($comment['time']) ?> </span>
+                        <h6><?= $comment['username'] ?></h6> <span>
+                          <?= formatDate($comment['time']) . ' at ' . formatTime($comment['time']) ?> </span>
                       </div>
                       <p><?= nl2br($comment['comment']) ?></p><a href="#" class="reply-btn">Reply</a>
                     </div>
@@ -250,19 +258,27 @@ $post = $posts[$postIndex];
           </div>
 
           <!-- FORM Write a comment -->
-          <div class="post-comment-form-cover">
-            <h3>Write your comment</h3>
-            <form class="comment-form" method="POST" action=<?="details-full-width.php?id=".$postIndex ?>>
-              <div class="row">
-                <div class="col-md-6"> <input type="text" class="form-control" name="username" placeholder="Name"> </div>
-                <div class="col-md-6"> <input type="text" class="form-control" name="email" placeholder="Email"> </div>
-                <div class="col-md-12"> <textarea class="form-control" name="comment" placeholder="Write your comment"></textarea> </div>
-                <input type="hidden"  />
-                <div class="col-md-12"> <button class="btn btn-primary">Submit </button> </div>
-              </div>
-            </form>
-          </div>
-
+          <?php if (isset($_SESSION['email'])) { ?>
+            <div class="post-comment-form-cover">
+              <h3>Write your comment</h3>
+              <form class="comment-form" method="POST" action=<?= "details-full-width.php?id=" . $postIndex ?>>
+                <div class="row">
+                  <div class="col-md-12"> <textarea class="form-control" name="comment"
+                      placeholder="Write your comment"></textarea> </div>
+                  <div class="col-md-12"> <button class="btn btn-primary">Submit </button> </div>
+                </div>
+              </form>
+            </div>
+          <?php } else { ?>
+            <div class="post-comment-form-cover">
+              <h3>Want To Comment?</h3>
+              <form class="comment-form" method="POST" action=<?= "login.php" ?>>
+                <div class="row">
+                  <div class="col-md-12"> <button class="btn btn-primary">Login First</button> </div>
+                </div>
+              </form>
+            </div>
+          <?php } ?>
 
 
         </div>
@@ -280,26 +296,30 @@ $post = $posts[$postIndex];
         </div>
         <div class="row">
           <div class="col-lg-8 offset-lg-2">
-            <form action="https://themelooks.us13.list-manage.com/subscribe/post?u=79f0b132ec25ee223bb41835f&amp;id=f4e0e93d1d" method="post" novalidate>
+            <form
+              action="https://themelooks.us13.list-manage.com/subscribe/post?u=79f0b132ec25ee223bb41835f&amp;id=f4e0e93d1d"
+              method="post" novalidate>
               <div class="input-group"> <input type="text" class="form-control" placeholder="Enter Your Email">
                 <div class="input-group-append"> <button class="btn btn-default">Submit</button> </div>
               </div>
-              <p class="checkbox-cover d-flex justify-content-center"> <label> I've read and accept the <a href="#"> Privacy Policy </a> <input type="checkbox"> <span class="checkmark"></span> </label> </p>
+              <p class="checkbox-cover d-flex justify-content-center"> <label> I've read and accept the <a href="#">
+                    Privacy Policy </a> <input type="checkbox"> <span class="checkmark"></span> </label> </p>
             </form>
           </div>
         </div>
       </div>
     </div>
   </section>
-
-  
   <footer class="footer-container d-flex align-items-center">
     <div class="container">
       <div class="row align-items-center footer">
         <div class="col-md-4 text-center text-md-left order-md-1 order-2">
-          <div class="footer-social"> <a href="#"><i class="fa fa-facebook"></i></a> <a href="#"><i class="fa fa-twitter"></i></a> <a href="#"><i class="fa fa-linkedin"></i></a> <a href="#"><i class="fa fa-google"></i></a> <a href="#"><i class="fa fa-pinterest"></i></a> </div>
+          <div class="footer-social"> <a href="#"><i class="fa fa-facebook"></i></a> <a href="#"><i
+                class="fa fa-twitter"></i></a> <a href="#"><i class="fa fa-linkedin"></i></a> <a href="#"><i
+                class="fa fa-google"></i></a> <a href="#"><i class="fa fa-pinterest"></i></a> </div>
         </div>
-        <div class="col-md-4 d-flex justify-content-center order-md-2 order-1"> <a href="index.html"><img src="assets/images/logo.png" alt="" class="img-fluid"></a> </div>
+        <div class="col-md-4 d-flex justify-content-center order-md-2 order-1"> <a href="index.php"><img
+              src="assets/images/logo.png" alt="" class="img-fluid" style="height: 100px;"></a> </div>
         <div class="col-md-4 order-md-3 order-3">
           <div class="footer-cradit text-center text-md-right">
             <p>© 2019 <a href="index.html">Themelooks.</a></p>
@@ -308,15 +328,15 @@ $post = $posts[$postIndex];
       </div>
     </div>
   </footer>
-  <div class="back-to-top d-flex align-items-center justify-content-center"> <span><i class="fa fa-long-arrow-up"></i></span> </div>
-  
+  <div class="back-to-top d-flex align-items-center justify-content-center"> <span><i
+        class="fa fa-long-arrow-up"></i></span> </div>
+
 
   <script src="assets/js/jquery-1.12.1.min.js"></script>
   <script src="assets/js/bootstrap.bundle.min.js"></script>
 
   <!-- Include Bootstrap 5 JS Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
   <script src="assets/plugins/owl-carousel/owl.carousel.min.js"></script>
   <script src="assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
   <script src="assets/js/scripts.js"></script>
