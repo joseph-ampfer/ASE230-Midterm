@@ -135,7 +135,7 @@ $posts = readJsonData('data/posts.json');
 				<div class="row d-flex align-items-center">
 					<div class="col-lg-3 col-md-4 col-6">
 						<div class="logo"> <a href="#"><img src="assets/images/logo.png" alt="" class="img-fluid"
-									style="height: 100px;"></a>
+									style="height: 4rem;"></a>
 						</div>
 					</div>
 					<div class="col-lg-9 col-md-8 col-6 d-flex align-items-center justify-content-end position-static">
@@ -240,6 +240,7 @@ $posts = readJsonData('data/posts.json');
 						<div class="post-data">
 							<div class="cats">
 								<?php foreach ($post['postCategories'] as $category) { ?>
+									<a href=""><?= $category ?></a>
 								<?php } ?>
 							</div>
 							<div class="title mb-1">
@@ -250,7 +251,7 @@ $posts = readJsonData('data/posts.json');
 							</p>
 							<!-- Shortened project description -->
 							<div>
-								<p style="color:orange; font-weight: bold;">Looking for:</p>
+								<p class="text-white/80">Looking for:</p>
 								<div class="flex space-x-2 items-center justify-center">
 									<?php foreach ($post['lookingFor'] as $cat) { ?>
 										<span class="bg-white/10 p-2 text-white"><?= $cat ?></span>
@@ -259,18 +260,12 @@ $posts = readJsonData('data/posts.json');
 							</div>
 							<ul class="nav meta align-items-center absolute bottom-0 left-0 ml-5">
 								<li class="meta-author flex items-center justify-center space-x-2">
-									<img src="<?= isset($post['authorPic']) ? $post['authorPic'] : "assets/images/profile_icon.png" ?>"
-										alt="" class="img-fluid">
+									<img src="<?= isset($post['authorPic']) ? $post['authorPic'] : "assets/images/profile_icon.png" ?>" alt="" class="img-fluid">
 									<a class="text-white/80" href="#"><?= $post['authorName'] ?></a>
 								</li>
-								<li class="meta-date"><a class="text-white/80"
-										href="#"><?= formatDate($post['postTime']) ?></a></li>
-								<li class="meta-comments"><a class="text-white/80" href="#"><i
-											class="fa fa-comment text-white/80"></i> <?= count($post['comments']) ?></a>
-								</li>
-								<li class="meta-likes"><a class="text-white/80" href="#"><i
-											class="fa fa-heart text-white/80"></i> <?= $post['likes'] ?? 0 ?></a></li>
-								<!-- Optional likes feature -->
+								<li class="meta-date"><a class="text-white/80" href="#"><?= formatDate($post['postTime']) ?></a></li>
+								<li class="meta-comments"><a class="text-white/80" href="#"><i class="fa fa-comment text-white/80"></i> <?= count($post['comments']) ?></a></li>
+								<li class="meta-likes"><a class="text-white/80" href="#"><i class="fa fa-heart text-white/80"></i> <?= $post['likes'] ?? 0 ?></a></li> <!-- Optional likes feature -->
 							</ul>
 							<!-- <div class="join-project">
 								<a href="contact-owner.php?id=<?= $key ?>" class="btn btn-primary">Join Project</a>
