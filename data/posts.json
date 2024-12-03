@@ -252,28 +252,7 @@
         "postTime": "2024-10-13 02:41:34",
         "likes": 0,
         "comments": [],
-<<<<<<< HEAD
-        "authorName": "Joseph Ampfer",
-        "postImage": ".\/assets\/images\/blog\/1728592579.JPG"
-    },
-    {
-        "postTitle": "This is the project",
-        "postCategories": [
-            "Web Development",
-            "Game Development"
-        ],
-        "lookingFor": [
-            "Back-End Developer"
-        ],
-        "description": "This is the project we are working on.",
-        "postTime": "2024-10-13 00:09:40",
-        "likes": 0,
-        "comments": [],
-        "authorName": "Bhuwan Bhandari",
-        "postImage": ".\/assets\/images\/blog1728770980.jpg"
-=======
         "authorName": "Bhuwan Bhandari",
         "email": "bhandarib1@mymail.nku.edu"
->>>>>>> main
     }
 }

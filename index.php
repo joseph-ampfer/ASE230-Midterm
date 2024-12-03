@@ -75,8 +75,6 @@ if ($isLoggedIn && count($_POST) > 0) {
 
 	}
 }
-
-
 $posts = readJsonData('data/posts.json');
 ?>
 
