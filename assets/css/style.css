@@ -106,7 +106,10 @@ button,button[type=submit],input[type=submit] {
 textarea {
     resize: none
 }
-
+.modal-body {
+    text-align: center; /* Center-align the content */
+    padding: 1rem; /* Adjust padding as needed */
+}
 img {
     max-width: 100%;
     height: auto
