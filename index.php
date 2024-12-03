@@ -118,6 +118,7 @@ $posts = readJsonData('data/posts.json');
 </head>
 
 <body>
+
 	<div class="preloader">
 		<div class="preload-img">
 			<div class="spinnerBounce">
@@ -126,6 +127,8 @@ $posts = readJsonData('data/posts.json');
 			</div>
 		</div>
 	</div>
+	
+	
 	<header class="header">
 		<div class="header-fixed" style="background-color:#fcfcfc">
 			<div class="container-fluid pl-120 pr-120 position-relative">
@@ -192,7 +195,7 @@ $posts = readJsonData('data/posts.json');
 
 	<!-- Main content -->
 	<main class="container pt-15 pb-90">
-
+	
 		<!-- Post Modal Trigger -->
 		<?php
 		if ($isLoggedIn) { ?>
