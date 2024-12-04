@@ -31,7 +31,7 @@ if (count($_POST) > 0) {
             // Sign the user in
             //1. Save the user's data into the session
             $_SESSION['email'] = $_POST['email'];
-            $_SESSION['ID'] = $index;
+            $_SESSION['ID'] = $userInfo['id'];
             $_SESSION['isAdmin']= $userInfo['isAdmin'];
             header("Location: index.php");
             //2. Show a welcome message
