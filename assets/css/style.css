@@ -107,8 +107,8 @@ textarea {
     resize: none
 }
 .modal-body {
-    text-align: center; /* Center-align the content */
-    padding: 1rem; /* Adjust padding as needed */
+    text-align: center; 
+    padding: 1rem; 
 }
 img {
     max-width: 100%;

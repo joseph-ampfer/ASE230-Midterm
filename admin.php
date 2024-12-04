@@ -1,4 +1,8 @@
 <?php
+session_start();
+if (!$_SESSION['isAdmin']) {
+    header("Location: index.php");
+}
 require_once("./db.php");
 $get_users_query = $db->query('SELECT * FROM users');
 $users = $get_users_query->fetchAll();
@@ -19,7 +23,6 @@ echo '<pre>';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/font-awesome.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
-
 </head>
 
 <body>
@@ -51,7 +54,6 @@ echo '<pre>';
                                     data-bs-target="#exampleModal">
                                     Delete
                                 </button>
-
                             </td>
                         </tr>
                     <?php } ?>
@@ -70,7 +72,7 @@ echo '<pre>';
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Are you sure you want to delete this user?
+                    Are you sure ?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
