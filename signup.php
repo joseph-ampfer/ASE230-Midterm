@@ -9,7 +9,7 @@ error_reporting(E_ALL); // Report all errors
 // if (isset($_SESSION['email']))
 //     die('You are already logged in, please log out if you want to create a new account.');
 
-$error="";
+$error = "";
 
 //if the post request sent by form has some values
 //then check if the user has entered email or not
@@ -24,14 +24,14 @@ if (count($_POST) > 0) {
         $password = password_hash($password, PASSWORD_DEFAULT);
         $firstname = trim($_POST['firstName']);
         $lastname = trim($_POST['lastName']);
-        
+
         try {
             // Begin the transaction
             $db->beginTransaction();
 
             // Check if email already exists
             $checkStmt = $db->prepare("SELECT COUNT(*) FROM users WHERE email = :email"); /** @var PDOStatement $checkStmt */
-            $checkStmt->execute([':email'=>$email]); 
+            $checkStmt->execute([':email' => $email]);
             $emailExists = $checkStmt->fetchColumn();
             if ($emailExists) {
                 throw new InvalidArgumentException("The email adress is already in use.");
@@ -39,7 +39,7 @@ if (count($_POST) > 0) {
 
             // Execute your database operations
             $stmt1 = $db->prepare("INSERT INTO users (email, password_hash, firstname, lastname) VALUES (:name, :password, :firstname, :lastname)"); /** @var PDOStatement $stmt1 */
-            $stmt1->execute(['name' => $email, 'password' => $password, 'firstname' => $firstname, 'lastname' => $lastname ]);
+            $stmt1->execute(['name' => $email, 'password' => $password, 'firstname' => $firstname, 'lastname' => $lastname]);
 
             // Commit the transaction
             $db->commit();
@@ -49,8 +49,8 @@ if (count($_POST) > 0) {
             header("Location: index.php");
 
             echo "Transaction completed successfully!";
-        
-        } catch(Exception $e) {
+
+        } catch (Exception $e) {
             if ($db->inTransaction()) {
                 $db->rollBack();
             }
@@ -72,7 +72,8 @@ if (count($_POST) > 0) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bootstrap demo</title>
-    <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700"
+        rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/custom.css">
@@ -84,9 +85,9 @@ if (count($_POST) > 0) {
             <div class="container-fluid pl-120 pr-120 position-relative">
                 <div class="row d-flex align-items-center">
                     <div class="col-lg-3 col-md-4 col-6">
-                    <div class="logo"> <a href="#"><img src="assets/images/logo.png" alt="" class="img-fluid"
-									style="height: 100px;"></a>
-						</div>
+                        <div class="logo"> <a href="#"><img src="assets/images/logo.png" alt="" class="img-fluid"
+                                    style="height: 100px;"></a>
+                        </div>
                     </div>
                     <div class="col-lg-9 col-md-8 col-6 d-flex justify-content-end position-static">
                         <div class="nav-menu-cover">
@@ -98,10 +99,10 @@ if (count($_POST) > 0) {
                         </div>
                         <div class="mobile-menu-cover">
                             <ul class="nav mobile-nav-menu">
-                                <li class="search-toggle-open"> 
+                                <li class="search-toggle-open">
                                     <img src="assets/images/search-icon.svg" alt="" class="img-fluid svg">
                                 </li>
-                                <li class="search-toggle-close hide"> 
+                                <li class="search-toggle-close hide">
                                     <img src="assets/images/close.svg" alt="" class="img-fluid">
                                 </li>
                                 <li class="nav-menu-toggle">
@@ -161,7 +162,7 @@ if (count($_POST) > 0) {
                     </div>
                 </div>
                 <div class="col-md-4 d-flex justify-content-center order-md-2 order-1"> <a href="index.php"><img
-                            src="assets/images/logo.png" alt="" class="img-fluid" style = "height:100px;"></a> </div>
+                            src="assets/images/logo.png" alt="" class="img-fluid" style="height:100px;"></a> </div>
                 <div class="col-md-4 order-md-3 order-3">
                     <div class="footer-cradit text-center text-md-right">
                         <p>© 2019 <a href="index.html">Themelooks.</a></p>

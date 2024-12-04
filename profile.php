@@ -1,7 +1,10 @@
 <?php
 session_start();
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 require_once('scripts/scripts.php');
-$isLoggedIn = false;
+$isLoggedIn = true;
 if (isset($_SESSION['email'])) {
 	$isLoggedIn = true;
 	$email = $_SESSION['email'];
@@ -11,7 +14,7 @@ if (isset($_SESSION['email'])) {
 }
 $error = "";
 
-// To post a comment, check if logged and comment there
+//To post a comment, check if logged and comment there
 if ($isLoggedIn && count($_POST) > 0) {
 	if (isset($_POST['postTitle'][0])) {
 		if (isset($_FILES['postImage']) && $_FILES['postImage']['error'] === UPLOAD_ERR_OK) {
@@ -109,14 +112,14 @@ $posts = readJsonData('data/posts.json');
 </head>
 
 <body>
-	<div class="preloader">
+	<!-- <div class="preloader">
 		<div class="preload-img">
 			<div class="spinnerBounce">
 				<div class="double-bounce1"></div>
 				<div class="double-bounce2"></div>
 			</div>
 		</div>
-	</div>
+	</div> -->
 	<div class="nav-search-box">
 		<form>
 			<div class="input-group"> <input type="text" class="form-control" placeholder="eg. feel the love and …">

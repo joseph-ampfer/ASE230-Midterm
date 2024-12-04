@@ -4,10 +4,14 @@ require_once('scripts/scripts.php');
 
 // NEED TO MAKE AUTH STATIC CLASS
 $isLoggedIn = false;
+$showAdminPage = false;
 if (isset($_SESSION['email'])) {
 	$isLoggedIn = true;
 	$email = $_SESSION['email'];
 	$username = getUserName($email);
+	if ($_SESSION['isAdmin']) {
+		$showAdminPage = true;
+	}
 }
 
 // Initiate error
@@ -100,8 +104,6 @@ if ($isLoggedIn && count($_POST) > 0) {
 		}
 	}
 }
-
-
 $posts = readJsonData('data/posts.json');
 ?>
 
@@ -115,12 +117,12 @@ $posts = readJsonData('data/posts.json');
 	<title>U Collab</title>
 	<script src="https://cdn.tailwindcss.com"></script>
 	<link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
-	<link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700"
+		rel="stylesheet">
 	<!-- <link rel="stylesheet" href="assets/css/bootstrap.min.css"> -->
 
 	<!-- Include Bootstrap 5 CSS -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
 	<link rel="stylesheet" href="assets/css/font-awesome.min.css">
 	<link rel="stylesheet" href="assets/plugins/animate/animate.min.css">
 	<link rel="stylesheet" href="assets/plugins/owl-carousel/owl.carousel.min.css">
@@ -128,10 +130,6 @@ $posts = readJsonData('data/posts.json');
 	<link rel="stylesheet" href="assets/css/style.css">
 	<link rel="stylesheet" href="assets/css/responsive.css">
 	<link rel="stylesheet" href="assets/css/custom.css">
-
-
-
-
 	<!-- FAVICONS FOR DIFFERENT DEVICES -->
 	<link rel="apple-touch-icon" sizes="180x180" href="assets/images/favicon/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon/favicon-32x32.png">
@@ -143,6 +141,7 @@ $posts = readJsonData('data/posts.json');
 </head>
 
 <body>
+
 	<div class="preloader">
 		<div class="preload-img">
 			<div class="spinnerBounce">
@@ -151,6 +150,7 @@ $posts = readJsonData('data/posts.json');
 			</div>
 		</div>
 	</div>
+
 	<header class="header">
 		<div class="header-fixed" style="background-color:#fcfcfc">
 			<div class="container-fluid pl-120 pr-120 position-relative">
@@ -166,7 +166,8 @@ $posts = readJsonData('data/posts.json');
 								<li><a href="index.php">Home</a></li>
 								<li><a href="about.php">About</a></li>
 								<li><a href="contact.php">Contact</a></li>
-								<li><a href="createPost.php">Create</a></li>
+								<?php if($showAdminPage) echo '<li><a href="admin.php">Admin Page</a></li>'?>
+								<li><a href="contact.php"></a></li>
 								<?php
 								echo $isLoggedIn ?
 									'<li class="dropdown">
@@ -178,7 +179,6 @@ $posts = readJsonData('data/posts.json');
                                 
                                     <!-- Dropdown menu -->
                                     <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                                        <li><a class="dropdown-item" href="profile.php">Profile</a></li>
                                         <li><a class="dropdown-item" href="profile.php">Profile</a></li>
                                         <li><a class="dropdown-item" href="#">Settings</a></li>
                                         <li><a class="dropdown-item" href="#">Help</a></li>
@@ -197,14 +197,14 @@ $posts = readJsonData('data/posts.json');
 						</div>
 						<div class="mobile-menu-cover">
 							<ul class="nav mobile-nav-menu">
-								<li class="search-toggle-open"> 
-									<img src="assets/images/search-icon.svg" alt="" class="img-fluid svg"> 
+								<li class="search-toggle-open">
+									<img src="assets/images/search-icon.svg" alt="" class="img-fluid svg">
 								</li>
-								<li class="search-toggle-close hide"> 
-									<img src="assets/images/close.svg" alt="" class="img-fluid"> 
+								<li class="search-toggle-close hide">
+									<img src="assets/images/close.svg" alt="" class="img-fluid">
 								</li>
-								<li class="nav-menu-toggle"> 
-									<img src="assets/images/menu-toggler.svg" alt="" class="img-fluid svg"> 
+								<li class="nav-menu-toggle">
+									<img src="assets/images/menu-toggler.svg" alt="" class="img-fluid svg">
 								</li>
 							</ul>
 						</div>
@@ -282,12 +282,18 @@ $posts = readJsonData('data/posts.json');
 							</div>
 							<ul class="nav meta align-items-center absolute bottom-0 left-0 ml-5">
 								<li class="meta-author flex items-center justify-center space-x-2">
-									<img src="<?= isset($post['authorPic']) ? $post['authorPic'] : "assets/images/profile_icon.png" ?>" alt="" class="img-fluid">
+									<img src="<?= isset($post['authorPic']) ? $post['authorPic'] : "assets/images/profile_icon.png" ?>"
+										alt="" class="img-fluid">
 									<a class="text-white/80" href="#"><?= $post['authorName'] ?></a>
 								</li>
-								<li class="meta-date"><a class="text-white/80" href="#"><?= formatDate($post['postTime']) ?></a></li>
-								<li class="meta-comments"><a class="text-white/80" href="#"><i class="fa fa-comment text-white/80"></i> <?= count($post['comments']) ?></a></li>
-								<li class="meta-likes"><a class="text-white/80" href="#"><i class="fa fa-heart text-white/80"></i> <?= $post['likes'] ?? 0 ?></a></li> <!-- Optional likes feature -->
+								<li class="meta-date"><a class="text-white/80"
+										href="#"><?= formatDate($post['postTime']) ?></a></li>
+								<li class="meta-comments"><a class="text-white/80" href="#"><i
+											class="fa fa-comment text-white/80"></i> <?= count($post['comments']) ?></a>
+								</li>
+								<li class="meta-likes"><a class="text-white/80" href="#"><i
+											class="fa fa-heart text-white/80"></i> <?= $post['likes'] ?? 0 ?></a></li>
+								<!-- Optional likes feature -->
 							</ul>
 							<!-- <div class="join-project">
 								<a href="contact-owner.php?id=<?= $key ?>" class="btn btn-primary">Join Project</a>
@@ -325,8 +331,9 @@ $posts = readJsonData('data/posts.json');
 									placeholder="Enter Your Email">
 								<div class="input-group-append"> <button class="btn btn-default">Submit</button> </div>
 							</div>
-							<p class="checkbox-cover d-flex justify-content-center"> 
-								<label> I've read and accept the <a href="#"> Privacy Policy </a> <input type="checkbox"> <span class="checkmark"></span> </label> 
+							<p class="checkbox-cover d-flex justify-content-center">
+								<label> I've read and accept the <a href="#"> Privacy Policy </a> <input
+										type="checkbox"> <span class="checkmark"></span> </label>
 							</p>
 						</form>
 					</div>
@@ -339,11 +346,11 @@ $posts = readJsonData('data/posts.json');
 		<div class="container">
 			<div class="row align-items-center footer">
 				<div class="col-md-4 text-center text-md-left order-md-1 order-2">
-					<div class="footer-social"> 
+					<div class="footer-social">
 						<a href="#"><i class="fa fa-facebook"></i></a>
-						<a href="#"><i class="fa fa-twitter"></i></a> 
-						<a href="#"><i class="fa fa-linkedin"></i></a> 
-						<a href="#"><i class="fa fa-google"></i></a> 
+						<a href="#"><i class="fa fa-twitter"></i></a>
+						<a href="#"><i class="fa fa-linkedin"></i></a>
+						<a href="#"><i class="fa fa-google"></i></a>
 						<a href="#"><i class="fa fa-pinterest"></i></a>
 					</div>
 				</div>

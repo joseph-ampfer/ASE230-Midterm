@@ -20,7 +20,7 @@ if (count($_POST) > 0) {
             // Begin the Transaction
             $db->beginTransaction();
 
-            $stmt = $db->prepare("SELECT id, email, password_hash FROM users WHERE email = :email"); /** @var PDOStatement $stmt */
+            $stmt = $db->prepare("SELECT id, email, password_hash, isAdmin FROM users WHERE email = :email"); /** @var PDOStatement $stmt */
             $stmt->execute(['email' => $email]);
             $userInfo = $stmt->fetch();
 
@@ -30,8 +30,9 @@ if (count($_POST) > 0) {
             
             // Sign the user in
             //1. Save the user's data into the session
-            $_SESSION['email'] = $userInfo['email'];
+            $_SESSION['email'] = $_POST['email'];
             $_SESSION['ID'] = $userInfo['id'];
+            $_SESSION['isAdmin']= $userInfo['isAdmin'];
             header("Location: index.php");
             //2. Show a welcome message
             echo 'Welcome to our website';
