@@ -1,15 +1,19 @@
 <?php
 session_start();
 require_once('scripts/scripts.php');
+
+// NEED TO MAKE AUTH STATIC CLASS
 $isLoggedIn = false;
 if (isset($_SESSION['email'])) {
 	$isLoggedIn = true;
 	$email = $_SESSION['email'];
 	$username = getUserName($email);
 }
+
+// Initiate error
 $error = "";
 
-// To post a comment, check if logged and comment there
+// To post, check if logged and data is there
 if ($isLoggedIn && count($_POST) > 0) {
 	if (isset($_POST['postTitle'][0])) {
 
@@ -37,42 +41,63 @@ if ($isLoggedIn && count($_POST) > 0) {
 				'image/svg+xml'
 			];
 
-			// Validate Mime type
-			$detectedType = mime_content_type($_FILES['postImage']['tmp_name']);
-			if (!in_array($detectedType, $allowedMimeTypes)) {
-				$error = "Must upload an image (jpeg, jpg, png, gif)";
-			} else {
-				//===== ELSE procede with post upload ===	
+			require_once('db.php');
+			
+			try {
+
+				// Validate Mime type
+				$detectedType = mime_content_type($_FILES['postImage']['tmp_name']);
+				if (!in_array($detectedType, $allowedMimeTypes)) {
+					throw new InvalidArgumentException("Must upload an image (jpeg, jpg, png, gif)");
+				}
+
+				// Create image file path
 				$fextension = pathinfo($_FILES['postImage']['name'], PATHINFO_EXTENSION);
 				$time = time();
 				$imagePath = './assets/images/blog/' . $time . '.' . $fextension;
-				move_uploaded_file($_FILES['postImage']['tmp_name'], $imagePath);
 
+				// Begin the transaction
+				$db->beginTransaction();
 
-				$data = $_POST;
+				// Insert post, get its id
+				$stmt = $db->prepare("INSERT INTO posts (user_id, title, description, image) VALUES (?, ?, ?, ?) "); /** @var PDOStatement $stmt */
+				$stmt->execute([$_SESSION['ID'], $_POST['postTitle'], $_POST['description'], $imagePath ]);
+				$post_id = $db->lastInsertId();
 
-				// Add time, likes, etc
-				$data['postTime'] = date("Y-m-d H:i:s");
-				$data['likes'] = 0;
-				$data['comments'] = [];
-				$data['authorName'] = $username;
-				$data['email'] = $_SESSION['email'];
+				// Decode the categories and looking for
 				$postCategories = json_decode($_POST['postCategories'], true);
 				$lookingFor = json_decode($_POST['lookingFor'], true);
 
-				$data['postCategories'] = array_map(function ($item) {
-					return $item['value'];
-				}, $postCategories);
-				$data['lookingFor'] = array_map(function ($item) {
-					return $item['value'];
-				}, $lookingFor);
-				$data['postImage'] = $imagePath;
+				// Insert the categories
+				foreach($postCategories as $row) {
+					$cmd = $db->prepare("INSERT INTO post_categories (post_id, category) VALUES (?, ?)"); /** @var PDOStatement $cmd */
+					$cmd->execute([$post_id, $row['value']]);
+				}
 
-				saveToJson('data/posts.json', $data);
+				// Insert the looking for
+				foreach($lookingFor as $row) {
+					$cmd = $db->prepare("INSERT INTO looking_for (post_id, role) VALUES (?, ?)"); /** @var PDOStatement $cmd */
+					$cmd->execute([$post_id, $row['value']]);
+				}
+
+				// Only upload image to server if all else worked
+				move_uploaded_file($_FILES['postImage']['tmp_name'], $imagePath);
+
+				// Commit the transaction
+				$db->commit();
+				header("Location: index.php");
+				echo "Transaction completed successfully!";
+			
+			} catch(Exception $e) {
+				if ($db->inTransaction()) {
+						$db->rollBack();
+				}
+
+				// Handle the error (log it, display an error message, etc.)
+				echo "Transaction failed: " . $e->getMessage();
+				$error = $e->getMessage();
 			}
-
 		}
-
 	}
 }
 
@@ -141,7 +166,7 @@ $posts = readJsonData('data/posts.json');
 								<li><a href="index.php">Home</a></li>
 								<li><a href="about.php">About</a></li>
 								<li><a href="contact.php">Contact</a></li>
-								<li><a href="contact.php"></a></li>
+								<li><a href="createPost.php">Create</a></li>
 								<?php
 								echo $isLoggedIn ?
 									'<li class="dropdown">
