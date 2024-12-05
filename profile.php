@@ -3,7 +3,9 @@ session_start();
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
 require_once('scripts/scripts.php');
+require_once('db.php');
 $isLoggedIn = true;
 if (isset($_SESSION['email'])) {
 	$isLoggedIn = true;
@@ -14,7 +16,7 @@ if (isset($_SESSION['email'])) {
 }
 $error = "";
 
-//To post a comment, check if logged and comment there
+//To post, check if logged and post there
 if ($isLoggedIn && count($_POST) > 0) {
 	if (isset($_POST['postTitle'][0])) {
 		if (isset($_FILES['postImage']) && $_FILES['postImage']['error'] === UPLOAD_ERR_OK) {
@@ -70,8 +72,50 @@ if ($isLoggedIn && count($_POST) > 0) {
 	}
 }
 
+// Get all of the users posts with SESSION ID
+try {
+	$q = "
+		SELECT 
+			u.firstname, 
+			u.lastname, 
+			u.picture,
+			u.id AS user_id,
+			p.id AS post_id,
+			p.title,
+			p.image,
+			p.created_at, 
+			SUBSTRING(p.description, 1, 100) AS short_description,
+			GROUP_CONCAT(DISTINCT category SEPARATOR ', ') AS categories, 
+			GROUP_CONCAT(DISTINCT role SEPARATOR ', ') AS roles,
+			COUNT(DISTINCT pl.user_id) AS like_count,
+			COUNT(DISTINCT cm.id) AS comment_count
+		FROM posts p
+		LEFT JOIN post_categories pc ON p.id = pc.post_id
+		LEFT JOIN looking_for lf ON p.id = lf.post_id
+		LEFT JOIN users u ON p.user_id = u.id
+		LEFT JOIN post_likes pl ON p.id = pl.post_id
+		LEFT JOIN comments cm ON p.id = cm.post_id
+		WHERE u.id = ? 
+		GROUP BY p.id
+		ORDER BY p.created_at DESC
+	";
+	$cmd = $db->prepare($q); /** @var PDOStatement $cmd */
+	$cmd->execute([$_SESSION['ID']]);
+	$posts = $cmd->fetchAll();
 
-$posts = readJsonData('data/posts.json');
+
+} catch(Exception $e) {
+	if ($db->inTransaction()) {
+			$db->rollBack();
+	}
+
+	// Handle the error (log it, display an error message, etc.)
+	echo "Transaction failed: " . $e->getMessage();
+	$error = $e->getMessage();
+}
+
+
+//$posts = readJsonData('data/posts.json');
 ?>
 
 <!DOCTYPE html>
@@ -196,7 +240,7 @@ $posts = readJsonData('data/posts.json');
 			<div class="container  mt-5 mb-4" data-bs-toggle="modal" data-bs-target="#exampleModal"
 				style="cursor: pointer; ">
 				<div class="d-flex  justify-content-between">
-					<span><strong><?= $username ?></strong></span>
+					<span><strong><?= "USERNAME" ?></strong></span>
 					<div
 						class="d-flex justify-content-between rounded-pill h-25 w-25 align-items-center p-3 shadow-lg rounded cursor-pointer bg-light hover:bg-gray-200">
 						<img src="assets/images/blog/author.png" alt="User Avatar"
@@ -216,65 +260,69 @@ $posts = readJsonData('data/posts.json');
 			</div>
 		<?php }
 		; ?>
-		<mark><?php if ($error != "") {
-			echo $error;
-		} ?></mark>
-
+  <?php if (strlen($error) > 0) { ?>
+    <div class="error-message"><?= $error ?></div>
+  <?php } ?>
 		<div class="row">
 
 			<!-- v2 -->
-			<?php foreach ($posts as $key => $post) {
-				if (isset($_SESSION['email']) && isset($post['email']) && $_SESSION['email'] == $post['email']) { ?>
+			<?php 	/** @var array $posts */ 
+			foreach ($posts as $key => $post) {
+				//if (isset($_SESSION['email']) && isset($post['email']) && $_SESSION['email'] == $post['email']) { ?>
 
 					<div class="col-md-6">
 
 						<div class="z-100 bg-slate-50 flex justify-between ">
 							<a class="bg-red-300 text-white px-5 py-2 hover:bg-red-500"
-								href="deletePost.php?id=<?= $key ?>">Delete</a>
+								href="deletePost.php?id=<?= $post['post_id'] ?>">Delete</a>
 							<a class="bg-gray-950 text-white px-5 py-2 hover:bg-gray-950/70"
-								href="editPost.php?id=<?= $key ?>">Edit</a>
+								href="editPost.php?id=<?= $post['post_id'] ?>">Edit</a>
 						</div>
 
 						<div class="post-default post-has-bg-img">
 							<div class="post-thumb">
 								<a href="details-full-width.php">
-									<div data-bg-img=<?= $post['postImage'] ?>></div>
+									<div data-bg-img=<?= $post['image'] ?>></div>
 								</a>
 							</div>
 							<div class="post-data">
 								<div class="cats">
-									<?php foreach ($post['postCategories'] as $category) { ?>
+									<?php 
+									$categories = explode(", ", $post['categories']);
+									foreach ($categories as $category) { ?>
 										<a href="category-result.html"><?= $category ?></a>
 									<?php } ?>
 								</div>
 								<div class="title mb-1">
-									<h2><a href="details-full-width.php?id=<?= $key ?>"><?= $post['postTitle'] ?></a></h2>
+									<h2><a href="details-full-width.php?id=<?= $post['post_id'] ?>"><?= $post['title'] ?></a></h2>
 								</div>
 								<p class="shortDescription mb-5 px-10">
-									<?= !empty($post['description']) ? substr($post['description'], 0, 100) . '...' : '' ?>
+									<?= $post['short_description']. '...'  ?>
 								</p>
 								<!-- Shortened project description -->
 								<div>
 									<p>Looking for:</p>
 									<div class="flex space-x-2 items-center justify-center">
-										<?php foreach ($post['lookingFor'] as $cat) { ?>
-											<span class="bg-white/10 p-2 text-white"><?= $cat ?></span>
+										<?php 
+										$roles = explode(", ", $post['roles']);
+										foreach ($roles as $role) { ?>
+											<span class="bg-white/10 p-2 text-white"><?= $role ?></span>
 										<?php } ?>
 									</div>
 								</div>
 								<ul class="nav meta align-items-center absolute bottom-0 left-0 ml-5">
 									<li class="meta-author flex items-center justify-center space-x-2">
-										<img src="<?= !empty($post['authorPic']) ? $post['authorPic'] : 'default-avatar.png' ?>"
+										<img src="<?= !empty($post['picture']) ? $post['picture'] : 'default-avatar.png' ?>"
 											alt="" class="img-fluid">
-										<a class="text-white/80" href="#"><?= $post['authorName'] ?></a>
+										<a class="text-white/80" href="#"><?= $post['firstname'].' '.$post['lastname'] ?></a>
 									</li>
 									<li class="meta-date"><a class="text-white/80"
-											href="#"><?= formatDate($post['postTime']) ?></a></li>
+											href="#"><?= formatDate($post['created_at']) ?></a></li>
 									<li class="meta-comments"><a class="text-white/80" href="#"><i
-												class="fa fa-comment text-white/80"></i> <?= count($post['comments']) ?></a>
+												class="fa fa-comment text-white/80"></i> <?= $post['comment_count'] ?></a>
 									</li>
 									<li class="meta-likes"><a class="text-white/80" href="#"><i
-												class="fa fa-heart text-white/80"></i> <?= $post['likes'] ?? 0 ?></a></li>
+												class="fa fa-heart text-white/80"></i> <?= $post['like_count'] ?? 0 ?></a></li>
 									<!-- Optional likes feature -->
 								</ul>
 								<!-- <div class="join-project">
@@ -284,7 +332,7 @@ $posts = readJsonData('data/posts.json');
 						</div>
 					</div>
 				<?php }
-			} ?>
+			  ?>
 
 
 

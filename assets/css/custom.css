@@ -61,3 +61,8 @@ a {
     width: fit-content;
     margin: auto;
 }
+
+.post-details-cover .post-all-comments .single-comment-wrapper .single-post-comment {
+    flex-wrap: nowrap;
+    gap: 1.5rem;
+}

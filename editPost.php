@@ -3,7 +3,7 @@ session_start();
 require_once('scripts/scripts.php');
 
 $isLoggedIn = false;
-if (isset($_SESSION['email']) && $_SESSION['isAdmin']) {
+if (isset($_SESSION['email'])) {
     $isLoggedIn = true;
 }
 
@@ -11,13 +11,24 @@ if (isset($_SESSION['email']) && $_SESSION['isAdmin']) {
 // 1. LOGIN LOGIC
 // 2. DATA VERIFICATION FOR POST
 
+// $post_id = $_GET['id'];
+// require_once('db.php');
+// try {
+// 	// Start transaction
+// 	$db->beginTransaction();
 
-// !!! REplace with session
+// 	// Get the post data
+// } catch(Exception $e) {
+
+// }
+
+
+// !!! Replace with session
 $username = "Joseph Ampfer";
 $error = "";
 
 // Index for the post page
-$postIndex = $_GET['id'];
+
 
 $posts = readJsonData('./data/posts.json');
 $post = $posts[$postIndex];

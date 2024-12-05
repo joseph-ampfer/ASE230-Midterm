@@ -16,7 +16,7 @@ if (isset($_SESSION['email'])) {
 
 // Initiate error
 $error = "";
-
+require_once('db.php');
 // To post, check if logged and data is there
 if ($isLoggedIn && count($_POST) > 0) {
 	if (isset($_POST['postTitle'][0])) {
@@ -45,8 +45,7 @@ if ($isLoggedIn && count($_POST) > 0) {
 				'image/svg+xml'
 			];
 
-			require_once('db.php');
-			
+		
 			try {
 
 				// Validate Mime type
@@ -104,7 +103,48 @@ if ($isLoggedIn && count($_POST) > 0) {
 		}
 	}
 }
-$posts = readJsonData('data/posts.json');
+
+try {
+	$q = "
+		SELECT 
+			u.firstname, 
+			u.lastname, 
+			u.picture,
+			u.id AS user_id,
+			p.id AS post_id,
+			p.title,
+			p.image,
+			p.created_at, 
+			SUBSTRING(p.description, 1, 100) AS short_description,
+			GROUP_CONCAT(DISTINCT category SEPARATOR ', ') AS categories, 
+			GROUP_CONCAT(DISTINCT role SEPARATOR ', ') AS roles,
+			COUNT(DISTINCT pl.user_id) AS like_count,
+			COUNT(DISTINCT cm.id) AS comment_count
+		FROM posts p
+		LEFT JOIN post_categories pc ON p.id = pc.post_id
+		LEFT JOIN looking_for lf ON p.id = lf.post_id
+		LEFT JOIN users u ON p.user_id = u.id
+		LEFT JOIN post_likes pl ON p.id = pl.post_id
+		LEFT JOIN comments cm ON p.id = cm.post_id
+		WHERE status = 'published'
+		GROUP BY p.id
+		ORDER BY p.created_at DESC
+	";
+	$cmd = $db->prepare($q); /** @var PDOStatement $cmd */
+	$cmd->execute();
+	$posts = $cmd->fetchAll();
+
+} catch(Exception $e) {
+	if ($db->inTransaction()) {
+			$db->rollBack();
+	}
+
+	// Handle the error (log it, display an error message, etc.)
+	echo "Transaction failed: " . $e->getMessage();
+	$error = $e->getMessage();
+}
+
+//$posts = readJsonData('data/posts.json');
 ?>
 
 <!DOCTYPE html>
@@ -251,48 +291,56 @@ $posts = readJsonData('data/posts.json');
 
 		<div class="row">
 			<!-- v2 -->
-			<?php foreach ($posts as $key => $post) { ?>
+			 
+			<?php /** @var array $posts */ foreach ($posts as $key => $post) { ?>
 				<div class="col-md-6">
 					<div class="post-default post-has-bg-img">
 						<div class="post-thumb">
-							<a href="details-full-width.php?id=<?= $key ?>">
-								<div data-bg-img=<?= $post['postImage'] ?>></div>
+							<a href="details-full-width.php?id=<?= $post['post_id'] ?>">
+								<div data-bg-img=<?= $post['image'] ?>></div>
 							</a>
+						</div>
+						<div style="position: absolute; top: 2rem; right: 2rem">
+							<button class="btn btn-secondary" type="button">Like</button>
 						</div>
 						<div class="post-data">
 							<div class="cats">
-								<?php foreach ($post['postCategories'] as $category) { ?>
+								<?php 
+								$categories = explode(", ", $post['categories']);
+								foreach ($categories as $category) { ?>
 									<a href=""><?= $category ?></a>
 								<?php } ?>
 							</div>
 							<div class="title mb-1">
-								<h2><a href="details-full-width.php?id=<?= $key ?>"><?= $post['postTitle'] ?></a></h2>
+								<h2><a href="details-full-width.php?id=<?= $post['post_id'] ?>"><?= $post['title'] ?></a></h2>
 							</div>
 							<p class="shortDescription mb-5 px-10">
-								<?= !empty($post['description']) ? substr($post['description'], 0, 100) . '...' : '' ?>
+								<?= $post['short_description']. '...'  ?>
 							</p>
 							<!-- Shortened project description -->
 							<div>
 								<p class="text-white/80">Looking for:</p>
 								<div class="flex space-x-2 items-center justify-center">
-									<?php foreach ($post['lookingFor'] as $cat) { ?>
-										<span class="bg-white/10 p-2 text-white"><?= $cat ?></span>
+									<?php 
+									$roles = explode(", ", $post['roles']);
+									foreach ($roles as $role) { ?>
+										<span class="bg-white/10 p-2 text-white"><?= $role ?></span>
 									<?php } ?>
 								</div>
 							</div>
 							<ul class="nav meta align-items-center absolute bottom-0 left-0 ml-5">
 								<li class="meta-author flex items-center justify-center space-x-2">
-									<img src="<?= isset($post['authorPic']) ? $post['authorPic'] : "assets/images/profile_icon.png" ?>"
+									<img src="<?= isset($post['picture']) ? $post['picture'] : "assets/images/profile_icon.png" ?>"
 										alt="" class="img-fluid">
-									<a class="text-white/80" href="#"><?= $post['authorName'] ?></a>
+									<a class="text-white/80" href="#"><?= $post['firstname'].' '.$post['lastname'] ?></a>
 								</li>
 								<li class="meta-date"><a class="text-white/80"
-										href="#"><?= formatDate($post['postTime']) ?></a></li>
+										href="#"><?= formatDate($post['created_at']) ?></a></li>
 								<li class="meta-comments"><a class="text-white/80" href="#"><i
-											class="fa fa-comment text-white/80"></i> <?= count($post['comments']) ?></a>
+											class="fa fa-comment text-white/80"></i> <?= $post['comment_count'] ?></a>
 								</li>
 								<li class="meta-likes"><a class="text-white/80" href="#"><i
-											class="fa fa-heart text-white/80"></i> <?= $post['likes'] ?? 0 ?></a></li>
+											class="fa fa-heart text-white/80"></i> <?= $post['like_count'] ?? 0 ?></a></li>
 								<!-- Optional likes feature -->
 							</ul>
 							<!-- <div class="join-project">
