@@ -59,7 +59,6 @@ function saveComment($filePath, $postIndex, $data)
  */
 function newsaveComment($pdo, $postID, $data)
 {
-
   // Prepare the SQL query to insert the comment
   $stmt = $pdo->prepare(
       "INSERT INTO comments (post_id, user_id, comment) VALUES (:post_id, :user_id, :comment)"
@@ -73,7 +72,6 @@ function newsaveComment($pdo, $postID, $data)
     'comment' => $data['comment']
   ]);
 
-  echo "Comment saved successfully.";
 }
 
 
