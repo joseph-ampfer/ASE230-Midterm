@@ -74,6 +74,7 @@ try {
   $error = $e->getMessage();
 }
 
+
 // Change to session logic !!!!!!
 $username = getUserName($email);
 
