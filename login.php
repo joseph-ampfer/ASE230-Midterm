@@ -1,20 +1,12 @@
 <?php
 session_start();
-// if (isset($_SESSION['email']))
-//     $isLoggedIn = true;
-// Enable error reporting for debugging
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL); // Report all errors
 $error="";
 
 if (count($_POST) > 0) {
     if (isset($_POST['email']) && isset($_POST['password'])) {
-
         // Clean inputs
         $email = strtolower(trim($_POST['email']));
         $password = $_POST['password'];
-
         require_once('db.php');
         try {
             // Begin the Transaction

@@ -120,17 +120,6 @@ $posts = readJsonData('data/posts.json');
 			</div>
 		</div>
 	</div> -->
-	<div class="nav-search-box">
-		<form>
-			<div class="input-group"> <input type="text" class="form-control" placeholder="eg. feel the love and …">
-				<span class="b-line"></span> <span class="b-line-under"></span>
-				<div class="input-group-append"> <button type="button" class="btn">
-						<img src="assets/images/search-icon.svg" alt="" class="img-fluid svg" />
-					</button>
-				</div>
-			</div>
-		</form>
-	</div>
 	<header class="header">
 		<div class="header-fixed">
 			<div class="container-fluid pl-120 pr-120 position-relative">
@@ -191,6 +180,94 @@ $posts = readJsonData('data/posts.json');
 
 	<!-- Main content -->
 	<main class="container pt-15 pb-90">
+		<!-- User's Profile Card -->
+		<div class="d-flex justify-content-center align-items-center" style="height: 50vh; background-color: #f8f9fa;">
+			<div class="card text-center" style="width: 50rem; border: none;">
+				<!-- Profile Image -->
+				<div class="card-img-top">
+					<img src="assets/images/blog/author.png" alt="Profile" class="rounded-circle"
+						style="width: 120px; height: 120px; margin: auto; display: block; object-fit: cover;">
+				</div>
+
+
+				<div class="card-body">
+					<!-- Name -->
+					<h5 class="card-title mb-1">Alexander Schidmt</h5>
+
+					<!-- Major -->
+					<p class="text-muted" style="font-size: 14px; margin: 0;">Computer Science</p>
+					<!-- Social Medial Link -->
+					<a href="https://twitter.com/yourusername" target="_blank"
+						style="margin-right: 10px; text-decoration: none; color: #1DA1F2;">
+						twitter.com/username
+					</a>
+					<!-- Short Bio -->
+					<p class="card-text mt-3" style="font-size: 15px; color: #6c757d;">
+						Aspiring software engineer driven by curiosity and a love for creating efficient algorithms and
+						clean code.
+					</p>
+					<!-- Edit/Update Button -->
+					<div class="text-end" style="margin: 10px auto;">
+						<button type="button" class="btn" title="Update profile" onClick="showUpdateForm()">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+								class="bi bi-pencil-fill" viewBox="0 0 16 16">
+								<path
+									d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
+							</svg>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Form to update user details -->
+		<div id="formContainer" style="display: none; 
+			background-color: #f1f3f5; 
+			padding: 20px; 
+			border-radius: 10px; 
+			margin-top: 20px; 
+			overflow: hidden; 
+			height: 0; 
+			transition: height 0.5s ease;">
+			<form id="userDetailsForm" class="comment-form" method="POST" enctype="multipart/form-data">
+				<div class="row">
+					<!-- Update Profile Picture Field -->
+					<div class="col-md-12 mb-3 d-flex align-items-center">
+						<label for="postImage" class="me-2"><strong>Profile Picture</strong></label>
+						<input required type="file" class="form-control me-2" name="postImage" accept="image/*">
+
+					</div>
+
+					<!-- Major -->
+					<div class="col-md-12 mb-3 d-flex align-items-center">
+						<label for="major" class="me-2"><strong>Major</strong></label>
+						<input required name="major" class="form-control me-2 w-50" placeholder="Choose your major"
+							value="" data-blacklist="badwords, asdf">
+
+					</div>
+
+					<!-- Social Media Link -->
+					<div class="col-md-12 mb-3 d-flex align-items-center">
+						<label for="socialmedialink" class="me-2"><strong>Social Media Link</strong></label>
+						<input required name="socialmedialink" class="form-control me-2 w-50"
+							placeholder="Add one of your social media links" value="" data-blacklist="badwords, asdf">
+
+					</div>
+
+					<!-- Short Bio of User -->
+					<div class="col-md-12 mb-3 d-flex align-items-center">
+						<label for="description" class="me-2"><strong>Your short bio</strong></label>
+						<textarea class="form-control me-2" name="description"
+							placeholder="Describe about you...your hobbies...fun fact..."></textarea>
+
+					</div>
+				</div>
+				<div class="text-end" style="margin: 10px auto;">
+					<button type="button" class="btn btn-primary" onClick="showUpdateForm()">Update</button>
+				</div>
+			</form>
+		</div>
+
 		<!-- Post Modal Trigger -->
 		<?php if ($isLoggedIn) { ?>
 			<div class="container  mt-5 mb-4" data-bs-toggle="modal" data-bs-target="#exampleModal"
@@ -367,8 +444,55 @@ $posts = readJsonData('data/posts.json');
 	<script src="assets/js/scripts.js"></script>
 	<script src="assets/js/custom.js"></script>
 	<script>
-		var categoriesInputElm = document.querySelector('input[name=postCategories]');
+		var majorInputElm = document.querySelector('input[name=major]');
+		// Define the list of project categories
+		var whitelist = [
+			"Computer Science",
+			"Business Administration",
+			"Mechanical Engineering",
+			"Biology",
+			"Psychology",
+			"Electrical Engineering",
+			"Nursing",
+			"Economics",
+			"Civil Engineering",
+			"Chemistry",
+			"Marketing",
+			"Political Science",
+			"Environmental Science",
+			"Sociology",
+			"Architecture",
+			"Finance",
+			"Mathematics",
+			"Education",
+			"Communications",
+			"Physics",
+			"Graphic Design",
+			"Criminal Justice",
+			"Aerospace Engineering",
+			"Anthropology",
+			"Public Health",
+			"International Relations",
+			"Data Science",
+			"Biomedical Engineering",
+			"Music",
+			"Information Technology"
+		];
 
+		// Initialize Tagify on the input element
+		var majorTagify = new Tagify(majorInputElm, {
+			whitelist: whitelist, // Use the predefined whitelist array
+			enforceWhitelist: false, // Only allow items from the whitelist
+			maxTags: 10, // Limit the number of tags
+			dropdown: {
+				maxItems: 20, // Maximum items to show in the dropdown
+				classname: "suggestions", // Custom class name for styling
+				enabled: 0, // Show suggestions on focus
+				closeOnSelect: false // Keep the dropdown open after selecting a tag
+			},
+			//originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(',')
+		});
+		var categoriesInputElm = document.querySelector('input[name=postCategories]');
 		// Define the list of project categories
 		var whitelist = [
 			"Web Development",
@@ -425,9 +549,7 @@ $posts = readJsonData('data/posts.json');
 			},
 			//originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(',')
 		});
-
 		var collaboratorInputElm = document.querySelector('input[name=lookingFor]');
-
 		var lookingForWhitelist = [
 			"Software Developer",
 			"Front-End Developer",
@@ -516,6 +638,28 @@ $posts = readJsonData('data/posts.json');
 			},
 			//originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(',')
 		});
+		//show the edit or update form only when the edit button is clicked in the profile card
+		function showUpdateForm() {
+			const form = document.getElementById('formContainer');
+			if (form.style.height === '0px' || form.style.height === '') {
+				form.style.display = 'block';
+				const fullHeight = form.scrollHeight + 'px';
+				form.style.height = fullHeight;
+				setTimeout(() => {
+					form.style.height = 'auto';
+				}, 500);
+			} else {
+				form.style.height = form.scrollHeight + 'px';
+				setTimeout(() => {
+					form.style.height = '0';
+				}, 10);
+				setTimeout(() => {
+					form.style.display = 'none';
+				}, 500);
+			}
+		}
+
+
 	</script>
 
 </body>

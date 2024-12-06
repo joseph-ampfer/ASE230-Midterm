@@ -1,7 +1,6 @@
 <?php
 session_start();
 require_once('scripts/scripts.php');
-
 // NEED TO MAKE AUTH STATIC CLASS
 $isLoggedIn = false;
 $showAdminPage = false;
@@ -13,7 +12,6 @@ if (isset($_SESSION['email'])) {
 		$showAdminPage = true;
 	}
 }
-
 // Initiate error
 $error = "";
 
