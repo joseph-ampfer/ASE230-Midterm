@@ -13,11 +13,41 @@ if (isset($_SESSION['email'])) {
 // Id for the post page
 $postIndex = $_GET['id'];
 $error="";
-// Get the post
 require_once('db.php');
+
+// To post a comment, check if logged and comment there
+if ($isLoggedIn && count($_POST) > 0) {
+  if (isset($_POST['comment'][0])) {
+    try { 
+      // Begin transcation
+      $db->beginTransaction();
+
+      $stmt = $db->prepare(
+        "INSERT INTO comments (post_id, user_id, comment) VALUES (:post_id, :user_id, :comment)"
+      );
+
+      // Execute the query 
+      /** @var PDOStatement $stmt */
+      $stmt->execute([
+        'post_id' => $postIndex,
+        'user_id' => $_SESSION['ID'],
+        'comment' => $_POST['comment']
+      ]);
+
+      // Commit the transaction
+      $db->commit();
+
+    } catch(Exception $e) { 
+      if ($db->inTransaction()) {
+        $db->rollBack();
+      }
+      $error = $e->getMessage(); 
+    }
+  }
+}
+
+// GET THE POST
 try {
-  // Begin the transaction 
-  $db->beginTransaction();
 
   // Get post
   $q = "
@@ -75,18 +105,7 @@ try {
 }
 
 
-// Change to session logic !!!!!!
-$username = getUserName($email);
-
-// To post a comment, check if logged and comment there
-if ($isLoggedIn && count($_POST) > 0) {
-  if (isset($_POST['comment'][0])) {
-    $data = $_POST;
-    $data['username'] = $username;
-    saveComment('data/posts.json', $postIndex, $data);
-  }
-}
-
+echo $error;
 // Get page content
 //$posts = readJsonData('./data/posts.json');
 //$post = $posts[$postIndex];

@@ -17,8 +17,6 @@ if (count($_POST) > 0) {
 
     require_once('db.php');
     try {
-      // Begin the Transaction
-      $db->beginTransaction();
 
       $stmt = $db->prepare("SELECT id, email, password_hash, isAdmin FROM users WHERE email = :email");
       /** @var PDOStatement $stmt */
@@ -37,10 +35,8 @@ if (count($_POST) > 0) {
       header("Location: index.php");
       //2. Show a welcome message
       echo 'Welcome to our website';
+
     } catch (Exception $e) {
-      if ($db->inTransaction()) {
-        $db->rollBack();
-      }
 
       // Handle the error (log it, display an error message, etc.)
       echo "Transaction failed: " . $e->getMessage();
