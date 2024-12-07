@@ -6,7 +6,6 @@ if (!$_SESSION['isAdmin']) {
 require_once("./db.php");
 $get_users_query = $db->query('SELECT * FROM users');
 $users = $get_users_query->fetchAll();
-
 // echo '<pre>';
 // print_r($users);
 ?>

@@ -243,27 +243,26 @@ $posts = readJsonData('data/posts.json');
 						<label for="major" class="me-2"><strong>Major</strong></label>
 						<input required name="major" class="form-control me-2 w-50" placeholder="Choose your major"
 							value="" data-blacklist="badwords, asdf">
-
 					</div>
 
 					<!-- Social Media Link -->
 					<div class="col-md-12 mb-3 d-flex align-items-center">
-						<label for="socialmedialink" class="me-2"><strong>Social Media Link</strong></label>
-						<input required name="socialmedialink" class="form-control me-2 w-50"
+						<label for="social_link" class="me-2"><strong>Social Media Link</strong></label>
+						<input required name="social_link" class="form-control me-2 w-50"
 							placeholder="Add one of your social media links" value="" data-blacklist="badwords, asdf">
 
 					</div>
 
 					<!-- Short Bio of User -->
 					<div class="col-md-12 mb-3 d-flex align-items-center">
-						<label for="description" class="me-2"><strong>Your short bio</strong></label>
-						<textarea class="form-control me-2" name="description"
+						<label for="short_bio" class="me-2"><strong>Your short bio</strong></label>
+						<textarea class="form-control me-2" name="short_bio"
 							placeholder="Describe about you...your hobbies...fun fact..."></textarea>
 
 					</div>
 				</div>
 				<div class="text-end" style="margin: 10px auto;">
-					<button type="button" class="btn btn-primary" onClick="showUpdateForm()">Update</button>
+					<button type="submit" class="btn btn-primary" onClick="showUpdateForm()">Update</button>
 				</div>
 			</form>
 		</div>
@@ -406,9 +405,12 @@ $posts = readJsonData('data/posts.json');
 		<div class="container">
 			<div class="row align-items-center footer">
 				<div class="col-md-4 text-center text-md-left order-md-1 order-2">
-					<div class="footer-social"> <a href="#"><i class="fa fa-facebook"></i></a> <a href="#"><i
-								class="fa fa-twitter"></i></a> <a href="#"><i class="fa fa-linkedin"></i></a> <a
-							href="#"><i class="fa fa-google"></i></a> <a href="#"><i class="fa fa-pinterest"></i></a>
+					<div class="footer-social">
+						<a href="#"><i class="fa fa-facebook"></i> </a>
+						<a href="#"> <i class="fa fa-twitter"></i></a>
+						<a href="#"><i class="fa fa-linkedin"></i></a>
+						<a href="#"><i class="fa fa-google"></i></a>
+						<a href="#"><i class="fa fa-pinterest"></i></a>
 					</div>
 				</div>
 				<div class="col-md-4 d-flex justify-content-center order-md-2 order-1"> <a href="index.php"><img
@@ -482,8 +484,8 @@ $posts = readJsonData('data/posts.json');
 		// Initialize Tagify on the input element
 		var majorTagify = new Tagify(majorInputElm, {
 			whitelist: whitelist, // Use the predefined whitelist array
-			enforceWhitelist: false, // Only allow items from the whitelist
-			maxTags: 10, // Limit the number of tags
+			enforceWhitelist: true, // Only allow items from the whitelist
+			maxTags: 1, // Limit the number of tags
 			dropdown: {
 				maxItems: 20, // Maximum items to show in the dropdown
 				classname: "suggestions", // Custom class name for styling
@@ -539,7 +541,7 @@ $posts = readJsonData('data/posts.json');
 		// Initialize Tagify on the input element
 		var tagify = new Tagify(categoriesInputElm, {
 			whitelist: whitelist, // Use the predefined whitelist array
-			enforceWhitelist: false, // Only allow items from the whitelist
+			enforceWhitelist: true, // Only allow items from the whitelist
 			maxTags: 10, // Limit the number of tags
 			dropdown: {
 				maxItems: 20, // Maximum items to show in the dropdown
