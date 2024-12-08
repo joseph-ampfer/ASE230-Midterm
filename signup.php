@@ -46,6 +46,7 @@ if (count($_POST) > 0) {
 
             $_SESSION['email'] = $email;
             $_SESSION['ID'] = $db->lastInsertId();
+            $_SESSION['isAdmin'] = false;
             header("Location: index.php");
 
             echo "Transaction completed successfully!";

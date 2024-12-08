@@ -116,7 +116,7 @@ if ($isLoggedIn && count($_POST) > 0) {
 			// Create image file path
 			$fextension = pathinfo($_FILES['postImage']['name'], PATHINFO_EXTENSION);
 			$time = time();
-			$imagePath = './assets/images/blog/' . $time . '.' . $fextension;
+			$imagePath = './assets/images/blog/' . $time . $_FILES['postImage']['name']. '.' . $fextension;
 			// Only upload image to server if all else worked
 			move_uploaded_file($_FILES['postImage']['tmp_name'], $imagePath);
 

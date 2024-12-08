@@ -4,7 +4,7 @@ if (!$_SESSION['isAdmin']) {
     header("Location: index.php");
 }
 require_once("./db.php");
-$get_users_query = $db->query('SELECT * FROM users');
+$get_users_query = $db->query('SELECT * FROM users'); /** @var PDOStatement $get_users_query */
 $users = $get_users_query->fetchAll();
 
 // echo '<pre>';
@@ -52,6 +52,7 @@ $users = $get_users_query->fetchAll();
                 <tbody>
                     <?php
                     //Looping the users array that has list of all users
+                    /** @var array $users */
                     foreach ($users as $index => $user) { ?>
                         <tr>
                             <th scope="row"><?= $index + 1 ?></th>
@@ -59,7 +60,7 @@ $users = $get_users_query->fetchAll();
                             <td><?= $user['lastname'] ?></td>
                             <td><?= $user['email'] ?></td>
                             <td>
-                                <a href="editUser.php?id=<?= $user['id'] ?>" class="btn btn-primary btn-sm">Edit</a>
+                                <a href="profile.php?id=<?= $user['id'] ?>" class="btn btn-primary btn-sm">Edit</a>
                                 <!-- Delete button triggers the specific modal -->
                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                                     data-bs-target="#deleteUserModal<?= $user['id'] ?>">

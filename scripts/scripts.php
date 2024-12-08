@@ -74,6 +74,21 @@ function newsaveComment($pdo, $postID, $data)
 
 }
 
+/**
+ * Save a comment to the database.
+ *
+ * @param PDO $pdo The PDO database connection object.
+ * @param int $user_id The ID of the post the comment belongs to.
+ */
+function getUserInfo($pdo, $user_id) {
+  $stmt = $pdo->prepare(
+    "SELECT firstname, lastname, picture, short_bio, major, social_link FROM users WHERE id=?"
+  ); /** @var PDOStatement $stmt */
+
+  $stmt->execute([$user_id]);
+  return $stmt->fetch();
+}
+
 
 function editPost($filePath, $data, $index)
 {

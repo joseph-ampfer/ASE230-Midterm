@@ -74,6 +74,16 @@ try {
   $stmt->execute([$postIndex]);
   $comments = $stmt->fetchAll();
 
+    // Get post comments
+  $q = "
+    SELECT COUNT(user_id) AS like_count
+    FROM post_likes 
+    WHERE post_id = ?
+  ";
+  $stmt = $db->prepare($q); /** @var PDOStatement $stmt */
+  $stmt->execute([$postIndex]);
+  $like_count = $stmt->fetchColumn();
+
 
 } catch(Exception $e) {
   if ($db->inTransaction()){
@@ -238,6 +248,8 @@ echo $error;
                 <!-- <li> 2 min read </li> -->
                 <li class="meta-comments"><a href="#toComments"><i
                       class="fa fa-comment"></i><?= ' ' . count($comments) ?></a></li>
+                <li class="meta-likes"><a class="text-white/80" href="#"><i
+											class="fa fa-heart text-white/80"></i> <?= $like_count ?? 0 ?></a></li>
               </ul>
             </div>
           </div>
