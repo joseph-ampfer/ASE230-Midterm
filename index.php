@@ -294,11 +294,11 @@ try {
 				<div class="col-md-6">
 					<div class="post-default post-has-bg-img">
 						<div class="post-thumb">
-							<a href="details-full-width.php?id=<?= $post['post_id'] ?>">
+							<a >
 								<div data-bg-img=<?= $post['image'] ?>></div>
 							</a>
 						</div>
-						<div style="position: absolute; top: 2rem; right: 2rem">
+						<div style="position: absolute; top: 2rem; right: 2rem; z-index: 999">
 							<button class="btn btn-secondary" type="button">Like</button>
 						</div>
 						<div class="post-data">

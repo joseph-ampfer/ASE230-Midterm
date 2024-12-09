@@ -16,6 +16,14 @@ if (isset($_SESSION['email'])) {
 }
 $error = "";
 
+$userToEditID = $_SESSION['ID'];
+
+if ($_SESSION['isAdmin'] && isset($_GET['id'])) {
+	$userToEditID = $_GET['id'];
+}
+
+$userInfo = getUserInfo($db, $userToEditID);
+
 //To post, check if logged and post there
 if ($isLoggedIn && count($_POST) > 0) {
 	if (isset($_POST['postTitle'][0])) {
@@ -79,6 +87,9 @@ try {
 			u.firstname, 
 			u.lastname, 
 			u.picture,
+			u.major,
+			u.social_link,
+			u.short_bio,
 			u.id AS user_id,
 			p.id AS post_id,
 			p.title,
@@ -100,7 +111,7 @@ try {
 		ORDER BY p.created_at DESC
 	";
 	$cmd = $db->prepare($q); /** @var PDOStatement $cmd */
-	$cmd->execute([$_SESSION['ID']]);
+	$cmd->execute([$userToEditID]);
 	$posts = $cmd->fetchAll();
 
 
@@ -113,6 +124,78 @@ try {
 	echo "Transaction failed: " . $e->getMessage();
 	$error = $e->getMessage();
 }
+
+
+// Initiate error
+$error = "";
+require_once('db.php');
+// To edit a post, check if loggedin and data there
+if ($isLoggedIn && count($_POST) > 0) {
+
+	try {
+
+		if (!empty($_FILES['postImage']['tmp_name']) && $_FILES['postImage']['error'] !== UPLOAD_ERR_OK) {
+			throw new Exception("Error uploading file: " . $_FILES['postImage']['error']);
+		}
+
+		// If they are uploading a new image
+		if (!empty($_FILES['postImage']['tmp_name'])) {
+			// Allowed MIME types (covers most common image formats)
+			$allowedMimeTypes = [
+				'image/jpeg',
+				'image/png',
+				'image/gif',
+				'image/webp',
+				'image/bmp',
+				'image/tiff',
+				'image/svg+xml'
+			];
+
+			// Validate Mime type
+			$detectedType = mime_content_type($_FILES['postImage']['tmp_name']);
+			if (!in_array($detectedType, $allowedMimeTypes)) {
+				throw new InvalidArgumentException("Must upload an image (jpeg, jpg, png, gif)");
+			}
+
+
+			// Create image file path
+			$fextension = pathinfo($_FILES['postImage']['name'], PATHINFO_EXTENSION);
+			$time = time();
+			$imagePath = './assets/images/profile_pictures/' . $time . '.' . $fextension;
+			// Only upload image to server if all else worked
+			move_uploaded_file($_FILES['postImage']['tmp_name'], $imagePath);
+
+		} else {
+			$imagePath=$userInfo['picture'];
+		}
+
+		// Begin the transaction
+		$db->beginTransaction();
+
+		$majorArray = json_decode($_POST['major'], true);
+		$major=$majorArray[0]['value'];
+
+		// Update post, get its id
+		$stmt = $db->prepare("UPDATE users SET major=?, social_link=?, picture=?, short_bio=? WHERE id=?"); /** @var PDOStatement $stmt */
+		$stmt->execute([$major, $_POST['social_link'], $imagePath, $_POST['short_bio'], $userToEditID ]);
+
+
+		// Commit the transaction
+		$db->commit();
+		header("Refresh:0");
+		echo "Transaction completed successfully!";
+		
+	} catch(Exception $e) {
+		if ($db->inTransaction()) {
+				$db->rollBack();
+		}
+
+		// Handle the error (log it, display an error message, etc.)
+		echo "Transaction failed: " . $e->getMessage();
+		$error = $e->getMessage();
+	}
+}
+
 
 
 //$posts = readJsonData('data/posts.json');
@@ -224,31 +307,31 @@ try {
 
 	<!-- Main content -->
 	<main class="container pt-15 pb-90">
+
 		<!-- User's Profile Card -->
 		<div class="d-flex justify-content-center align-items-center" style="height: 50vh; background-color: #f8f9fa;">
 			<div class="card text-center" style="width: 50rem; border: none;">
 				<!-- Profile Image -->
 				<div class="card-img-top">
-					<img src="assets/images/blog/author.png" alt="Profile" class="rounded-circle"
+					<img src="<?= $userInfo['picture'] ?>" alt="Profile" class="rounded-circle"
 						style="width: 120px; height: 120px; margin: auto; display: block; object-fit: cover;">
 				</div>
 
 
 				<div class="card-body">
 					<!-- Name -->
-					<h5 class="card-title mb-1">Alexander Schidmt</h5>
+					<h5 class="card-title mb-1"><?= $userInfo['firstname'].' '.$userInfo['lastname'] ?></h5>
 
 					<!-- Major -->
-					<p class="text-muted" style="font-size: 14px; margin: 0;">Computer Science</p>
+					<p class="text-muted" style="font-size: 14px; margin: 0;"><?= $userInfo['major'] ?></p>
 					<!-- Social Medial Link -->
-					<a href="https://twitter.com/yourusername" target="_blank"
+					<a href="<?= $userInfo['social_link'] ?>" target="_blank"
 						style="margin-right: 10px; text-decoration: none; color: #1DA1F2;">
-						twitter.com/username
+						<?= $userInfo['social_link'] ?>
 					</a>
 					<!-- Short Bio -->
 					<p class="card-text mt-3" style="font-size: 15px; color: #6c757d;">
-						Aspiring software engineer driven by curiosity and a love for creating efficient algorithms and
-						clean code.
+						<?= $userInfo['short_bio'] ?>
 					</p>
 					<!-- Edit/Update Button -->
 					<div class="text-end" style="margin: 10px auto;">
@@ -278,7 +361,7 @@ try {
 					<!-- Update Profile Picture Field -->
 					<div class="col-md-12 mb-3 d-flex align-items-center">
 						<label for="postImage" class="me-2"><strong>Profile Picture</strong></label>
-						<input required type="file" class="form-control me-2" name="postImage" accept="image/*">
+						<input  type="file" class="form-control me-2" name="postImage" accept="image/*">
 
 					</div>
 
@@ -286,14 +369,15 @@ try {
 					<div class="col-md-12 mb-3 d-flex align-items-center">
 						<label for="major" class="me-2"><strong>Major</strong></label>
 						<input required name="major" class="form-control me-2 w-50" placeholder="Choose your major"
-							value="" data-blacklist="badwords, asdf">
+							value="<?= $userInfo['major'] ?>" data-blacklist="badwords, asdf">
+
 					</div>
 
 					<!-- Social Media Link -->
 					<div class="col-md-12 mb-3 d-flex align-items-center">
 						<label for="social_link" class="me-2"><strong>Social Media Link</strong></label>
 						<input required name="social_link" class="form-control me-2 w-50"
-							placeholder="Add one of your social media links" value="" data-blacklist="badwords, asdf">
+							placeholder="Add one of your social media links" value="<?= $userInfo['social_link'] ?>" data-blacklist="badwords, asdf">
 
 					</div>
 
@@ -301,7 +385,7 @@ try {
 					<div class="col-md-12 mb-3 d-flex align-items-center">
 						<label for="short_bio" class="me-2"><strong>Your short bio</strong></label>
 						<textarea class="form-control me-2" name="short_bio"
-							placeholder="Describe about you...your hobbies...fun fact..."></textarea>
+							placeholder="Describe about you...your hobbies...fun fact..."><?= $userInfo['short_bio'] ?></textarea>
 
 					</div>
 				</div>
@@ -310,6 +394,7 @@ try {
 				</div>
 			</form>
 		</div>
+
 
 		<!-- Post Modal Trigger -->
 		<?php if ($isLoggedIn) { ?>
@@ -494,9 +579,12 @@ try {
 	<script src="assets/js/scripts.js"></script>
 	<script src="assets/js/custom.js"></script>
 	<script>
-		var majorInputElm = document.querySelector('input[name=major]');
+
+
+var majorInputElm = document.querySelector('input[name=major]');
 		// Define the list of project categories
 		var whitelist = [
+			"Applied Software Engineering",
 			"Computer Science",
 			"Business Administration",
 			"Mechanical Engineering",
@@ -528,8 +616,7 @@ try {
 			"Music",
 			"Information Technology"
 		];
-
-		// Initialize Tagify on the input element
+				// Initialize Tagify on the input element
 		var majorTagify = new Tagify(majorInputElm, {
 			whitelist: whitelist, // Use the predefined whitelist array
 			enforceWhitelist: true, // Only allow items from the whitelist
@@ -542,6 +629,8 @@ try {
 			},
 			//originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(',')
 		});
+
+
 		var categoriesInputElm = document.querySelector('input[name=postCategories]');
 		// Define the list of project categories
 		var whitelist = [
@@ -688,6 +777,8 @@ try {
 			},
 			//originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(',')
 		});
+
+
 		//show the edit or update form only when the edit button is clicked in the profile card
 		function showUpdateForm() {
 			const form = document.getElementById('formContainer');
@@ -708,8 +799,6 @@ try {
 				}, 500);
 			}
 		}
-
-
 	</script>
 
 </body>
