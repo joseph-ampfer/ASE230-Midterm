@@ -7,9 +7,6 @@ if (isset($_SESSION['email'])) {
     $isLoggedIn = true;
 }
 
-// TODO
-// 1. LOGIN LOGIC
-// 2. DATA VERIFICATION FOR POST
 
 // Id for the post page
 $postIndex = $_GET['id'];

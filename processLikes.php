@@ -2,9 +2,8 @@
 session_start();
 require_once('db.php');
 if (isset($_SESSION['email'])) {
-	$userId = $_SESSION['ID'];
-}
-else{
+    $userId = $_SESSION['ID'];
+} else {
     header("Location: index.php");
 }
 
@@ -17,15 +16,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $post_id = $input['post_id'];
     $increase_like = $input['increase_like'];
     // handle the likes count
-    if($increase_like){
+    if ($increase_like) {
         $stmt = $db->prepare("INSERT INTO `post_likes` (`post_id`, `user_id`) VALUES (?, ?)");
         $stmt->execute([$post_id, $userId]);
-    }
-    else{
+    } else {
         $stmt = $db->prepare("DELETE FROM `post_likes` WHERE `post_likes`.`post_id` = ?");
         $stmt->execute([$post_id]);
     }
- 
+
     echo json_encode([
         'status' => 'success',
         'message' => "Post id to update = $post_id"

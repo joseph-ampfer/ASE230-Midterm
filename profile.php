@@ -7,7 +7,6 @@ $showAdminPage = false;
 if (isset($_SESSION['email'])) {
 	$isLoggedIn = true;
 	$email = $_SESSION['email'];
-	$username = getUserName($email);
 	if ($_SESSION['isAdmin']) {
 		$showAdminPage = true;
 	}
@@ -51,7 +50,6 @@ if ($isLoggedIn && count($_POST) > 0) {
 				$data['postTime'] = date("Y-m-d H:i:s");
 				$data['likes'] = 0;
 				$data['comments'] = [];
-				$data['authorName'] = $username;
 				$data['email'] = $_SESSION['email'];
 				$postCategories = json_decode($_POST['postCategories'], true);
 				$lookingFor = json_decode($_POST['lookingFor'], true);
@@ -111,9 +109,6 @@ try {
 	if ($db->inTransaction()) {
 		$db->rollBack();
 	}
-
-	// Handle the error (log it, display an error message, etc.)
-	echo "Transaction failed: " . $e->getMessage();
 	$error = $e->getMessage();
 }
 
@@ -175,7 +170,6 @@ if ($isLoggedIn && count($_POST) > 0) {
 		// Commit the transaction
 		$db->commit();
 		header("Refresh:0");
-		echo "Transaction completed successfully!";
 
 	} catch (Exception $e) {
 		if ($db->inTransaction()) {
@@ -183,7 +177,6 @@ if ($isLoggedIn && count($_POST) > 0) {
 		}
 
 		// Handle the error (log it, display an error message, etc.)
-		echo "Transaction failed: " . $e->getMessage();
 		$error = $e->getMessage();
 	}
 }

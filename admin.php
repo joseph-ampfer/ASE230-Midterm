@@ -6,8 +6,6 @@ if (!$_SESSION['isAdmin']) {
 require_once("./db.php");
 $get_users_query = $db->query('SELECT * FROM users'); /** @var PDOStatement $get_users_query */
 $users = $get_users_query->fetchAll();
-// echo '<pre>';
-// print_r($users);
 ?>
 
 <!doctype html>
@@ -67,12 +65,6 @@ $users = $get_users_query->fetchAll();
                                 </button>
                             </td>
                         </tr>
-
-                        <!-- Modal for this specific user 
-                         I didn't know if we can create a function with a modal in it and pass
-                         it the user id and then navigate from there to the deleteUser.php page
-                         and then delete the user there.
-                         -->
                         <div class="modal fade" id="deleteUserModal<?= $user['id'] ?>" tabindex="-1"
                             aria-labelledby="deleteUserModalLabel<?= $user['id'] ?>" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
@@ -87,10 +79,8 @@ $users = $get_users_query->fetchAll();
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary"
                                             data-bs-dismiss="modal">Close</button>
-                                        <!-- Delete button submits a form I am handling a post request for now button
-                                         we can come up with a different idea later-->
                                         <form action="deleteUser.php" method="POST">
-                                            <!-- The user's id is passed in the input hopefully it will avoid injection -->
+                                            
                                             <input type="hidden" name="id" value="<?= $user['id'] ?>"> 
                                             <button type="submit" class="btn btn-danger">Delete</button>
                                         </form>

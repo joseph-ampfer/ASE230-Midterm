@@ -11,8 +11,6 @@ if (isset($_SESSION['email'])) {
 
 // Index for the post 
 $postIndex = $_GET['id'];
-
-$posts = readJsonData('./data/posts.json');
 $post = $posts[$postIndex];
 
 require_once('db.php');

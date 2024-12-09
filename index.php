@@ -8,7 +8,6 @@ $showAdminPage = false;
 if (isset($_SESSION['email'])) {
 	$isLoggedIn = true;
 	$email = $_SESSION['email'];
-	$username = getUserName($email);
 	$userId = $_SESSION['ID'];
 	if ($_SESSION['isAdmin']) {
 		$showAdminPage = true;
@@ -90,7 +89,7 @@ if ($isLoggedIn && count($_POST) > 0) {
 				// Commit the transaction
 				$db->commit();
 				header("Location: index.php");
-				echo "Transaction completed successfully!";
+
 
 			} catch (Exception $e) {
 				if ($db->inTransaction()) {
@@ -98,7 +97,7 @@ if ($isLoggedIn && count($_POST) > 0) {
 				}
 
 				// Handle the error (log it, display an error message, etc.)
-				echo "Transaction failed: " . $e->getMessage();
+
 				$error = $e->getMessage();
 			}
 		}
@@ -141,7 +140,6 @@ try {
 	}
 
 	// Handle the error (log it, display an error message, etc.)
-	echo "Transaction failed: " . $e->getMessage();
 	$error = $e->getMessage();
 }
 ?>
@@ -214,7 +212,7 @@ try {
 									'<li class="dropdown">
                                     <!-- User image as the dropdown trigger with inline styles -->
                                     <img src="' . $userInfo['picture'] . '"
-                                        style="width: 50px; height: 5x0px; border-radius: 50%; object-fit: cover; cursor: pointer;"
+                                        style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; cursor: pointer;"
                                         class="dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown"
                                         aria-expanded="false" alt="User Avatar">
                                 
@@ -362,9 +360,6 @@ try {
 								</li>
 								<!-- Optional likes feature -->
 							</ul>
-							<!-- <div class="join-project">
-								<a href="contact-owner.php?id=<?= $key ?>" class="btn btn-primary">Join Project</a>
-							</div> -->
 						</div>
 					</div>
 				</div>
@@ -632,7 +627,6 @@ try {
 			// Send POST request using Axios
 			axios.post('processLikes.php', data)
 				.then(response => {
-					console.log('Response from PHP:', response.data);
 				})
 				.catch(error => {
 					console.error('Error:', error);
