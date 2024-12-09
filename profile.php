@@ -379,7 +379,7 @@ if ($isLoggedIn && count($_POST) > 0) {
 					<!-- Major -->
 					<div class="col-md-12 mb-3 d-flex align-items-center">
 						<label for="major" class="me-2"><strong>Major</strong></label>
-						<input required name="major" class="form-control me-2 w-50" placeholder="Choose your major"
+						<input name="major" class="form-control me-2 w-50" placeholder="Choose your major"
 							value="<?= $userInfo['major'] ?>" data-blacklist="badwords, asdf">
 
 					</div>
@@ -387,7 +387,7 @@ if ($isLoggedIn && count($_POST) > 0) {
 					<!-- Social Media Link -->
 					<div class="col-md-12 mb-3 d-flex align-items-center">
 						<label for="social_link" class="me-2"><strong>Social Media Link</strong></label>
-						<input required name="social_link" class="form-control me-2 w-50"
+						<input name="social_link" class="form-control me-2 w-50"
 							placeholder="Add one of your social media links" value="<?= $userInfo['social_link'] ?>" data-blacklist="badwords, asdf">
 
 					</div>

@@ -8,7 +8,7 @@ if (!$_SESSION['isAdmin']) {
 require_once('./db.php');
 $userToDelete = $_POST['id'] ?? null;
 if ($userToDelete) {
-    $stmt = $db->prepare('DELETE FROM users WHERE id = :id');
+    $stmt = $db->prepare('DELETE FROM users WHERE id = :id'); /** @var PDOStatement $stmt */
     $success = $stmt->execute(['id' => $userToDelete]);
 
     if ($success) {
