@@ -50,6 +50,31 @@ function saveComment($filePath, $postIndex, $data)
   file_put_contents($filePath, json_encode($existingData, JSON_PRETTY_PRINT));
 }
 
+/**
+ * Save a comment to the database.
+ *
+ * @param PDO $pdo The PDO database connection object.
+ * @param int $postIndex The ID of the post the comment belongs to.
+ * @param array $data An associative array containing the comment data (username, comment).
+ */
+function newsaveComment($pdo, $postID, $data)
+{
+  // Prepare the SQL query to insert the comment
+  $stmt = $pdo->prepare(
+      "INSERT INTO comments (post_id, user_id, comment) VALUES (:post_id, :user_id, :comment)"
+  );
+
+  /** @var PDOStatement $stmt */
+  // Execute the query
+  $stmt->execute([
+    'post_id' => $postID,
+    'user_id' => $_SESSION['ID'],
+    'comment' => $data['comment']
+  ]);
+
+}
+
+
 function editPost($filePath, $data, $index)
 {
   $existingData = [];

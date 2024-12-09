@@ -10,24 +10,85 @@ if (isset($_SESSION['email'])) {
 
 }
 
-// Index for the post page
+// Id for the post page
 $postIndex = $_GET['id'];
-
-// Change to session logic !!!!!!
-$username = getUserName($email);
+$error="";
+require_once('db.php');
 
 // To post a comment, check if logged and comment there
 if ($isLoggedIn && count($_POST) > 0) {
   if (isset($_POST['comment'][0])) {
-    $data = $_POST;
-    $data['username'] = $username;
-    saveComment('data/posts.json', $postIndex, $data);
+    try { 
+      newsaveComment($db, $postIndex, $_POST);
+    } catch(Exception $e) { 
+      $error = $e->getMessage(); 
+    }
   }
 }
 
+// GET THE POST
+try {
+
+  // Get post
+  $q = "
+    SELECT title, description, user_id, image, p.created_at, firstname, lastname, picture
+    FROM posts p
+    LEFT JOIN users u ON p.user_id = u.id
+    WHERE p.id = ? AND status = 'published'
+  ";
+  $stmt = $db->prepare($q); /** @var PDOStatement $stmt */
+  $stmt->execute([$postIndex]);
+  $post = $stmt->fetch();
+
+  // Get post categories
+  $q = "
+    SELECT category 
+    FROM post_categories
+    WHERE post_id = ?
+  ";
+  $stmt = $db->prepare($q); /** @var PDOStatement $stmt */
+  $stmt->execute([$postIndex]);
+  $categories = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+
+  // Get post looking_for
+  $q = "
+    SELECT role 
+    FROM looking_for
+    WHERE post_id = ?
+  ";
+  $stmt = $db->prepare($q); /** @var PDOStatement $stmt */
+  $stmt->execute([$postIndex]);
+  $looking_for = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+
+  // Get post comments
+  $q = "
+    SELECT c.id, post_id, user_id, parent_id, comment, c.created_at, firstname, lastname, picture
+    FROM comments c 
+    LEFT JOIN users u ON c.user_id = u.id 
+    WHERE post_id = ?
+    ORDER BY c.created_at DESC
+  ";
+  $stmt = $db->prepare($q); /** @var PDOStatement $stmt */
+  $stmt->execute([$postIndex]);
+  $comments = $stmt->fetchAll();
+
+
+} catch(Exception $e) {
+  if ($db->inTransaction()){
+    $db->rollBack();
+  }
+  // Handle the error (log it, display an error message, etc.)
+  echo "Transaction failed: " . $e->getMessage();
+  $error = $e->getMessage();
+}
+
+
+echo $error;
 // Get page content
-$posts = readJsonData('./data/posts.json');
-$post = $posts[$postIndex];
+//$posts = readJsonData('./data/posts.json');
+//$post = $posts[$postIndex];
 
 ?>
 
@@ -158,29 +219,30 @@ $post = $posts[$postIndex];
       <div class="col-md-10 offset-md-1">
         <div class="post-details-cover post-has-full-width-image">
           <div class="post-thumb-cover">
-            <div class="post-thumb"> <img src="<?= $post['postImage'] ?>" alt="" class="img-fluid mx-auto d-block">
+            <div class="post-thumb"> <img src="<?= $post['image'] ?>" alt="" class="img-fluid mx-auto d-block">
             </div>
 
             <div class="post-meta-info">
               <p class="cats">
-                <?php foreach ($post['postCategories'] as $category) { ?>
-                  <a href="#"><?= $category ?></a> <?php } ?>
+                <?php   /** @var array $categories */
+                foreach ($categories as $cat) { ?>
+                  <a href="#"><?= $cat ?></a> <?php } ?>
               </p>
               <div class="title">
-                <h2><?= $post['postTitle'] ?></h2>
+                <h2><?= $post['title'] ?></h2>
               </div>
               <ul class="nav meta align-items-center">
-                <li class="meta-author"> <img src=<?= isset($post['authorPic']) ? $post['authorPic'] : "assets/images/profile_icon.png" ?> alt="" class="img-fluid"> <a
-                    href="#"><?= $post['authorName'] ?></a> </li>
-                <li class="meta-date"><a href="#"><?= formatDate($post['postTime']) ?></a></li>
+                <li class="meta-author"> <img src=<?= isset($post['picture']) ? $post['picture'] : "assets/images/profile_icon.png" ?> alt="" class="img-fluid"> <a
+                    href="#"><?= $post['firstname'].' '.$post['lastname'] ?></a> </li>
+                <li class="meta-date"><a href="#"><?= formatDate($post['created_at']) ?></a></li>
                 <!-- <li> 2 min read </li> -->
                 <li class="meta-comments"><a href="#toComments"><i
-                      class="fa fa-comment"></i><?= ' ' . count($post['comments']) ?></a></li>
+                      class="fa fa-comment"></i><?= ' ' . count($comments) ?></a></li>
               </ul>
             </div>
           </div>
           <div class="post-content-cover my-drop-cap">
-            <p><?= nl2br($post['description']) ?></p>
+            <p><?= nl2br($post['description'])  ?></p>
 
             <!-- EXTRA CONTENT FROM TEMPLATE, EXTRA IMAGES AND BLOCK QUOTE -->
             <!-- <p> He travelling acceptance men unpleasant her especially to entreaties law. Law forth but end any arise chief arose. Old her say learn these large. Joy fond many in ham high seen this. Few preferred continual led incommode neglected. To discovered insensible collecting your unpleasant but invitation. </p>
@@ -201,14 +263,15 @@ $post = $posts[$postIndex];
 
           </div>
           <div class="post-all-tags">
-            <?php foreach ($post['lookingFor'] as $cat) { ?>
+            <?php   /** @var array $looking_for */ 
+            foreach ($looking_for as $cat) { ?>
               <a href="#"><?= $cat ?></a>
             <?php } ?>
           </div>
           <!-- Comments -->
           <button id="toComments" class="btn btn-comment" type="button" data-toggle="collapse"
             data-target="#commentToggle" aria-expanded="false" aria-controls="commentToggle"> Hide Comments
-            (<?= count($post['comments']) ?>) </button>
+            (<?= count($comments) ?>) </button>
           <div class="collapse show" id="commentToggle">
             <ul class="post-all-comments">
 
@@ -237,15 +300,16 @@ $post = $posts[$postIndex];
                 </ul>
               </li> -->
 
-              <?php foreach ($post['comments'] as $comment) { ?>
+              <?php   /** @var array $comments */
+              foreach ($comments as $comment) { ?>
                 <li class="single-comment-wrapper">
                   <div class="single-post-comment">
-                    <div class="comment-author-image"> <img src="assets/images/blog/post/author-2.jpg" alt=""
-                        class="img-fluid"> </div>
+                    <div class="comment-author-image"> 
+                      <img src="<?= $comment['picture'] ?>" alt="" class="img-fluid"> </div>
                     <div class="comment-content">
                       <div class="comment-author-name">
-                        <h6><?= $comment['username'] ?></h6> <span>
-                          <?= formatDate($comment['time']) . ' at ' . formatTime($comment['time']) ?> </span>
+                        <h6><?= $comment['firstname'].' '.$comment['lastname'] ?></h6> <span>
+                          <?= formatDate($comment['created_at']) . ' at ' . formatTime($comment['created_at']) ?> </span>
                       </div>
                       <p><?= nl2br($comment['comment']) ?></p><a href="#" class="reply-btn">Reply</a>
                     </div>
@@ -265,7 +329,7 @@ $post = $posts[$postIndex];
                 <div class="row">
                   <div class="col-md-12"> <textarea class="form-control" name="comment"
                       placeholder="Write your comment"></textarea> </div>
-                  <div class="col-md-12"> <button class="btn btn-primary">Submit </button> </div>
+                  <div class="col-md-12"> <button class="btn btn-primary">Send Comment</button> </div>
                 </div>
               </form>
             </div>

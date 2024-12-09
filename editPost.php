@@ -3,7 +3,7 @@ session_start();
 require_once('scripts/scripts.php');
 
 $isLoggedIn = false;
-if (isset($_SESSION['email']) && $_SESSION['isAdmin']) {
+if (isset($_SESSION['email'])) {
     $isLoggedIn = true;
 }
 
@@ -11,99 +11,164 @@ if (isset($_SESSION['email']) && $_SESSION['isAdmin']) {
 // 1. LOGIN LOGIC
 // 2. DATA VERIFICATION FOR POST
 
-
-// !!! REplace with session
-$username = "Joseph Ampfer";
-$error = "";
-
-// Index for the post page
+// Id for the post page
 $postIndex = $_GET['id'];
+$error="";
+// Get the post
+require_once('db.php');
+try {
+	$q = "
+		SELECT 
+			u.firstname, 
+			u.lastname, 
+			u.picture,
+			u.id AS user_id,
+			p.id AS post_id,
+			p.title,
+			p.image,
+			p.created_at, 
+			p.description,
+			GROUP_CONCAT(DISTINCT category SEPARATOR ', ') AS categories, 
+			GROUP_CONCAT(DISTINCT role SEPARATOR ', ') AS roles,
+			COUNT(DISTINCT pl.user_id) AS like_count,
+			COUNT(DISTINCT cm.id) AS comment_count
+		FROM posts p
+		LEFT JOIN post_categories pc ON p.id = pc.post_id
+		LEFT JOIN looking_for lf ON p.id = lf.post_id
+		LEFT JOIN users u ON p.user_id = u.id
+		LEFT JOIN post_likes pl ON p.id = pl.post_id
+		LEFT JOIN comments cm ON p.id = cm.post_id
+		WHERE p.id = ? AND p.user_id = ?
+		LIMIT 1
+	";
+	$cmd = $db->prepare($q); /** @var PDOStatement $cmd */
+	$cmd->execute([$postIndex, $_SESSION['ID']]);
+	$post = $cmd->fetch();
 
-$posts = readJsonData('./data/posts.json');
-$post = $posts[$postIndex];
+} catch(Exception $e) {
+	if ($db->inTransaction()) {
+			$db->rollBack();
+	}
+	// Handle the error (log it, display an error message, etc.)
+	echo "Transaction failed: " . $e->getMessage();
+	$error = $e->getMessage();
+}
 
+
+// Initiate error
+$error = "";
+require_once('db.php');
 // To edit a post, check if loggedin and data there
 if ($isLoggedIn && count($_POST) > 0) {
-	if (isset($_POST['postTitle'][0]) && $post['email'] == $_SESSION['email']) {
 
+	try {
 		// Check if required fields have values in $_POST
 		if (empty($_POST['postTitle'])) {
-				$error = "Post title is required.";
+			throw new Exception("Post title is required.");
 		} elseif (empty($_POST['postCategories'])) {
-				$error = "Post categories are required.";
+			throw new Exception("Post categories are required.");
 		} elseif (empty($_POST['lookingFor'])) {
-				$error = "Looking for field is required.";
+			throw new Exception("Looking for field is required.");
 		} elseif (empty($_POST['description'])) {
-				$error = "Description is required.";
+			throw new Exception("Description is required.");
 		}
 
-		$data = $_POST;
+		if (!empty($_FILES['postImage']['tmp_name']) && $_FILES['postImage']['error'] !== UPLOAD_ERR_OK) {
+			throw new Exception("Error uploading file: " . $_FILES['postImage']['error']);
+		}
 
-		if (isset($_FILES['postImage']) && $_FILES['postImage']['error'] === UPLOAD_ERR_OK && $error === "") {
-			
-			// Check if new picture is allowed
+		// If they are uploading a new image
+		if (!empty($_FILES['postImage']['tmp_name'])) {
 			// Allowed MIME types (covers most common image formats)
 			$allowedMimeTypes = [
-					'image/jpeg', 'image/png', 'image/gif', 
-					'image/webp', 'image/bmp', 'image/tiff', 'image/svg+xml'
+				'image/jpeg',
+				'image/png',
+				'image/gif',
+				'image/webp',
+				'image/bmp',
+				'image/tiff',
+				'image/svg+xml'
 			];
 
 			// Validate Mime type
 			$detectedType = mime_content_type($_FILES['postImage']['tmp_name']);
 			if (!in_array($detectedType, $allowedMimeTypes)) {
-				$error = "Must upload an image (jpeg, jpg, png, gif, webp, bmp, svg)";
-			}	else {
-
-				// Delete old picture
-				// Check if the old image exists before trying to delete it
-				if (file_exists($post['postImage']) && !unlink($post['postImage'])) {
-						// Delete the old image
-						echo "Error: Failed to delete old image.";
-				} else {
-						// Handle case where the file doesn't exist
-						echo "Warning: Old image file not found.";
-				}
-
-				// Save new one
-				$fextension = pathinfo($_FILES['postImage']['name'], PATHINFO_EXTENSION);
-				$time = uniqid();
-				$imagePath = './assets/images/blog/' . $time . '.' . $fextension;
-				move_uploaded_file($_FILES['postImage']['tmp_name'], $imagePath);
-				$data['postImage'] = $imagePath;
-
+				throw new InvalidArgumentException("Must upload an image (jpeg, jpg, png, gif)");
 			}
+
+			$oldImage = $post['image'];
+			// Try to delete old image
+			// Debug the image path
+			if (!file_exists($oldImage)) {
+					throw new Exception("Warning: File not found at path: " . $oldImage);
+			}
+
+			// Check if the file is writable
+			if (!is_writable($oldImage)) {
+					throw new Exception("Error: File is not writable: " . $oldImage);
+			}
+
+			// Attempt to delete the file
+			if (!unlink($oldImage)) {
+					throw new Exception("Error: Failed to delete the file: " . $oldImage);
+			}
+
+			// Create image file path
+			$fextension = pathinfo($_FILES['postImage']['name'], PATHINFO_EXTENSION);
+			$time = time();
+			$imagePath = './assets/images/blog/' . $time . '.' . $fextension;
+			// Only upload image to server if all else worked
+			move_uploaded_file($_FILES['postImage']['tmp_name'], $imagePath);
+
 		} else {
-			$data['postImage'] = $post['postImage'];
+			$imagePath=$post['image'];
 		}
 
-		if ($error === "") {
-			// Add time, likes, etc
-			$data['postTime'] = date("Y-m-d H:i:s");
-			$data['likes'] = $post['likes'];
-			$data['comments'] = $post['comments'];
-			$data['authorName'] = $post['authorName'];
-			$data['email'] = $post['email'];
-			$postCategories = json_decode($_POST['postCategories'], true);
-			$lookingFor = json_decode($_POST['lookingFor'], true);
+		// Begin the transaction
+		$db->beginTransaction();
 
-			$data['postCategories'] = array_map(function ($item) {
-				return $item['value'];
-			}, $postCategories);
-			$data['lookingFor'] = array_map(function ($item) {
-				return $item['value'];
-			}, $lookingFor);
+		// Update post, get its id
+		$stmt = $db->prepare("UPDATE posts SET title=?, description=?, image=? WHERE id=? AND user_id=?"); /** @var PDOStatement $stmt */
+		$stmt->execute([$_POST['postTitle'], $_POST['description'], $imagePath, $post['post_id'], $_SESSION['ID'] ]);
 
-			editPost('data/posts.json', $data, $postIndex);
+		// Decode the categories and looking for
+		$postCategories = json_decode($_POST['postCategories'], true);
+		$lookingFor = json_decode($_POST['lookingFor'], true);
 
-			header("Location: profile.php");
+		$cmd = $db->prepare("DELETE FROM looking_for WHERE post_id = ? "); /** @var PDOStatement $cmd */
+		$cmd->execute([$postIndex]);
+
+		$cmd = $db->prepare("DELETE FROM post_categories WHERE post_id = ? "); /** @var PDOStatement $cmd */
+		$cmd->execute([$postIndex]);
+
+		// Insert the categories
+		foreach($postCategories as $row) {
+			$cmd = $db->prepare("INSERT INTO post_categories (post_id, category) VALUES (?, ?)"); /** @var PDOStatement $cmd */
+			$cmd->execute([$post['post_id'], $row['value']]);
 		}
+
+		// Insert the looking for
+		foreach($lookingFor as $row) {
+			$cmd = $db->prepare("INSERT INTO looking_for (post_id, role) VALUES (?, ?)"); /** @var PDOStatement $cmd */
+			$cmd->execute([$post['post_id'], $row['value']]);
+		}
+
+		// Commit the transaction
+		$db->commit();
+		header("Location: details-full-width.php?id=".$post['post_id']);
+		echo "Transaction completed successfully!";
+		
+	} catch(Exception $e) {
+		if ($db->inTransaction()) {
+				$db->rollBack();
+		}
+
+		// Handle the error (log it, display an error message, etc.)
+		echo "Transaction failed: " . $e->getMessage();
+		$error = $e->getMessage();
 	}
 }
 
-
-
-// Change to session logic !!!!!!
-$username = "Joseph Ampfer";
 
 // To post a comment, check if logged and comment there
 if ($isLoggedIn && count($_POST) > 0) {
@@ -113,10 +178,8 @@ if ($isLoggedIn && count($_POST) > 0) {
 }
 
 // Get page content
-$posts = readJsonData('./data/posts.json');
-$post = $posts[$postIndex];
-
-
+// $posts = readJsonData('./data/posts.json');
+// $post = $posts[$postIndex];
 
 
 ?>
@@ -190,7 +253,7 @@ $post = $posts[$postIndex];
 								echo $isLoggedIn ?
 									'<li class="dropdown">
                     <!-- User image as the dropdown trigger with inline styles -->
-                    <img src="assets/images/blog/author.ng"
+                    <img src="assets/images/blog/author.png"
                         style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;"
                         class="dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown"
                         aria-expanded="false" alt="User Avatar">
@@ -249,7 +312,7 @@ $post = $posts[$postIndex];
       <div class="col-md-10 offset-md-1">
         <div class="post-details-cover post-has-full-width-image">
           <div class="post-thumb-cover">
-            <div class="post-thumb"> <img src="<?= $post['postImage'] ?>" alt="" class="img-fluid mx-auto d-block"> </div>
+            <div class="post-thumb"> <img src="<?= $post['image'] ?>" alt="" class="img-fluid mx-auto d-block"> </div>
             	
             
             <form id="editForm" class="comment-form" method="POST" enctype="multipart/form-data">
@@ -260,17 +323,17 @@ $post = $posts[$postIndex];
                   name='postCategories' 
                   class='w-100' 
                   placeholder='Choose categories for your project' 
-                  value='<?php echo implode(", ", $post["postCategories"]); ?>' 
+                  value='<?php echo $post["categories"]; ?>' 
                   data-blacklist='badwords, asdf'>
               </p>
               <div class="title">
-                <h2><input required type="text" class="w-100" name="postTitle" placeholder="Project Title" value="<?= $post['postTitle'] ?>"></h2>
+                <h2><input required type="text" class="w-100" name="postTitle" placeholder="Project Title" value="<?= $post['title'] ?>"></h2>
               </div>
               <ul class="nav meta align-items-center">
-                <li class="meta-author"> <img src=<?= isset($post['authorPic']) ? $post['authorPic'] : "assets/images/profile_icon.png" ?> alt="" class="img-fluid"> <a href="#"><?= $post['authorName'] ?></a> </li>
-                <li class="meta-date"><a href="#"><?= formatDate($post['postTime']) ?></a></li>
+                <li class="meta-author"> <img src=<?= isset($post['picture']) ? $post['picture'] : "assets/images/profile_icon.png" ?> alt="" class="img-fluid"> <a href="#"><?= $post['firstname'].' '.$post['lastname'] ?></a> </li>
+                <li class="meta-date"><a href="#"><?= formatDate($post['created_at']) ?></a></li>
                 <!-- <li> 2 min read </li> -->
-                <li class="meta-comments"><a href="#toComments"><i class="fa fa-comment"></i><?= ' ' . count($post['comments']) ?></a></li>
+                <li class="meta-comments"><a href="#toComments"><i class="fa fa-comment"></i><?= ' ' . $post['comment_count'] ?></a></li>
               </ul>
             </div>
             
@@ -305,7 +368,7 @@ $post = $posts[$postIndex];
             name='lookingFor' 
             class='w-100' 
             placeholder='Who do you want to collaborate with?' 
-            value='<?php echo implode(", ", $post["lookingFor"]); ?>' 
+            value='<?php echo $post["roles"]; ?>' 
             data-blacklist='badwords, asdf'
           />
           <label style="margin-top: 50px;" for="description"><strong>Upload New Image (optional)</strong></label>
