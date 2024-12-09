@@ -1,4 +1,4 @@
-# ASE230-Midterm
+# ASE230 Final Project 
 
 # U Collab
 
@@ -25,12 +25,10 @@ U Collab is a content management system designed for students to collaborate on 
   - Created login and sign-up pages
   - Developed secure login and sign-up logic
   - Implemented password confirmation logic
-  - Assisted with styling
+  - Implemented the admin page where only admins are allowed to see
+  - Created profile card and update profile section
+  - Worked on asynchronous api handling using ajax to update the likes counted in the posts
+  - Worked on styling various left-off css.
 
-- **Sushant Dahal**:
-  - Designed the About page and Contact page
-  - Assisted in collecting necessary data
-  - Helped with debugging and testing
-  - Contributed ideas for the introductory video
-
-## Youtube video link: https://www.youtube.com/watch?v=1ycItj0X40M
+## Youtube video link for midterm: https://www.youtube.com/watch?v=1ycItj0X40M
+## Youtube vide link for final: Under process
