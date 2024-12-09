@@ -155,6 +155,7 @@ try {
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>U Collab</title>
 	<script src="https://cdn.tailwindcss.com"></script>
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 	<link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
 	<link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700"
 		rel="stylesheet">
@@ -292,6 +293,9 @@ try {
 		<div class="row">
 			<!-- Show all the posts here -->
 			<?php /** @var array $posts */ foreach ($posts as $key => $post) { ?>
+				<?php
+				$likesThisPost = checkIfLiked($db, $userId, $post['post_id']);
+				?>
 				<div class="col-md-6">
 					<div class="post-default post-has-bg-img">
 						<div class="post-thumb">
@@ -300,13 +304,14 @@ try {
 							</a>
 						</div>
 						<!-- Make this button clickable only when the user is logged in
-						 When user is logged in they can click it and then see the necessary change 
+						 When user is logged in they can click it and then see the correspondong changes
 						  -->
 						<div style="position: absolute; top: 2rem; right: 2rem; z-index: 999">
-							<button class="btn" type="button" id="<?= $post['post_id'] ?>"
-								onClick="handleLikeButton(event)">
-								<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white"
-									class="bi bi-heart-fill" viewBox="0 0 16 16">
+							<button class="btn" type="button" id="<?= $post['post_id'] ?>" onClick="handleLikeButton(event)"
+								<?= $isLoggedIn ? '' : 'disabled' ?>>
+								<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+									fill="<?= $likesThisPost ? 'red' : 'white' ?>" class="bi bi-heart-fill"
+									viewBox="0 0 16 16">
 									<path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
 								</svg>
 							</button>
@@ -349,8 +354,12 @@ try {
 								<li class="meta-comments"><a class="text-white/80" href="#"><i
 											class="fa fa-comment text-white/80"></i> <?= $post['comment_count'] ?></a>
 								</li>
-								<li class="meta-likes"><a class="text-white/80" href="#"><i
-											class="fa fa-heart text-white/80"></i> <?= $post['like_count'] ?? 0 ?></a></li>
+								<li class="meta-likes text-white/80">
+									<i class="fa fa-heart text-white/80"></i>
+									<span class="like-count text-white/80" id="likesCountFor:<?= $post['post_id'] ?>">
+										<?= $post['like_count'] ?? 0 ?>
+									</span>
+								</li>
 								<!-- Optional likes feature -->
 							</ul>
 							<!-- <div class="join-project">
@@ -593,11 +602,41 @@ try {
 		function handleLikeButton(event) {
 			const likeButton = event.currentTarget;
 			const likeIcon = likeButton.querySelector('svg');
+			let increaseLike = true;
 			if (likeIcon.getAttribute('fill') === 'white') {
 				likeIcon.setAttribute('fill', 'red');  // Change to red when liked
 			} else {
 				likeIcon.setAttribute('fill', 'white');  // Change back to white when unliked
+				increaseLike = false;
 			}
+			const likesCountElement = document.getElementById(`likesCountFor:${likeButton.id}`);
+
+			//initial like count in type number
+			let currentLikeCount = parseInt(likesCountElement.textContent, 10);
+			// increment it by 1
+			if (!isNaN(currentLikeCount)) {
+				if (increaseLike) {
+					currentLikeCount += 1;
+				} else {
+					currentLikeCount -= 1;
+				}
+			}
+			// Update the displayed like count
+			likesCountElement.textContent = currentLikeCount;
+			// Data to send
+			const data = {
+				post_id: likeButton.id,
+				increase_like: increaseLike,
+			};
+
+			// Send POST request using Axios
+			axios.post('processLikes.php', data)
+				.then(response => {
+					console.log('Response from PHP:', response.data);
+				})
+				.catch(error => {
+					console.error('Error:', error);
+				});
 		}
 
 	</script>
