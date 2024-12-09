@@ -1,29 +1,25 @@
 <?php
 session_start();
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 require_once('scripts/scripts.php');
 require_once('db.php');
 $isLoggedIn = true;
+$showAdminPage = false;
 if (isset($_SESSION['email'])) {
 	$isLoggedIn = true;
 	$email = $_SESSION['email'];
 	$username = getUserName($email);
+	if ($_SESSION['isAdmin']) {
+		$showAdminPage = true;
+	}
 } else {
 	header("Location: login.php");
 }
 $error = "";
-
 $userToEditID = $_SESSION['ID'];
-
 if ($_SESSION['isAdmin'] && isset($_GET['id'])) {
 	$userToEditID = $_GET['id'];
 }
-
 $userInfo = getUserInfo($db, $userToEditID);
-
 //To post, check if logged and post there
 if ($isLoggedIn && count($_POST) > 0) {
 	if (isset($_POST['postTitle'][0])) {
@@ -49,8 +45,6 @@ if ($isLoggedIn && count($_POST) > 0) {
 				$time = time();
 				$imagePath = './assets/images/blog/' . $time . '.' . $fextension;
 				move_uploaded_file($_FILES['postImage']['tmp_name'], $imagePath);
-
-
 				$data = $_POST;
 
 				// Add time, likes, etc
@@ -69,8 +63,6 @@ if ($isLoggedIn && count($_POST) > 0) {
 					return $item['value'];
 				}, $lookingFor);
 				$data['postImage'] = $imagePath;
-
-				saveToJson('data/posts.json', $data);
 			}
 
 		} else {
@@ -115,9 +107,9 @@ try {
 	$posts = $cmd->fetchAll();
 
 
-} catch(Exception $e) {
+} catch (Exception $e) {
 	if ($db->inTransaction()) {
-			$db->rollBack();
+		$db->rollBack();
 	}
 
 	// Handle the error (log it, display an error message, etc.)
@@ -166,28 +158,28 @@ if ($isLoggedIn && count($_POST) > 0) {
 			move_uploaded_file($_FILES['postImage']['tmp_name'], $imagePath);
 
 		} else {
-			$imagePath=$userInfo['picture'];
+			$imagePath = $userInfo['picture'];
 		}
 
 		// Begin the transaction
 		$db->beginTransaction();
 
 		$majorArray = json_decode($_POST['major'], true);
-		$major=$majorArray[0]['value'];
+		$major = $majorArray[0]['value'];
 
 		// Update post, get its id
 		$stmt = $db->prepare("UPDATE users SET major=?, social_link=?, picture=?, short_bio=? WHERE id=?"); /** @var PDOStatement $stmt */
-		$stmt->execute([$major, $_POST['social_link'], $imagePath, $_POST['short_bio'], $userToEditID ]);
+		$stmt->execute([$major, $_POST['social_link'], $imagePath, $_POST['short_bio'], $userToEditID]);
 
 
 		// Commit the transaction
 		$db->commit();
 		header("Refresh:0");
 		echo "Transaction completed successfully!";
-		
-	} catch(Exception $e) {
+
+	} catch (Exception $e) {
 		if ($db->inTransaction()) {
-				$db->rollBack();
+			$db->rollBack();
 		}
 
 		// Handle the error (log it, display an error message, etc.)
@@ -262,11 +254,13 @@ if ($isLoggedIn && count($_POST) > 0) {
 								<li><a href="index.php">Home</a></li>
 								<li><a href="about.php">About</a></li>
 								<li><a href="contact.php">Contact</a></li>
-								<?php
+								<?php if ($showAdminPage)
+									echo '<li><a href="admin.php">Admin Page</a></li>' ?>
+									<?php
 								echo $isLoggedIn ?
 									'<li class="dropdown">
                     <!-- User image as the dropdown trigger with inline styles -->
-                    <img src="assets/images/blog/author.png"
+                    <img src="' . $userInfo['picture'] . '"
                         style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;"
                         class="dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown"
                         aria-expanded="false" alt="User Avatar">
@@ -320,7 +314,7 @@ if ($isLoggedIn && count($_POST) > 0) {
 
 				<div class="card-body">
 					<!-- Name -->
-					<h5 class="card-title mb-1"><?= $userInfo['firstname'].' '.$userInfo['lastname'] ?></h5>
+					<h5 class="card-title mb-1"><?= $userInfo['firstname'] . ' ' . $userInfo['lastname'] ?></h5>
 
 					<!-- Major -->
 					<p class="text-muted" style="font-size: 14px; margin: 0;"><?= $userInfo['major'] ?></p>
@@ -361,8 +355,7 @@ if ($isLoggedIn && count($_POST) > 0) {
 					<!-- Update Profile Picture Field -->
 					<div class="col-md-12 mb-3 d-flex align-items-center">
 						<label for="postImage" class="me-2"><strong>Profile Picture</strong></label>
-						<input  type="file" class="form-control me-2" name="postImage" accept="image/*">
-
+						<input type="file" class="form-control me-2" name="postImage" accept="image/*">
 					</div>
 
 					<!-- Major -->
@@ -377,7 +370,8 @@ if ($isLoggedIn && count($_POST) > 0) {
 					<div class="col-md-12 mb-3 d-flex align-items-center">
 						<label for="social_link" class="me-2"><strong>Social Media Link</strong></label>
 						<input required name="social_link" class="form-control me-2 w-50"
-							placeholder="Add one of your social media links" value="<?= $userInfo['social_link'] ?>" data-blacklist="badwords, asdf">
+							placeholder="Add one of your social media links" value="<?= $userInfo['social_link'] ?>"
+							data-blacklist="badwords, asdf">
 
 					</div>
 
@@ -400,11 +394,10 @@ if ($isLoggedIn && count($_POST) > 0) {
 		<?php if ($isLoggedIn) { ?>
 			<div class="container  mt-5 mb-4" data-bs-toggle="modal" data-bs-target="#exampleModal"
 				style="cursor: pointer; ">
-				<div class="d-flex  justify-content-between">
-					<span><strong><?= "USERNAME" ?></strong></span>
+				<div class="d-flex justify-content-end">
 					<div
 						class="d-flex justify-content-between rounded-pill h-25 w-25 align-items-center p-3 shadow-lg rounded cursor-pointer bg-light hover:bg-gray-200">
-						<img src="assets/images/blog/author.png" alt="User Avatar"
+						<img src="<?= $userInfo['picture'] ?>" alt="User Avatar"
 							style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;" />
 						<div class="ml-3 text-secondary">
 							Post a Project
@@ -421,79 +414,81 @@ if ($isLoggedIn && count($_POST) > 0) {
 			</div>
 		<?php }
 		; ?>
-  <?php if (strlen($error) > 0) { ?>
-    <div class="error-message"><?= $error ?></div>
-  <?php } ?>
+		<?php if (strlen($error) > 0) { ?>
+			<div class="error-message"><?= $error ?></div>
+		<?php } ?>
 		<div class="row">
 
 			<!-- v2 -->
-			<?php 	/** @var array $posts */ 
+			<?php 	/** @var array $posts */
 			foreach ($posts as $key => $post) {
 				//if (isset($_SESSION['email']) && isset($post['email']) && $_SESSION['email'] == $post['email']) { ?>
 
-					<div class="col-md-6">
+				<div class="col-md-6">
 
-						<div class="z-100 bg-slate-50 flex justify-between ">
-							<a class="bg-red-300 text-white px-5 py-2 hover:bg-red-500"
-								href="deletePost.php?id=<?= $post['post_id'] ?>">Delete</a>
-							<a class="bg-gray-950 text-white px-5 py-2 hover:bg-gray-950/70"
-								href="editPost.php?id=<?= $post['post_id'] ?>">Edit</a>
+					<div class="z-100 bg-slate-50 flex justify-between ">
+						<a class="bg-red-300 text-white px-5 py-2 hover:bg-red-500"
+							href="deletePost.php?id=<?= $post['post_id'] ?>">Delete</a>
+						<a class="bg-gray-950 text-white px-5 py-2 hover:bg-gray-950/70"
+							href="editPost.php?id=<?= $post['post_id'] ?>">Edit</a>
+					</div>
+
+					<div class="post-default post-has-bg-img">
+						<div class="post-thumb">
+							<a href="details-full-width.php">
+								<div data-bg-img=<?= $post['image'] ?>></div>
+							</a>
 						</div>
-
-						<div class="post-default post-has-bg-img">
-							<div class="post-thumb">
-								<a href="details-full-width.php">
-									<div data-bg-img=<?= $post['image'] ?>></div>
-								</a>
+						<div class="post-data">
+							<div class="cats">
+								<?php
+								$categories = explode(", ", $post['categories']);
+								foreach ($categories as $category) { ?>
+									<a href="category-result.html"><?= $category ?></a>
+								<?php } ?>
 							</div>
-							<div class="post-data">
-								<div class="cats">
-									<?php 
-									$categories = explode(", ", $post['categories']);
-									foreach ($categories as $category) { ?>
-										<a href="category-result.html"><?= $category ?></a>
+							<div class="title mb-1">
+								<h2><a href="details-full-width.php?id=<?= $post['post_id'] ?>"><?= $post['title'] ?></a>
+								</h2>
+							</div>
+							<p class="shortDescription mb-5 px-10">
+								<?= $post['short_description'] . '...' ?>
+							</p>
+							<!-- Shortened project description -->
+							<div>
+								<p>Looking for:</p>
+								<div class="flex space-x-2 items-center justify-center">
+									<?php
+									$roles = explode(", ", $post['roles']);
+									foreach ($roles as $role) { ?>
+										<span class="bg-white/10 p-2 text-white"><?= $role ?></span>
 									<?php } ?>
 								</div>
-								<div class="title mb-1">
-									<h2><a href="details-full-width.php?id=<?= $post['post_id'] ?>"><?= $post['title'] ?></a></h2>
-								</div>
-								<p class="shortDescription mb-5 px-10">
-									<?= $post['short_description']. '...'  ?>
-								</p>
-								<!-- Shortened project description -->
-								<div>
-									<p>Looking for:</p>
-									<div class="flex space-x-2 items-center justify-center">
-										<?php 
-										$roles = explode(", ", $post['roles']);
-										foreach ($roles as $role) { ?>
-											<span class="bg-white/10 p-2 text-white"><?= $role ?></span>
-										<?php } ?>
-									</div>
-								</div>
-								<ul class="nav meta align-items-center absolute bottom-0 left-0 ml-5">
-									<li class="meta-author flex items-center justify-center space-x-2">
-										<img src="<?= !empty($post['picture']) ? $post['picture'] : 'default-avatar.png' ?>"
-											alt="" class="img-fluid">
-										<a class="text-white/80" href="#"><?= $post['firstname'].' '.$post['lastname'] ?></a>
-									</li>
-									<li class="meta-date"><a class="text-white/80"
-											href="#"><?= formatDate($post['created_at']) ?></a></li>
-									<li class="meta-comments"><a class="text-white/80" href="#"><i
-												class="fa fa-comment text-white/80"></i> <?= $post['comment_count'] ?></a>
-									</li>
-									<li class="meta-likes"><a class="text-white/80" href="#"><i
-												class="fa fa-heart text-white/80"></i> <?= $post['like_count'] ?? 0 ?></a></li>
-									<!-- Optional likes feature -->
-								</ul>
-								<!-- <div class="join-project">
+							</div>
+							<ul class="nav meta align-items-center absolute bottom-0 left-0 ml-5">
+								<li class="meta-author flex items-center justify-center space-x-2">
+									<img src="<?= !empty($post['picture']) ? $post['picture'] : 'default-avatar.png' ?>"
+										alt="" class="img-fluid">
+									<a class="text-white/80"
+										href="#"><?= $post['firstname'] . ' ' . $post['lastname'] ?></a>
+								</li>
+								<li class="meta-date"><a class="text-white/80"
+										href="#"><?= formatDate($post['created_at']) ?></a></li>
+								<li class="meta-comments"><a class="text-white/80" href="#"><i
+											class="fa fa-comment text-white/80"></i> <?= $post['comment_count'] ?></a>
+								</li>
+								<li class="meta-likes"><a class="text-white/80" href="#"><i
+											class="fa fa-heart text-white/80"></i> <?= $post['like_count'] ?? 0 ?></a></li>
+								<!-- Optional likes feature -->
+							</ul>
+							<!-- <div class="join-project">
 								<a href="contact-owner.php?id=" class="btn btn-primary">Join Project</a>
 							</div> -->
-							</div>
 						</div>
 					</div>
-				<?php }
-			  ?>
+				</div>
+			<?php }
+			?>
 
 
 
@@ -581,7 +576,7 @@ if ($isLoggedIn && count($_POST) > 0) {
 	<script>
 
 
-var majorInputElm = document.querySelector('input[name=major]');
+		var majorInputElm = document.querySelector('input[name=major]');
 		// Define the list of project categories
 		var whitelist = [
 			"Applied Software Engineering",
@@ -616,7 +611,7 @@ var majorInputElm = document.querySelector('input[name=major]');
 			"Music",
 			"Information Technology"
 		];
-				// Initialize Tagify on the input element
+		// Initialize Tagify on the input element
 		var majorTagify = new Tagify(majorInputElm, {
 			whitelist: whitelist, // Use the predefined whitelist array
 			enforceWhitelist: true, // Only allow items from the whitelist

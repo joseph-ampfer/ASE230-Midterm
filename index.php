@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once('scripts/scripts.php');
+require_once('db.php');
 // NEED TO MAKE AUTH STATIC CLASS
 $isLoggedIn = false;
 $showAdminPage = false;
@@ -8,13 +9,15 @@ if (isset($_SESSION['email'])) {
 	$isLoggedIn = true;
 	$email = $_SESSION['email'];
 	$username = getUserName($email);
+	$userId = $_SESSION['ID'];
 	if ($_SESSION['isAdmin']) {
 		$showAdminPage = true;
 	}
 }
+$userInfo = getUserInfo($db, $userId);
 // Initiate error
 $error = "";
-require_once('db.php');
+
 // To post, check if logged and data is there
 if ($isLoggedIn && count($_POST) > 0) {
 	if (isset($_POST['postTitle'][0])) {
@@ -43,7 +46,7 @@ if ($isLoggedIn && count($_POST) > 0) {
 				'image/svg+xml'
 			];
 
-		
+
 			try {
 
 				// Validate Mime type
@@ -62,7 +65,7 @@ if ($isLoggedIn && count($_POST) > 0) {
 
 				// Insert post, get its id
 				$stmt = $db->prepare("INSERT INTO posts (user_id, title, description, image) VALUES (?, ?, ?, ?) "); /** @var PDOStatement $stmt */
-				$stmt->execute([$_SESSION['ID'], $_POST['postTitle'], $_POST['description'], $imagePath ]);
+				$stmt->execute([$_SESSION['ID'], $_POST['postTitle'], $_POST['description'], $imagePath]);
 				$post_id = $db->lastInsertId();
 
 				// Decode the categories and looking for
@@ -70,13 +73,13 @@ if ($isLoggedIn && count($_POST) > 0) {
 				$lookingFor = json_decode($_POST['lookingFor'], true);
 
 				// Insert the categories
-				foreach($postCategories as $row) {
+				foreach ($postCategories as $row) {
 					$cmd = $db->prepare("INSERT INTO post_categories (post_id, category) VALUES (?, ?)"); /** @var PDOStatement $cmd */
 					$cmd->execute([$post_id, $row['value']]);
 				}
 
 				// Insert the looking for
-				foreach($lookingFor as $row) {
+				foreach ($lookingFor as $row) {
 					$cmd = $db->prepare("INSERT INTO looking_for (post_id, role) VALUES (?, ?)"); /** @var PDOStatement $cmd */
 					$cmd->execute([$post_id, $row['value']]);
 				}
@@ -88,10 +91,10 @@ if ($isLoggedIn && count($_POST) > 0) {
 				$db->commit();
 				header("Location: index.php");
 				echo "Transaction completed successfully!";
-			
-			} catch(Exception $e) {
+
+			} catch (Exception $e) {
 				if ($db->inTransaction()) {
-						$db->rollBack();
+					$db->rollBack();
 				}
 
 				// Handle the error (log it, display an error message, etc.)
@@ -132,17 +135,15 @@ try {
 	$cmd->execute();
 	$posts = $cmd->fetchAll();
 
-} catch(Exception $e) {
+} catch (Exception $e) {
 	if ($db->inTransaction()) {
-			$db->rollBack();
+		$db->rollBack();
 	}
 
 	// Handle the error (log it, display an error message, etc.)
 	echo "Transaction failed: " . $e->getMessage();
 	$error = $e->getMessage();
 }
-
-//$posts = readJsonData('data/posts.json');
 ?>
 
 <!DOCTYPE html>
@@ -204,13 +205,14 @@ try {
 								<li><a href="index.php">Home</a></li>
 								<li><a href="about.php">About</a></li>
 								<li><a href="contact.php">Contact</a></li>
-								<?php if($showAdminPage) echo '<li><a href="admin.php">Admin Page</a></li>'?>
-								<li><a href="contact.php"></a></li>
-								<?php
+								<?php if ($showAdminPage)
+									echo '<li><a href="admin.php">Admin Page</a></li>' ?>
+									<li><a href="contact.php"></a></li>
+									<?php
 								echo $isLoggedIn ?
 									'<li class="dropdown">
                                     <!-- User image as the dropdown trigger with inline styles -->
-                                    <img src="assets/images/blog/author.png"
+                                    <img src="' . $userInfo['picture'] . '"
                                         style="width: 50px; height: 5x0px; border-radius: 50%; object-fit: cover; cursor: pointer;"
                                         class="dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown"
                                         aria-expanded="false" alt="User Avatar">
@@ -265,7 +267,7 @@ try {
 				<div class="d-flex  justify-content-end">
 					<div
 						class="d-flex justify-content-between rounded-pill h-25 w-25 align-items-center p-3 shadow-lg rounded cursor-pointer bg-light hover:bg-gray-200">
-						<img src="assets/images/blog/author.png" alt="User Avatar"
+						<img src="<?= $userInfo['picture'] ?>" alt="User Avatar"
 							style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;" />
 						<div class="ml-3 text-secondary">
 							Post a Project
@@ -288,38 +290,47 @@ try {
 		} ?></mark><br>
 
 		<div class="row">
-			<!-- v2 -->
-			 
+			<!-- Show all the posts here -->
 			<?php /** @var array $posts */ foreach ($posts as $key => $post) { ?>
 				<div class="col-md-6">
 					<div class="post-default post-has-bg-img">
 						<div class="post-thumb">
-							<a >
+							<a>
 								<div data-bg-img=<?= $post['image'] ?>></div>
 							</a>
 						</div>
+						<!-- Make this button clickable only when the user is logged in
+						 When user is logged in they can click it and then see the necessary change 
+						  -->
 						<div style="position: absolute; top: 2rem; right: 2rem; z-index: 999">
-							<button class="btn btn-secondary" type="button">Like</button>
+							<button class="btn" type="button" id="<?= $post['post_id'] ?>"
+								onClick="handleLikeButton(event)">
+								<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white"
+									class="bi bi-heart-fill" viewBox="0 0 16 16">
+									<path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
+								</svg>
+							</button>
 						</div>
 						<div class="post-data">
 							<div class="cats">
-								<?php 
+								<?php
 								$categories = explode(", ", $post['categories']);
 								foreach ($categories as $category) { ?>
 									<a href=""><?= $category ?></a>
 								<?php } ?>
 							</div>
 							<div class="title mb-1">
-								<h2><a href="details-full-width.php?id=<?= $post['post_id'] ?>"><?= $post['title'] ?></a></h2>
+								<h2><a href="details-full-width.php?id=<?= $post['post_id'] ?>"><?= $post['title'] ?></a>
+								</h2>
 							</div>
 							<p class="shortDescription mb-5 px-10">
-								<?= $post['short_description']. '...'  ?>
+								<?= $post['short_description'] . '...' ?>
 							</p>
 							<!-- Shortened project description -->
 							<div>
 								<p class="text-white/80">Looking for:</p>
 								<div class="flex space-x-2 items-center justify-center">
-									<?php 
+									<?php
 									$roles = explode(", ", $post['roles']);
 									foreach ($roles as $role) { ?>
 										<span class="bg-white/10 p-2 text-white"><?= $role ?></span>
@@ -330,7 +341,8 @@ try {
 								<li class="meta-author flex items-center justify-center space-x-2">
 									<img src="<?= isset($post['picture']) ? $post['picture'] : "assets/images/profile_icon.png" ?>"
 										alt="" class="img-fluid">
-									<a class="text-white/80" href="#"><?= $post['firstname'].' '.$post['lastname'] ?></a>
+									<a class="text-white/80"
+										href="#"><?= $post['firstname'] . ' ' . $post['lastname'] ?></a>
 								</li>
 								<li class="meta-date"><a class="text-white/80"
 										href="#"><?= formatDate($post['created_at']) ?></a></li>
@@ -578,6 +590,16 @@ try {
 			},
 			//originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(',')
 		});
+		function handleLikeButton(event) {
+			const likeButton = event.currentTarget;
+			const likeIcon = likeButton.querySelector('svg');
+			if (likeIcon.getAttribute('fill') === 'white') {
+				likeIcon.setAttribute('fill', 'red');  // Change to red when liked
+			} else {
+				likeIcon.setAttribute('fill', 'white');  // Change back to white when unliked
+			}
+		}
+
 	</script>
 
 </body>
