@@ -15,11 +15,11 @@ U Collab is a content management system designed for students to collaborate on 
 ## Team Members
 
 - **Joseph Ampfer**: 
-  - Implemented home page
-  - Developed detail page
-  - Created post functionality
-  - Implemented edit and delete post functionality
-  - Developed comment functionality
+  - SQL and logic for the index page
+  - SQL and logic for posting a project
+  - SQL and logic for login and signup
+  - Logic for admin to edit and delete other users posts
+  - SQL and logic for changing user information
 
 - **Bhuwan Bhandari**:
   - Created login and sign-up pages
