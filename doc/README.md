@@ -27,10 +27,17 @@ U Collab is a content management system designed for students to collaborate on 
   - Implemented password confirmation logic
   - Assisted with styling
 
-- **Sushant Dahal**:
-  - Designed the About page and Contact page
-  - Assisted in collecting necessary data
-  - Helped with debugging and testing
-  - Contributed ideas for the introductory video
 
-## Youtube video link: https://www.youtube.com/watch?v=1ycItj0X40M
+
+## CREDENTIALS TO TEST SITE
+
+### Admin Credentials
+  - josephampfer@gmail.com
+  - asdf
+
+### User Credentials
+  - caporusso@gmail.com
+  - Einstein
+
+
+## NEW Youtube video link:

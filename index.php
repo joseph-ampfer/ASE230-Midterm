@@ -9,6 +9,8 @@ $showAdminPage = Auth::isAdmin();
 $error = "";
 require_once('db.php');
 
+//echo $isLoggedIn;
+echo $_SESSION['email'];
 if ($isLoggedIn) {
 	$userInfo = getUserInfo($db, $_SESSION['ID']);
 }
@@ -306,7 +308,7 @@ try {
 						<div style="position: absolute; top: 2rem; right: 2rem; z-index: 999">
 							<button class="btn" type="button" id="<?= $post['post_id'] ?>" onClick="handleLikeButton(event)"
 								<?= $isLoggedIn ? '' : 'disabled' ?>>
-								<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+								<svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem"
 									fill="<?= $likesThisPost ? 'red' : 'white' ?>" class="bi bi-heart-fill"
 									viewBox="0 0 16 16">
 									<path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />

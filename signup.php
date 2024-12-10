@@ -40,13 +40,14 @@ if (count($_POST) > 0) {
             // Execute your database operations
             $stmt1 = $db->prepare("INSERT INTO users (email, password_hash, firstname, lastname) VALUES (:name, :password, :firstname, :lastname)"); /** @var PDOStatement $stmt1 */
             $stmt1->execute(['name' => $email, 'password' => $password, 'firstname' => $firstname, 'lastname' => $lastname]);
-
-            // Commit the transaction
-            $db->commit();
-
+            
             $_SESSION['email'] = $email;
             $_SESSION['ID'] = $db->lastInsertId();
             $_SESSION['isAdmin'] = false;
+            // Commit the transaction
+            $db->commit();
+
+
             header("Location: index.php");
 
             echo "Transaction completed successfully!";
