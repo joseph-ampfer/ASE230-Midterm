@@ -1,19 +1,17 @@
 <?php
-session_start();
-require_once('scripts/scripts.php');
 
-$isLoggedIn = false;
-if (isset($_SESSION['email'])) {
-    $isLoggedIn = true;
-} else {
+require_once('scripts/scripts.php');
+require_once('Auth.php');
+
+$isLoggedIn = Auth::isLoggedIn();
+$showAdminPage = Auth::isAdmin();
+
+if (!$isLoggedIn) {
   header("Location: login.php");
 }
 
 // Index for the post 
 $postIndex = $_GET['id'];
-
-$posts = readJsonData('./data/posts.json');
-$post = $posts[$postIndex];
 
 require_once('db.php');
 try {
@@ -25,7 +23,7 @@ try {
   $stmt->execute([$postIndex]);
   $owner_id = $stmt->fetchColumn();
 
-  if ($owner_id != $_SESSION['ID']) {
+  if (!$_SESSION['isAdmin'] && $owner_id != $_SESSION['ID']) {
     throw new Exception("You do not own this post");
   }
 
@@ -35,6 +33,10 @@ try {
   $imagePath = $stmt->fetchColumn();
 
   // Debug the image path
+  if (!is_readable($imagePath)) {
+    throw new Exception("File exists but is not readable: ".$imagePath);
+  }
+
   if (!file_exists($imagePath)) {
       throw new Exception("Warning: File not found at path: " . $imagePath);
   }
@@ -66,7 +68,7 @@ try {
 
   $db->commit();
 
-  header('Location: profile.php');
+  header("Location: profile.php");
 } catch(Exception $e) {
   if ($db->inTransaction()) {
     $db->rollBack();

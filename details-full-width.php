@@ -1,19 +1,21 @@
 <?php
-session_start();
+
 require_once('scripts/scripts.php');
+require_once('Auth.php');
 
-$isLoggedIn = false;
-$email = "";
-if (isset($_SESSION['email'])) {
-  $isLoggedIn = true;
-  $email = $_SESSION['email'];
+$isLoggedIn = Auth::isLoggedIn();
+$showAdminPage = Auth::isAdmin();
 
-}
 
 // Id for the post page
 $postIndex = $_GET['id'];
 $error="";
 require_once('db.php');
+
+if ($isLoggedIn) {
+	$userInfo = getUserInfo($db, $_SESSION['ID']);
+}
+
 
 // To post a comment, check if logged and comment there
 if ($isLoggedIn && count($_POST) > 0) {
@@ -95,10 +97,6 @@ try {
 }
 
 
-echo $error;
-// Get page content
-//$posts = readJsonData('./data/posts.json');
-//$post = $posts[$postIndex];
 
 ?>
 
@@ -153,63 +151,68 @@ echo $error;
       </div>
     </form>
   </div>
-  <header class="header">
-    <div class="header-fixed" style="background-color:#fcfcfc">
-      <div class="container-fluid pl-120 pr-120 position-relative">
-        <div class="row d-flex align-items-center">
-          <div class="col-lg-3 col-md-4 col-6">
-            <div class="logo"> <a href="#"><img src="assets/images/logo.png" alt="" class="img-fluid" style = "height:90px"></a>
-            </div>
-          </div>
-          <div class="col-lg-9 col-md-8 col-6 d-flex align-items-center justify-content-end position-static">
-            <div class="nav-menu-cover">
-              <ul class="nav nav-menu align-items-center">
-                <li><a href="index.php">Home</a></li>
-                <li><a href="about.php">About</a></li>
-                <li><a href="contact.php">Contact</a></li>
-                <li><a href="contact.php"></a></li>
-                <?php
-                echo $isLoggedIn ?
-                  '<li class="dropdown">
-                                    <!-- User image as the dropdown trigger with inline styles -->
-                                    <img src="assets/images/blog/author.png"
-                                        style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;"
-                                        class="dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown"
-                                        aria-expanded="false" alt="User Avatar">
-                                
-                                    <!-- Dropdown menu -->
-                                    <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                                        <li><a class="dropdown-item" href="profile.php">Profile</a></li>
-                                        <li><a class="dropdown-item" href="profile.php">Profile</a></li>
-                                        <li><a class="dropdown-item" href="#">Settings</a></li>
-                                        <li><a class="dropdown-item" href="#">Help</a></li>
-										<li><a class="dropdown-item" href="#"></a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li>
-                                            <form method="POST" action="logout.php">
-                                                <button type="submit" class="dropdown-item">Sign out</button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </li>' :
-                  '<li><a href="login.php">Log in</a></li>';
-                ?>
-              </ul>
-            </div>
-            <div class="mobile-menu-cover">
-              <ul class="nav mobile-nav-menu">
-                <li class="search-toggle-open"> <img src="assets/images/search-icon.svg" alt="" class="img-fluid svg">
-                </li>
-                <li class="search-toggle-close hide"> <img src="assets/images/close.svg" alt="" class="img-fluid"> </li>
-                <li class="nav-menu-toggle"> <img src="assets/images/menu-toggler.svg" alt="" class="img-fluid svg">
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
+	<header class="header">
+		<div class="header-fixed" style="background-color:#fcfcfc">
+			<div class="container-fluid pl-120 pr-120 position-relative">
+				<div class="row d-flex align-items-center">
+					<div class="col-lg-3 col-md-4 col-6">
+						<div class="logo"> <a href="#"><img src="assets/images/logo.png" alt="" class="img-fluid"
+									style="height: 100px;"></a>
+						</div>
+					</div>
+					<div class="col-lg-9 col-md-8 col-6 d-flex align-items-center justify-content-end position-static">
+						<div class="nav-menu-cover">
+							<ul class="nav nav-menu align-items-center">
+								<li><a href="index.php">Home</a></li>
+								<li><a href="about.php">About</a></li>
+								<li><a href="contact.php">Contact</a></li>
+								<?php if($showAdminPage) echo '<li><a href="admin.php">Admin Page</a></li>'?>
+								<li><a href="contact.php"></a></li>
+								<?php
+								echo $isLoggedIn ?
+									'<li class="dropdown">
+										<!-- User image as the dropdown trigger with inline styles -->
+										<img src="'.$userInfo['picture'].'"
+												style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; cursor: pointer;"
+												class="dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown"
+												aria-expanded="false" alt="User Avatar">
+								
+										<!-- Dropdown menu -->
+										<ul class="dropdown-menu" aria-labelledby="userDropdown">
+												<li><a class="dropdown-item" href="profile.php">Profile</a></li>
+												<li><a class="dropdown-item" href="#">Settings</a></li>
+												<li><a class="dropdown-item" href="#">Help</a></li>
+												<li><a class="dropdown-item" href="#"></a></li>
+												<li><hr class="dropdown-divider"></li>
+													<li>
+															<form method="POST" action="logout.php">
+																	<button type="submit" class="dropdown-item">Sign out</button>
+															</form>
+													</li>
+											</ul>
+									</li>' :
+									'<li><a href="login.php">Log in</a></li>';
+								?>
+							</ul>
+						</div>
+						<div class="mobile-menu-cover">
+							<ul class="nav mobile-nav-menu">
+								<li class="search-toggle-open">
+									<img src="assets/images/search-icon.svg" alt="" class="img-fluid svg">
+								</li>
+								<li class="search-toggle-close hide">
+									<img src="assets/images/close.svg" alt="" class="img-fluid">
+								</li>
+								<li class="nav-menu-toggle">
+									<img src="assets/images/menu-toggler.svg" alt="" class="img-fluid svg">
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
 
   <!-- Banner below nav bar  -->
   <!-- <div class="page-title">

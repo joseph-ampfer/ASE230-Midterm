@@ -1,19 +1,16 @@
 <?php
-session_start();
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
 require_once('scripts/scripts.php');
 require_once('db.php');
-$isLoggedIn = true;
-if (isset($_SESSION['email'])) {
-	$isLoggedIn = true;
-	$email = $_SESSION['email'];
-	$username = getUserName($email);
-} else {
+require_once('Auth.php');
+
+$isLoggedIn = Auth::isLoggedIn();
+$showAdminPage = Auth::isAdmin();
+
+if (!$isLoggedIn) {
 	header("Location: login.php");
 }
+
 $error = "";
 
 $userToEditID = $_SESSION['ID'];
@@ -24,10 +21,26 @@ if ($_SESSION['isAdmin'] && isset($_GET['id'])) {
 
 $userInfo = getUserInfo($db, $userToEditID);
 
-//To post, check if logged and post there
+// Initiate error
+$error = "";
+
+// To post, check if logged and data is there
 if ($isLoggedIn && count($_POST) > 0) {
 	if (isset($_POST['postTitle'][0])) {
-		if (isset($_FILES['postImage']) && $_FILES['postImage']['error'] === UPLOAD_ERR_OK) {
+
+		// Check if required fields have values in $_POST
+		if (empty($_POST['postTitle'])) {
+			$error = "Post title is required.";
+		} elseif (empty($_POST['postCategories'])) {
+			$error = "Post categories are required.";
+		} elseif (empty($_POST['lookingFor'])) {
+			$error = "Looking for field is required.";
+		} elseif (empty($_POST['description'])) {
+			$error = "Description is required.";
+		}
+
+		if (isset($_FILES['postImage']) && $_FILES['postImage']['error'] === UPLOAD_ERR_OK && $error === "") {
+
 			// Allowed MIME types (covers most common image formats)
 			$allowedMimeTypes = [
 				'image/jpeg',
@@ -39,44 +52,61 @@ if ($isLoggedIn && count($_POST) > 0) {
 				'image/svg+xml'
 			];
 
-			// Validate Mime type
-			$detectedType = mime_content_type($_FILES['postImage']['tmp_name']);
-			if (!in_array($detectedType, $allowedMimeTypes)) {
-				$error = "Must upload an image (jpeg, jpg, png, gif)";
-			} else {
-				//===== ELSE procede with post upload ===	
+		
+			try {
+
+				// Validate Mime type
+				$detectedType = mime_content_type($_FILES['postImage']['tmp_name']);
+				if (!in_array($detectedType, $allowedMimeTypes)) {
+					throw new InvalidArgumentException("Must upload an image (jpeg, jpg, png, gif)");
+				}
+
+				// Create image file path
 				$fextension = pathinfo($_FILES['postImage']['name'], PATHINFO_EXTENSION);
 				$time = time();
 				$imagePath = './assets/images/blog/' . $time . '.' . $fextension;
-				move_uploaded_file($_FILES['postImage']['tmp_name'], $imagePath);
 
+				// Begin the transaction
+				$db->beginTransaction();
 
-				$data = $_POST;
+				// Insert post, get its id
+				$stmt = $db->prepare("INSERT INTO posts (user_id, title, description, image) VALUES (?, ?, ?, ?) "); /** @var PDOStatement $stmt */
+				$stmt->execute([$userToEditID, $_POST['postTitle'], $_POST['description'], $imagePath ]);
+				$post_id = $db->lastInsertId();
 
-				// Add time, likes, etc
-				$data['postTime'] = date("Y-m-d H:i:s");
-				$data['likes'] = 0;
-				$data['comments'] = [];
-				$data['authorName'] = $username;
-				$data['email'] = $_SESSION['email'];
+				// Decode the categories and looking for
 				$postCategories = json_decode($_POST['postCategories'], true);
 				$lookingFor = json_decode($_POST['lookingFor'], true);
 
-				$data['postCategories'] = array_map(function ($item) {
-					return $item['value'];
-				}, $postCategories);
-				$data['lookingFor'] = array_map(function ($item) {
-					return $item['value'];
-				}, $lookingFor);
-				$data['postImage'] = $imagePath;
+				// Insert the categories
+				foreach($postCategories as $row) {
+					$cmd = $db->prepare("INSERT INTO post_categories (post_id, category) VALUES (?, ?)"); /** @var PDOStatement $cmd */
+					$cmd->execute([$post_id, $row['value']]);
+				}
 
-				saveToJson('data/posts.json', $data);
+				// Insert the looking for
+				foreach($lookingFor as $row) {
+					$cmd = $db->prepare("INSERT INTO looking_for (post_id, role) VALUES (?, ?)"); /** @var PDOStatement $cmd */
+					$cmd->execute([$post_id, $row['value']]);
+				}
+
+				// Only upload image to server if all else worked
+				move_uploaded_file($_FILES['postImage']['tmp_name'], $imagePath);
+
+				// Commit the transaction
+				$db->commit();
+				header("Location: profile.php");
+
+			} catch(Exception $e) {
+				if ($db->inTransaction()) {
+						$db->rollBack();
+				}
+
+				// Handle the error (log it, display an error message, etc.)
+				echo "Transaction failed: " . $e->getMessage();
+				$error = $e->getMessage();
 			}
-
-		} else {
-			$error = "Error uploading image";
 		}
-
 	}
 }
 
@@ -126,10 +156,7 @@ try {
 }
 
 
-// Initiate error
-$error = "";
-require_once('db.php');
-// To edit a post, check if loggedin and data there
+// To edit USER INFO
 if ($isLoggedIn && count($_POST) > 0) {
 
 	try {
@@ -197,8 +224,6 @@ if ($isLoggedIn && count($_POST) > 0) {
 }
 
 
-
-//$posts = readJsonData('data/posts.json');
 ?>
 
 <!DOCTYPE html>
@@ -259,7 +284,7 @@ if ($isLoggedIn && count($_POST) > 0) {
 		</form>
 	</div>
 	<header class="header">
-		<div class="header-fixed">
+		<div class="header-fixed" style="background-color:#fcfcfc">
 			<div class="container-fluid pl-120 pr-120 position-relative">
 				<div class="row d-flex align-items-center">
 					<div class="col-lg-3 col-md-4 col-6">
@@ -273,40 +298,46 @@ if ($isLoggedIn && count($_POST) > 0) {
 								<li><a href="index.php">Home</a></li>
 								<li><a href="about.php">About</a></li>
 								<li><a href="contact.php">Contact</a></li>
+								<?php if($showAdminPage) echo '<li><a href="admin.php">Admin Page</a></li>'?>
+								<li><a href="contact.php"></a></li>
 								<?php
 								echo $isLoggedIn ?
 									'<li class="dropdown">
-                    <!-- User image as the dropdown trigger with inline styles -->
-                    <img src="assets/images/blog/author.png"
-                        style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;"
-                        class="dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown"
-                        aria-expanded="false" alt="User Avatar">
-                
-                    <!-- Dropdown menu -->
-                    <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                      <li><a class="dropdown-item" href="profile.php">Profile</a></li>
-                      <li><a class="dropdown-item" href="#">Settings</a></li>
-                      <li><a class="dropdown-item" href="#">Help</a></li>
-                      <li><hr class="dropdown-divider"></li>
-                      <li>
-                        <form method="POST" action="logout.php">
-                            <button type="submit" class="dropdown-item">Sign out</button>
-                        </form>
-                      </li>
-                    </ul>
-                </li>' :
+										<!-- User image as the dropdown trigger with inline styles -->
+										<img src="'.$userInfo['picture'].'"
+												style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; cursor: pointer;"
+												class="dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown"
+												aria-expanded="false" alt="User Avatar">
+								
+										<!-- Dropdown menu -->
+										<ul class="dropdown-menu" aria-labelledby="userDropdown">
+												<li><a class="dropdown-item" href="profile.php">Profile</a></li>
+												<li><a class="dropdown-item" href="#">Settings</a></li>
+												<li><a class="dropdown-item" href="#">Help</a></li>
+												<li><a class="dropdown-item" href="#"></a></li>
+												<li><hr class="dropdown-divider"></li>
+													<li>
+															<form method="POST" action="logout.php">
+																	<button type="submit" class="dropdown-item">Sign out</button>
+															</form>
+													</li>
+											</ul>
+									</li>' :
 									'<li><a href="login.php">Log in</a></li>';
 								?>
 							</ul>
 						</div>
 						<div class="mobile-menu-cover">
 							<ul class="nav mobile-nav-menu">
-								<li class="search-toggle-open"> <img src="assets/images/search-icon.svg" alt=""
-										class="img-fluid svg"> </li>
-								<li class="search-toggle-close hide"> <img src="assets/images/close.svg" alt=""
-										class="img-fluid"> </li>
-								<li class="nav-menu-toggle"> <img src="assets/images/menu-toggler.svg" alt=""
-										class="img-fluid svg"> </li>
+								<li class="search-toggle-open">
+									<img src="assets/images/search-icon.svg" alt="" class="img-fluid svg">
+								</li>
+								<li class="search-toggle-close hide">
+									<img src="assets/images/close.svg" alt="" class="img-fluid">
+								</li>
+								<li class="nav-menu-toggle">
+									<img src="assets/images/menu-toggler.svg" alt="" class="img-fluid svg">
+								</li>
 							</ul>
 						</div>
 					</div>
@@ -412,7 +443,7 @@ if ($isLoggedIn && count($_POST) > 0) {
 			<div class="container  mt-5 mb-4" data-bs-toggle="modal" data-bs-target="#exampleModal"
 				style="cursor: pointer; ">
 				<div class="d-flex  justify-content-between">
-					<span><strong><?= "USERNAME" ?></strong></span>
+					<div></div>
 					<div
 						class="d-flex justify-content-between rounded-pill h-25 w-25 align-items-center p-3 shadow-lg rounded cursor-pointer bg-light hover:bg-gray-200">
 						<img src="assets/images/blog/author.png" alt="User Avatar"

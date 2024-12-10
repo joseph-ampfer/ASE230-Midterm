@@ -1,22 +1,18 @@
 <?php
-session_start();
 require_once('scripts/scripts.php');
+require_once('Auth.php');
 
-// NEED TO MAKE AUTH STATIC CLASS
-$isLoggedIn = false;
-$showAdminPage = false;
-if (isset($_SESSION['email'])) {
-	$isLoggedIn = true;
-	$email = $_SESSION['email'];
-	$username = getUserName($email);
-	if ($_SESSION['isAdmin']) {
-		$showAdminPage = true;
-	}
-}
+$isLoggedIn = Auth::isLoggedIn();
+$showAdminPage = Auth::isAdmin();
 
 // Initiate error
 $error = "";
 require_once('db.php');
+
+if ($isLoggedIn) {
+	$userInfo = getUserInfo($db, $_SESSION['ID']);
+}
+
 // To post, check if logged and data is there
 if ($isLoggedIn && count($_POST) > 0) {
 	if (isset($_POST['postTitle'][0])) {
@@ -144,7 +140,6 @@ try {
 	$error = $e->getMessage();
 }
 
-//$posts = readJsonData('data/posts.json');
 ?>
 
 <!DOCTYPE html>
@@ -156,6 +151,7 @@ try {
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>U Collab</title>
 	<script src="https://cdn.tailwindcss.com"></script>
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 	<link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
 	<link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700"
 		rel="stylesheet">
@@ -197,7 +193,7 @@ try {
 				<div class="row d-flex align-items-center">
 					<div class="col-lg-3 col-md-4 col-6">
 						<div class="logo"> <a href="#"><img src="assets/images/logo.png" alt="" class="img-fluid"
-									style="height: 4rem;"></a>
+									style="height: 100px;"></a>
 						</div>
 					</div>
 					<div class="col-lg-9 col-md-8 col-6 d-flex align-items-center justify-content-end position-static">
@@ -211,26 +207,26 @@ try {
 								<?php
 								echo $isLoggedIn ?
 									'<li class="dropdown">
-                                    <!-- User image as the dropdown trigger with inline styles -->
-                                    <img src="assets/images/blog/author.png"
-                                        style="width: 50px; height: 5x0px; border-radius: 50%; object-fit: cover; cursor: pointer;"
-                                        class="dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown"
-                                        aria-expanded="false" alt="User Avatar">
-                                
-                                    <!-- Dropdown menu -->
-                                    <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                                        <li><a class="dropdown-item" href="profile.php">Profile</a></li>
-                                        <li><a class="dropdown-item" href="#">Settings</a></li>
-                                        <li><a class="dropdown-item" href="#">Help</a></li>
-										<li><a class="dropdown-item" href="#"></a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li>
-                                            <form method="POST" action="logout.php">
-                                                <button type="submit" class="dropdown-item">Sign out</button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </li>' :
+										<!-- User image as the dropdown trigger with inline styles -->
+										<img src="'.$userInfo['picture'].'"
+												style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; cursor: pointer;"
+												class="dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown"
+												aria-expanded="false" alt="User Avatar">
+								
+										<!-- Dropdown menu -->
+										<ul class="dropdown-menu" aria-labelledby="userDropdown">
+												<li><a class="dropdown-item" href="profile.php">Profile</a></li>
+												<li><a class="dropdown-item" href="#">Settings</a></li>
+												<li><a class="dropdown-item" href="#">Help</a></li>
+												<li><a class="dropdown-item" href="#"></a></li>
+												<li><hr class="dropdown-divider"></li>
+													<li>
+															<form method="POST" action="logout.php">
+																	<button type="submit" class="dropdown-item">Sign out</button>
+															</form>
+													</li>
+											</ul>
+									</li>' :
 									'<li><a href="login.php">Log in</a></li>';
 								?>
 							</ul>
@@ -267,7 +263,7 @@ try {
 				<div class="d-flex  justify-content-end">
 					<div
 						class="d-flex justify-content-between rounded-pill h-25 w-25 align-items-center p-3 shadow-lg rounded cursor-pointer bg-light hover:bg-gray-200">
-						<img src="assets/images/blog/author.png" alt="User Avatar"
+						<img src="<?= $userInfo['picture'] ?>" alt="User Avatar"
 							style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;" />
 						<div class="ml-3 text-secondary">
 							Post a Project
@@ -289,39 +285,54 @@ try {
 			echo $error;
 		} ?></mark><br>
 
-		<div class="row">
-			<!-- v2 -->
-			 
+<div class="row">
+			<!-- Show all the posts here -->
 			<?php /** @var array $posts */ foreach ($posts as $key => $post) { ?>
+				<?php
+				if ($isLoggedIn) {
+					$likesThisPost = checkIfLiked($db, $_SESSION['ID'], $post['post_id']);
+				}
+				?>
 				<div class="col-md-6">
 					<div class="post-default post-has-bg-img">
 						<div class="post-thumb">
-							<a >
+							<a>
 								<div data-bg-img=<?= $post['image'] ?>></div>
 							</a>
 						</div>
+						<!-- Make this button clickable only when the user is logged in
+						 When user is logged in they can click it and then see the correspondong changes
+						  -->
 						<div style="position: absolute; top: 2rem; right: 2rem; z-index: 999">
-							<button class="btn btn-secondary" type="button">Like</button>
+							<button class="btn" type="button" id="<?= $post['post_id'] ?>" onClick="handleLikeButton(event)"
+								<?= $isLoggedIn ? '' : 'disabled' ?>>
+								<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+									fill="<?= $likesThisPost ? 'red' : 'white' ?>" class="bi bi-heart-fill"
+									viewBox="0 0 16 16">
+									<path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
+								</svg>
+							</button>
 						</div>
 						<div class="post-data">
 							<div class="cats">
-								<?php 
+								<?php
 								$categories = explode(", ", $post['categories']);
 								foreach ($categories as $category) { ?>
 									<a href=""><?= $category ?></a>
 								<?php } ?>
 							</div>
 							<div class="title mb-1">
-								<h2><a href="details-full-width.php?id=<?= $post['post_id'] ?>"><?= $post['title'] ?></a></h2>
+								<h2><a href="details-full-width.php?id=<?= $post['post_id'] ?>"><?= $post['title'] ?></a>
+								</h2>
 							</div>
 							<p class="shortDescription mb-5 px-10">
-								<?= $post['short_description']. '...'  ?>
+								<?= $post['short_description'] . '...' ?>
 							</p>
 							<!-- Shortened project description -->
 							<div>
 								<p class="text-white/80">Looking for:</p>
 								<div class="flex space-x-2 items-center justify-center">
-									<?php 
+									<?php
 									$roles = explode(", ", $post['roles']);
 									foreach ($roles as $role) { ?>
 										<span class="bg-white/10 p-2 text-white"><?= $role ?></span>
@@ -332,20 +343,22 @@ try {
 								<li class="meta-author flex items-center justify-center space-x-2">
 									<img src="<?= isset($post['picture']) ? $post['picture'] : "assets/images/profile_icon.png" ?>"
 										alt="" class="img-fluid">
-									<a class="text-white/80" href="#"><?= $post['firstname'].' '.$post['lastname'] ?></a>
+									<a class="text-white/80"
+										href="#"><?= $post['firstname'] . ' ' . $post['lastname'] ?></a>
 								</li>
 								<li class="meta-date"><a class="text-white/80"
 										href="#"><?= formatDate($post['created_at']) ?></a></li>
 								<li class="meta-comments"><a class="text-white/80" href="#"><i
 											class="fa fa-comment text-white/80"></i> <?= $post['comment_count'] ?></a>
 								</li>
-								<li class="meta-likes"><a class="text-white/80" href="#"><i
-											class="fa fa-heart text-white/80"></i> <?= $post['like_count'] ?? 0 ?></a></li>
+								<li class="meta-likes text-white/80">
+									<i class="fa fa-heart text-white/80"></i>
+									<span class="like-count text-white/80" id="likesCountFor:<?= $post['post_id'] ?>">
+										<?= $post['like_count'] ?? 0 ?>
+									</span>
+								</li>
 								<!-- Optional likes feature -->
 							</ul>
-							<!-- <div class="join-project">
-								<a href="contact-owner.php?id=<?= $key ?>" class="btn btn-primary">Join Project</a>
-							</div> -->
 						</div>
 					</div>
 				</div>
@@ -580,6 +593,45 @@ try {
 			},
 			//originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(',')
 		});
+
+		function handleLikeButton(event) {
+			const likeButton = event.currentTarget;
+			const likeIcon = likeButton.querySelector('svg');
+			let increaseLike = true;
+			if (likeIcon.getAttribute('fill') === 'white') {
+				likeIcon.setAttribute('fill', 'red');  // Change to red when liked
+			} else {
+				likeIcon.setAttribute('fill', 'white');  // Change back to white when unliked
+				increaseLike = false;
+			}
+			const likesCountElement = document.getElementById(`likesCountFor:${likeButton.id}`);
+
+			//initial like count in type number
+			let currentLikeCount = parseInt(likesCountElement.textContent, 10);
+			// increment it by 1
+			if (!isNaN(currentLikeCount)) {
+				if (increaseLike) {
+					currentLikeCount += 1;
+				} else {
+					currentLikeCount -= 1;
+				}
+			}
+			// Update the displayed like count
+			likesCountElement.textContent = currentLikeCount;
+			// Data to send
+			const data = {
+				post_id: likeButton.id,
+				increase_like: increaseLike,
+			};
+
+			// Send POST request using Axios
+			axios.post('processLikes.php', data)
+				.then(response => {
+				})
+				.catch(error => {
+					console.error('Error:', error);
+				});
+		}
 	</script>
 
 </body>

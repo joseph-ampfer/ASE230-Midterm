@@ -1,9 +1,19 @@
 <?php
-session_start();
-if (!$_SESSION['isAdmin']) {
+require_once('Auth.php');
+require_once('scripts/scripts.php');
+
+$isLoggedIn = Auth::isLoggedIn();
+$showAdminPage = Auth::isAdmin();
+
+if (!$showAdminPage) {
     header("Location: index.php");
 }
 require_once("./db.php");
+
+if ($isLoggedIn) {
+	$userInfo = getUserInfo($db, $_SESSION['ID']);
+}
+
 $get_users_query = $db->query('SELECT * FROM users'); /** @var PDOStatement $get_users_query */
 $users = $get_users_query->fetchAll();
 
@@ -15,19 +25,103 @@ $users = $get_users_query->fetchAll();
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
-    <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700"
-        rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/font-awesome.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>U Collab</title>
+	
+	<link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
+	<link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700"
+		rel="stylesheet">
+	<!-- <link rel="stylesheet" href="assets/css/bootstrap.min.css"> -->
+
+	<!-- Include Bootstrap 5 CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+	<link rel="stylesheet" href="assets/css/font-awesome.min.css">
+	<link rel="stylesheet" href="assets/plugins/animate/animate.min.css">
+	<link rel="stylesheet" href="assets/plugins/owl-carousel/owl.carousel.min.css">
+	<link rel="stylesheet" href="assets/plugins/magnific-popup/magnific-popup.css">
+	<link rel="stylesheet" href="assets/css/style.css">
+	<link rel="stylesheet" href="assets/css/responsive.css">
+	<link rel="stylesheet" href="assets/css/custom.css">
+
+
+
+	<!-- FAVICONS FOR DIFFERENT DEVICES -->
+	<link rel="apple-touch-icon" sizes="180x180" href="assets/images/favicon/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon/favicon-16x16.png">
+	<link rel="manifest" href="assets/images/favicon/site.webmanifest">
+	<link rel="mask-icon" href="assets/images/favicon/safari-pinned-tab.svg" color="#5bbad5">
+	<meta name="msapplication-TileColor" content="#da532c">
+	<meta name="theme-color" content="#ffffff">
 </head>
 
 <body>
-    <div class="container ">
+    <header class="header">
+        <div class="header-fixed" style="background-color:#fcfcfc">
+            <div class="container-fluid pl-120 pr-120 position-relative">
+                <div class="row d-flex align-items-center">
+                    <div class="col-lg-3 col-md-4 col-6">
+                        <div class="logo"> <a href="#"><img src="assets/images/logo.png" alt="" class="img-fluid"
+                                    style="height: 100px;"></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-6 d-flex align-items-center justify-content-end position-static">
+                        <div class="nav-menu-cover">
+                            <ul class="nav nav-menu align-items-center">
+                                <li><a href="index.php">Home</a></li>
+                                <li><a href="about.php">About</a></li>
+                                <li><a href="contact.php">Contact</a></li>
+                                <?php if($showAdminPage) echo '<li><a href="admin.php">Admin Page</a></li>'?>
+                                <li><a href="contact.php"></a></li>
+                                <?php
+                                echo $isLoggedIn ?
+                                    '<li class="dropdown">
+                                        <!-- User image as the dropdown trigger with inline styles -->
+                                        <img src="'.$userInfo['picture'].'"
+                                                style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; cursor: pointer;"
+                                                class="dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown"
+                                                aria-expanded="false" alt="User Avatar">
+                                
+                                        <!-- Dropdown menu -->
+                                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                                                <li><a class="dropdown-item" href="profile.php">Profile</a></li>
+                                                <li><a class="dropdown-item" href="#">Settings</a></li>
+                                                <li><a class="dropdown-item" href="#">Help</a></li>
+                                                <li><a class="dropdown-item" href="#"></a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                            <form method="POST" action="logout.php">
+                                                                    <button type="submit" class="dropdown-item">Sign out</button>
+                                                            </form>
+                                                    </li>
+                                            </ul>
+                                    </li>' :
+                                    '<li><a href="login.php">Log in</a></li>';
+                                ?>
+                            </ul>
+                        </div>
+                        <div class="mobile-menu-cover">
+                            <ul class="nav mobile-nav-menu">
+                                <li class="search-toggle-open">
+                                    <img src="assets/images/search-icon.svg" alt="" class="img-fluid svg">
+                                </li>
+                                <li class="search-toggle-close hide">
+                                    <img src="assets/images/close.svg" alt="" class="img-fluid">
+                                </li>
+                                <li class="nav-menu-toggle">
+                                    <img src="assets/images/menu-toggler.svg" alt="" class="img-fluid svg">
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+	</header>
+    <div class="container mt-5">
         <!-- Show this is the user is deleted successfully -->
         <?php if (isset($_GET['message'])): ?>
             <div class="alert alert-success"><?= $_GET['message'] ?></div>

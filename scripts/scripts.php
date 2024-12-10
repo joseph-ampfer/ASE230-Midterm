@@ -138,3 +138,12 @@ function getUserName($email)
   fclose($file);
   return null;
 }
+
+function checkIfLiked($db, $userID, $postId)
+{
+  $stmt = $db->prepare("SELECT COUNT(*) FROM post_likes WHERE user_id = ? AND post_id = ?");
+  $stmt->execute([$userID, $postId]);
+  $likeCount = $stmt->fetchColumn();
+  // Return true if the user has liked the post, false otherwise
+  return $likeCount > 0;
+}
