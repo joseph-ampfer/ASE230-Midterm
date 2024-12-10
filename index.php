@@ -14,7 +14,6 @@ if (isset($_SESSION['email'])) {
 	}
 }
 $userInfo = getUserInfo($db, $userId);
-// Initiate error
 $error = "";
 
 // To post, check if logged and data is there
@@ -157,8 +156,6 @@ try {
 	<link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
 	<link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500%7CSpectral:400,400i,500,600,700"
 		rel="stylesheet">
-	<!-- <link rel="stylesheet" href="assets/css/bootstrap.min.css"> -->
-
 	<!-- Include Bootstrap 5 CSS -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="assets/css/font-awesome.min.css">
@@ -195,7 +192,7 @@ try {
 				<div class="row d-flex align-items-center">
 					<div class="col-lg-3 col-md-4 col-6">
 						<div class="logo"> <a href="#"><img src="assets/images/logo.png" alt="" class="img-fluid"
-									style="height: 4rem;"></a>
+									style="height: 100px;"></a>
 						</div>
 					</div>
 					<div class="col-lg-9 col-md-8 col-6 d-flex align-items-center justify-content-end position-static">
@@ -211,7 +208,7 @@ try {
 								echo $isLoggedIn ?
 									'<li class="dropdown">
                                     <!-- User image as the dropdown trigger with inline styles -->
-                                    <img src="' . $userInfo['picture'] . '"
+                                    <img src=' . $userInfo['picture'] . '
                                         style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; cursor: pointer;"
                                         class="dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown"
                                         aria-expanded="false" alt="User Avatar">

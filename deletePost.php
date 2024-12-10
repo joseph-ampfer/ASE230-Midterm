@@ -23,7 +23,7 @@ try {
   $stmt->execute([$postIndex]);
   $owner_id = $stmt->fetchColumn();
 
-  if ($owner_id != $_SESSION['ID']) {
+  if ($owner_id != $_SESSION['ID'] ) {
     throw new Exception("You do not own this post");
   }
 
