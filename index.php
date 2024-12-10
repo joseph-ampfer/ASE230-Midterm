@@ -9,8 +9,6 @@ $showAdminPage = Auth::isAdmin();
 $error = "";
 require_once('db.php');
 
-//echo $isLoggedIn;
-echo $_SESSION['email'];
 if ($isLoggedIn) {
 	$userInfo = getUserInfo($db, $_SESSION['ID']);
 }

@@ -174,7 +174,6 @@ if ($isLoggedIn && count($_POST) > 0) {
 		// Commit the transaction
 		$db->commit();
 		header("Location: details-full-width.php?id=".$post['post_id']);
-		echo "Transaction completed successfully!";
 		
 	} catch(Exception $e) {
 		if ($db->inTransaction()) {

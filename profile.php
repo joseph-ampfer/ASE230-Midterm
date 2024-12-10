@@ -210,7 +210,6 @@ if ($isLoggedIn && count($_POST) > 0) {
 		// Commit the transaction
 		$db->commit();
 		header("Refresh:0");
-		echo "Transaction completed successfully!";
 		
 	} catch(Exception $e) {
 		if ($db->inTransaction()) {

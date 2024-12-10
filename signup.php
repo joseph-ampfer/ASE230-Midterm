@@ -5,9 +5,6 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL); // Report all errors
 
-//if the session is already there that means the user is logged in and do not need to sign up
-// if (isset($_SESSION['email']))
-//     die('You are already logged in, please log out if you want to create a new account.');
 
 $error = "";
 
@@ -49,8 +46,6 @@ if (count($_POST) > 0) {
 
 
             header("Location: index.php");
-
-            echo "Transaction completed successfully!";
 
         } catch (Exception $e) {
             if ($db->inTransaction()) {

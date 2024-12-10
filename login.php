@@ -33,8 +33,6 @@ if (count($_POST) > 0) {
       $_SESSION['ID'] = $userInfo['id'];
       $_SESSION['isAdmin'] = $userInfo['isAdmin'];
       header("Location: index.php");
-      //2. Show a welcome message
-      echo 'Welcome to our website';
 
     } catch (Exception $e) {
 

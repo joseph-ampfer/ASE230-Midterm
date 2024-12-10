@@ -17,8 +17,7 @@ if ($isLoggedIn) {
 $get_users_query = $db->query('SELECT * FROM users'); /** @var PDOStatement $get_users_query */
 $users = $get_users_query->fetchAll();
 
-// echo '<pre>';
-// print_r($users);
+
 ?>
 
 <!doctype html>
