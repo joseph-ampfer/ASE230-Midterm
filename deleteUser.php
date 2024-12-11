@@ -6,7 +6,7 @@ if (!$_SESSION['isAdmin']) {
 }
 
 require_once('./db.php');
-$userToDelete = $_POST['id'] ?? null;
+$userToDelete = $_POST['id'] ?? null; 
 if ($userToDelete) {
 
     $stmt = $db->prepare('DELETE FROM comments WHERE user_id = :id');

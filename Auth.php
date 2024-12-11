@@ -8,7 +8,7 @@ class Auth {
 
     public static function isAdmin() {
       if (!isset($_SESSION['isAdmin'])) {
-        return false;
+        return false; 
       }
       return $_SESSION['isAdmin'];
     }
