@@ -8,6 +8,27 @@ if (!$_SESSION['isAdmin']) {
 require_once('./db.php');
 $userToDelete = $_POST['id'] ?? null;
 if ($userToDelete) {
+
+    $stmt = $db->prepare('DELETE FROM comments WHERE user_id = :id');
+    /** @var PDOStatement $stmt */
+    $stmt->execute(['id' => $userToDelete]);
+
+    $stmt = $db->prepare('DELETE FROM post_likes WHERE user_id = :id');
+    /** @var PDOStatement $stmt */
+    $stmt->execute(['id' => $userToDelete]);
+
+    $stmt = $db->prepare('DELETE FROM looking_for WHERE post_id IN (SELECT id FROM posts WHERE user_id = :id)');
+    /** @var PDOStatement $stmt */
+    $stmt->execute(['id' => $userToDelete]);
+
+    $stmt = $db->prepare('DELETE FROM post_categories WHERE post_id IN (SELECT id FROM posts WHERE user_id = :id)');
+    /** @var PDOStatement $stmt */
+    $stmt->execute(['id' => $userToDelete]);
+
+    $stmt = $db->prepare('DELETE FROM posts WHERE user_id = :id');
+    /** @var PDOStatement $stmt */
+    $stmt->execute(['id' => $userToDelete]);
+
     $stmt = $db->prepare('DELETE FROM users WHERE id = :id'); /** @var PDOStatement $stmt */
     $success = $stmt->execute(['id' => $userToDelete]);
 
